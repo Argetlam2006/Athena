@@ -484,7 +484,14 @@ class ValidationResult:
 
     @property
     def is_valid(self) -> bool:
-        return self.invalid_rows == 0
+        """
+        True if there are no invalid rows AND no errors.
+
+        Checking invalid_rows alone is insufficient: a file-not-found error
+        sets invalid_rows=0 (there were no rows to invalidate) but the result
+        is definitely not valid.
+        """
+        return self.invalid_rows == 0 and len(self.errors) == 0
 
     @property
     def validity_pct(self) -> float:
