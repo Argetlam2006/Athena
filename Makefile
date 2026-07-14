@@ -24,7 +24,9 @@
 # ─────────────────────────────────────────────────────────────────────────────
 
 .PHONY: help setup data data-full data-competition data-list validate validate-json \
-        test test-unit test-integration app api format lint lint-fix clean clean-data
+        etl etl-force \
+        warehouse warehouse-info \
+        test test-unit test-integration test-etl test-warehouse app api format lint lint-fix clean clean-data
 
 # Override COMPETITION on the command line:
 #   make data-competition COMPETITION="Champions League"
@@ -66,9 +68,15 @@ help:
 	@echo "  make data-competition      Fetch one competition (set COMPETITION=)"
 	@echo "  make data-list             List available competitions"
 	@echo "  make validate              Validate raw JSON files"
+	@echo "  make etl                   Run ETL pipeline → data/processed/ Parquet"
+	@echo "  make etl-force             Re-run ETL, overwriting existing Parquet files"
+	@echo "  make warehouse             Build DuckDB analytics warehouse"
+	@echo "  make warehouse-info        Print warehouse metadata (views, paths)"
 	@echo "  make test                  Run all tests"
 	@echo "  make test-unit             Unit tests only (no network)"
 	@echo "  make test-integration      Integration tests only (no network)"
+	@echo "  make test-etl              ETL normalization tests only"
+	@echo "  make test-warehouse        Warehouse SQL view tests only"
 	@echo "  make app                   Launch Streamlit UI"
 	@echo "  make api                   Start FastAPI backend"
 	@echo "  make format                Auto-format with Black"
@@ -129,6 +137,29 @@ validate-json: validate
 
 # ─────────────────────────────────────────────────────────────────────────────
 
+etl:
+	@echo "→ Running ETL pipeline (raw JSON → Parquet)..."
+	$(PYTHON) -m backend.etl.pipeline
+	@echo "✓ Parquet files written to data/processed/"
+
+etl-force:
+	@echo "→ Running ETL pipeline (force overwrite)..."
+	$(PYTHON) -m backend.etl.pipeline --force
+	@echo "✓ Parquet files overwritten in data/processed/"
+
+# ─────────────────────────────────────────────────────────────────────────────
+
+warehouse:
+	@echo "→ Building Athena Analytics Warehouse (Parquet → DuckDB views)..."
+	$(PYTHON) -m backend.warehouse.warehouse
+	@echo "✓ Warehouse ready at data/warehouse/athena.duckdb"
+
+warehouse-info:
+	@echo "→ Athena Warehouse info..."
+	$(PYTHON) -m backend.warehouse.warehouse --info
+
+# ─────────────────────────────────────────────────────────────────────────────
+
 test:
 	@echo "→ Running full test suite..."
 	$(PYTEST) tests/ -v --tb=short
@@ -140,6 +171,14 @@ test-unit:
 test-integration:
 	@echo "→ Running integration tests (no network required)..."
 	$(PYTEST) tests/test_ingestion_integration.py -v --tb=short
+
+test-etl:
+	@echo "→ Running ETL normalization tests..."
+	$(PYTEST) tests/test_etl.py -v --tb=short
+
+test-warehouse:
+	@echo "→ Running warehouse SQL view tests..."
+	$(PYTEST) tests/test_warehouse.py -v --tb=short
 
 # ─────────────────────────────────────────────────────────────────────────────
 
