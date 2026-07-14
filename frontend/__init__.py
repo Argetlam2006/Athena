@@ -1,0 +1,1 @@
+"""Athena frontend — Streamlit application."""

@@ -1,0 +1,90 @@
+# ──────────────────────────────────────────────
+# Athena — .gitignore
+# ──────────────────────────────────────────────
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.pyo
+.Python
+pip-wheel-metadata/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# ──────────────────────────────────────────────
+# Data files (raw & processed — not committed)
+# Sample data in data/sample/ IS committed
+# ──────────────────────────────────────────────
+data/raw/
+data/processed/
+data/warehouse/
+
+# DuckDB
+*.duckdb
+*.duckdb.wal
+
+# Parquet
+*.parquet
+
+# ──────────────────────────────────────────────
+# Streamlit
+# ──────────────────────────────────────────────
+.streamlit/secrets.toml
+
+# ──────────────────────────────────────────────
+# Testing & Coverage
+# ──────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.cover
+
+# ──────────────────────────────────────────────
+# IDE
+# ──────────────────────────────────────────────
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# ──────────────────────────────────────────────
+# OS
+# ──────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ──────────────────────────────────────────────
+# Logs
+# ──────────────────────────────────────────────
+logs/
+*.log
+
+# ──────────────────────────────────────────────
+# Jupyter (not used in V1 but guard against)
+# ──────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ──────────────────────────────────────────────
+# Build artifacts
+# ──────────────────────────────────────────────
+*.pdf
+reports/
