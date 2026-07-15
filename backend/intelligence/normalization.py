@@ -8,45 +8,53 @@ and basic statistics.
 from __future__ import annotations
 
 import math
-from typing import Sequence
+from collections.abc import Sequence
 
 
-def percentile_rank(value: float, cohort: Sequence[float], invert: bool = False) -> float:
+def percentile_rank(
+    value: float, cohort: Sequence[float], invert: bool = False
+) -> float:
     """
     Compute the percentile rank (0-100) of a value within a cohort.
-    
+
     Args:
         value: The player's metric value.
         cohort: A sequence of metric values for the comparison group (e.g., all forwards).
         invert: If True, lower values score higher (e.g., turnovers).
-        
+
     Returns:
         A float between 0.0 and 100.0.
     """
     if not cohort:
         return 50.0  # Safe fallback for empty cohorts
-        
+
     # Count how many scores are strictly below (or above if inverted) and equal
     if invert:
         strict_matches = sum(1 for v in cohort if v > value)
-        ties = sum(1 for v in cohort if math.isclose(v, value, rel_tol=1e-9, abs_tol=1e-9))
+        ties = sum(
+            1 for v in cohort if math.isclose(v, value, rel_tol=1e-9, abs_tol=1e-9)
+        )
     else:
         strict_matches = sum(1 for v in cohort if v < value)
-        ties = sum(1 for v in cohort if math.isclose(v, value, rel_tol=1e-9, abs_tol=1e-9))
-        
+        ties = sum(
+            1 for v in cohort if math.isclose(v, value, rel_tol=1e-9, abs_tol=1e-9)
+        )
+
     # Standard percentile formula with tie splitting
     percentile = ((strict_matches + (0.5 * ties)) / len(cohort)) * 100.0
     return max(0.0, min(100.0, percentile))
 
 
-def calculate_confidence(matches_played: int, high_confidence_threshold: int = 10) -> float:
+def calculate_confidence(
+    matches_played: int, high_confidence_threshold: int = 10
+) -> float:
     """
     Calculate a confidence score (0.0 to 1.0) based on sample size.
-    
+
     Args:
         matches_played: Number of matches the player participated in.
         high_confidence_threshold: Matches required for 1.0 confidence.
-        
+
     Returns:
         Confidence score clipped between 0.0 and 1.0.
     """
@@ -80,10 +88,12 @@ def euclidean_distance(vector_a: Sequence[float], vector_b: Sequence[float]) -> 
     """Compute Euclidean distance between two vectors of equal length."""
     if len(vector_a) != len(vector_b):
         raise ValueError("Vectors must be of equal length")
-    return math.sqrt(sum((a - b) ** 2 for a, b in zip(vector_a, vector_b)))
+    return math.sqrt(sum((a - b) ** 2 for a, b in zip(vector_a, vector_b, strict=False)))
 
 
-def calculate_similarity(vector_a: Sequence[float], vector_b: Sequence[float], max_distance: float = 283.0) -> float:
+def calculate_similarity(
+    vector_a: Sequence[float], vector_b: Sequence[float], max_distance: float = 283.0
+) -> float:
     """
     Calculate a 0-100 similarity score based on Euclidean distance.
     Max distance of 283.0 is roughly sqrt(8 * 100^2) for an 8-dimensional capability vector.

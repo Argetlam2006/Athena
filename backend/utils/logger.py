@@ -29,6 +29,7 @@ LOGS_DIR.mkdir(exist_ok=True)
 # Configure stdlib logging (structlog delegates to this)
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 def _configure_stdlib_logging(level: int = logging.INFO) -> None:
     """Set up stdlib logging with both console and file handlers."""
     root_logger = logging.getLogger()
@@ -58,6 +59,7 @@ def _configure_stdlib_logging(level: int = logging.INFO) -> None:
 # Configure structlog
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 def _configure_structlog() -> None:
     """Configure structlog with consistent processors."""
     structlog.configure(
@@ -84,6 +86,7 @@ _configure_structlog()
 # ─────────────────────────────────────────────────────────────────────────────
 # Public interface
 # ─────────────────────────────────────────────────────────────────────────────
+
 
 def get_logger(name: str) -> structlog.stdlib.BoundLogger:
     """

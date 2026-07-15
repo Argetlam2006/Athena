@@ -25,7 +25,12 @@ POSITION_GROUPS: dict[str, list[str]] = {
     "CM": ["Center Midfield", "Left Center Midfield", "Right Center Midfield"],
     "AM": ["Attacking Midfield", "Left Attacking Midfield", "Right Attacking Midfield"],
     "WI": ["Left Wing", "Right Wing", "Left Midfield", "Right Midfield"],
-    "ST": ["Center Forward", "Left Center Forward", "Right Center Forward", "Secondary Striker"],
+    "ST": [
+        "Center Forward",
+        "Left Center Forward",
+        "Right Center Forward",
+        "Secondary Striker",
+    ],
 }
 
 POSITION_GROUP_DISPLAY: dict[str, str] = {
@@ -72,16 +77,16 @@ DATA_SOURCES: dict[str, dict] = {
 # ─────────────────────────────────────────────────────────────────────────────
 
 STATSBOMB_COMPETITIONS: dict[str, int] = {
-    "La Liga":            11,
-    "Champions League":   16,
+    "La Liga": 11,
+    "Champions League": 16,
     "FA Women's Super League": 37,
-    "FIFA World Cup":     43,
-    "NWSL":              49,
-    "Premier League":     2,
+    "FIFA World Cup": 43,
+    "NWSL": 49,
+    "Premier League": 2,
     "North American Soccer League": 55,
     "Major League Soccer": 253,
-    "UEFA Euro":          55,
-    "Copa del Rey":       21,
+    "UEFA Euro": 55,
+    "Copa del Rey": 21,
 }
 
 # ─────────────────────────────────────────────────────────────────────────────

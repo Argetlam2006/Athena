@@ -10,8 +10,11 @@ import streamlit as st
 
 def render_page_header(title: str, subtitle: str, icon: str = "") -> None:
     """Renders a standard workspace header."""
-    icon_html = f'<span style="color:#6366f1; margin-right:10px;">{icon}</span>' if icon else ""
-    st.markdown(f"""
+    icon_html = (
+        f'<span style="color:#6366f1; margin-right:10px;">{icon}</span>' if icon else ""
+    )
+    st.markdown(
+        f"""
     <div style="padding: 1rem 0 2rem 0; border-bottom: 1px solid #1f1f1f; margin-bottom: 2rem;">
         <h1 style="margin: 0; font-size: 2.2rem; font-weight: 700; color: #f9fafb;">
             {icon_html}{title}
@@ -20,7 +23,9 @@ def render_page_header(title: str, subtitle: str, icon: str = "") -> None:
             {subtitle}
         </p>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
 
 def render_section_header(title: str) -> None:
@@ -28,10 +33,17 @@ def render_section_header(title: str) -> None:
     st.markdown(f"<div class='section-label'>{title}</div>", unsafe_allow_html=True)
 
 
-def render_kpi_card(label: str, value: str | int | float, delta: str | None = None) -> None:
+def render_kpi_card(
+    label: str, value: str | int | float, delta: str | None = None
+) -> None:
     """Renders a standard KPI card inside a unified container."""
-    delta_html = f'<div style="font-size: 0.8rem; color: #10b981; margin-top: 0.4rem;">↑ {delta}</div>' if delta else ""
-    st.markdown(f"""
+    delta_html = (
+        f'<div style="font-size: 0.8rem; color: #10b981; margin-top: 0.4rem;">↑ {delta}</div>'
+        if delta
+        else ""
+    )
+    st.markdown(
+        f"""
     <div class="card-container">
         <div style="font-size: 2rem; font-weight: 700; color: #f9fafb; line-height: 1; margin-bottom: 0.25rem;">
             {value}
@@ -41,7 +53,9 @@ def render_kpi_card(label: str, value: str | int | float, delta: str | None = No
         </div>
         {delta_html}
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
 
 def render_divider() -> None:

@@ -14,12 +14,9 @@ import pytest
 from shared.schemas import (
     CapabilityProfile,
     CapabilityScore,
-    ComparisonResult,
     PlayerFeatureVector,
     PlayerProfile,
-    RecruitmentCandidate,
     TeamProfile,
-    ValidationResult,
 )
 
 
@@ -148,9 +145,14 @@ class TestPlayerProfile:
 
     def test_similar_players_defaults_to_empty_list(self) -> None:
         player = PlayerProfile(
-            player_id=3, player_name="C", position_group="ST",
-            team_name="T", competition="C", season="S",
-            age_years=20.0, minutes_played=500.0,
+            player_id=3,
+            player_name="C",
+            position_group="ST",
+            team_name="T",
+            competition="C",
+            season="S",
+            age_years=20.0,
+            minutes_played=500.0,
         )
         assert player.similar_players == []
 
@@ -160,8 +162,13 @@ class TestPlayerFeatureVector:
 
     def test_to_vector_returns_list_of_floats(self) -> None:
         vec = PlayerFeatureVector(
-            player_id=1, player_name="Test", season="2020/2021",
-            competition="La Liga", position_group="CM", minutes_played=900.0, matches_played=10,
+            player_id=1,
+            player_name="Test",
+            season="2020/2021",
+            competition="La Liga",
+            position_group="CM",
+            minutes_played=900.0,
+            matches_played=10,
         )
         result = vec.to_vector()
         assert isinstance(result, list)
@@ -175,8 +182,13 @@ class TestPlayerFeatureVector:
         + Physical Availability (4) + Tactical Versatility (4) = 36
         """
         vec = PlayerFeatureVector(
-            player_id=1, player_name="Test", season="2020/2021",
-            competition="La Liga", position_group="CM", minutes_played=900.0, matches_played=10,
+            player_id=1,
+            player_name="Test",
+            season="2020/2021",
+            competition="La Liga",
+            position_group="CM",
+            minutes_played=900.0,
+            matches_played=10,
         )
         result = vec.to_vector()
         assert len(result) == 23, f"Expected 23 features, got {len(result)}"
@@ -187,12 +199,19 @@ class TestTeamProfile:
 
     def test_radar_dict_has_eight_keys(self) -> None:
         team = TeamProfile(
-            team_id=1, team_name="FC Test", competition="La Liga",
-            season="2020/2021", squad_size=25,
-            avg_ball_progression=72.0, avg_chance_creation=68.0,
-            avg_ball_security=75.0, avg_press_resistance=70.0,
-            avg_defensive_activity=65.0, avg_attacking_threat=71.0,
-            avg_physical_availability=80.0, avg_tactical_versatility=60.0,
+            team_id=1,
+            team_name="FC Test",
+            competition="La Liga",
+            season="2020/2021",
+            squad_size=25,
+            avg_ball_progression=72.0,
+            avg_chance_creation=68.0,
+            avg_ball_security=75.0,
+            avg_press_resistance=70.0,
+            avg_defensive_activity=65.0,
+            avg_attacking_threat=71.0,
+            avg_physical_availability=80.0,
+            avg_tactical_versatility=60.0,
         )
         radar = team.as_radar_dict()
         assert len(radar) == 8

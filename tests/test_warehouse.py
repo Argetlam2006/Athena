@@ -25,7 +25,6 @@ import pytest
 from backend.warehouse.queries import WarehouseQueries
 from backend.warehouse.warehouse import SQL_VIEWS_DIR, Warehouse
 
-
 # ─────────────────────────────────────────────────────────────────────────────
 # Synthetic test dataset
 # ─────────────────────────────────────────────────────────────────────────────
@@ -33,39 +32,64 @@ from backend.warehouse.warehouse import SQL_VIEWS_DIR, Warehouse
 
 @pytest.fixture(scope="module")
 def sample_competitions() -> pd.DataFrame:
-    return pd.DataFrame([
-        {"competition_id": 11, "competition_name": "La Liga",
-         "country_name": "Spain", "season_id": 90,
-         "season_name": "2020/2021", "competition_gender": "male"},
-    ])
+    return pd.DataFrame(
+        [
+            {
+                "competition_id": 11,
+                "competition_name": "La Liga",
+                "country_name": "Spain",
+                "season_id": 90,
+                "season_name": "2020/2021",
+                "competition_gender": "male",
+            },
+        ]
+    )
 
 
 @pytest.fixture(scope="module")
 def sample_matches() -> pd.DataFrame:
-    return pd.DataFrame([
-        {
-            "match_id": 3001, "match_date": "2020-09-27",
-            "kick_off": "16:00:00", "match_week": 1,
-            "competition_id": 11, "competition_name": "La Liga",
-            "season_id": 90, "season_name": "2020/2021",
-            "home_team_id": 101, "home_team_name": "Barcelona",
-            "away_team_id": 102, "away_team_name": "Villarreal",
-            "home_score": 4, "away_score": 0,
-            "stadium_name": "Camp Nou", "referee_name": "Gil Manzano",
-            "match_status": "available",
-        },
-        {
-            "match_id": 3002, "match_date": "2020-10-04",
-            "kick_off": "20:00:00", "match_week": 2,
-            "competition_id": 11, "competition_name": "La Liga",
-            "season_id": 90, "season_name": "2020/2021",
-            "home_team_id": 102, "home_team_name": "Villarreal",
-            "away_team_id": 101, "away_team_name": "Barcelona",
-            "home_score": 1, "away_score": 2,
-            "stadium_name": "La Ceramica", "referee_name": None,
-            "match_status": "available",
-        },
-    ])
+    return pd.DataFrame(
+        [
+            {
+                "match_id": 3001,
+                "match_date": "2020-09-27",
+                "kick_off": "16:00:00",
+                "match_week": 1,
+                "competition_id": 11,
+                "competition_name": "La Liga",
+                "season_id": 90,
+                "season_name": "2020/2021",
+                "home_team_id": 101,
+                "home_team_name": "Barcelona",
+                "away_team_id": 102,
+                "away_team_name": "Villarreal",
+                "home_score": 4,
+                "away_score": 0,
+                "stadium_name": "Camp Nou",
+                "referee_name": "Gil Manzano",
+                "match_status": "available",
+            },
+            {
+                "match_id": 3002,
+                "match_date": "2020-10-04",
+                "kick_off": "20:00:00",
+                "match_week": 2,
+                "competition_id": 11,
+                "competition_name": "La Liga",
+                "season_id": 90,
+                "season_name": "2020/2021",
+                "home_team_id": 102,
+                "home_team_name": "Villarreal",
+                "away_team_id": 101,
+                "away_team_name": "Barcelona",
+                "home_score": 1,
+                "away_score": 2,
+                "stadium_name": "La Ceramica",
+                "referee_name": None,
+                "match_status": "available",
+            },
+        ]
+    )
 
 
 @pytest.fixture(scope="module")
@@ -74,34 +98,64 @@ def sample_lineups() -> pd.DataFrame:
     rows = []
     # Messi — both matches for Barcelona
     for match_id in [3001, 3002]:
-        rows.append({
-            "match_id": match_id, "team_id": 101, "team_name": "Barcelona",
-            "player_id": 5503, "player_name": "Lionel Messi",
-            "player_nickname": "Messi", "jersey_number": 10,
-            "birth_date": "1987-06-24", "height_cm": 170.0, "weight_kg": 72.0,
-            "country_id": 11, "country_name": "Argentina",
-            "starting_position": "Right Wing", "starting_position_id": 17,
-        })
+        rows.append(
+            {
+                "match_id": match_id,
+                "team_id": 101,
+                "team_name": "Barcelona",
+                "player_id": 5503,
+                "player_name": "Lionel Messi",
+                "player_nickname": "Messi",
+                "jersey_number": 10,
+                "birth_date": "1987-06-24",
+                "height_cm": 170.0,
+                "weight_kg": 72.0,
+                "country_id": 11,
+                "country_name": "Argentina",
+                "starting_position": "Right Wing",
+                "starting_position_id": 17,
+            }
+        )
     # Busquets — both matches for Barcelona
     for match_id in [3001, 3002]:
-        rows.append({
-            "match_id": match_id, "team_id": 101, "team_name": "Barcelona",
-            "player_id": 6832, "player_name": "Sergio Busquets",
-            "player_nickname": "Busquets", "jersey_number": 5,
-            "birth_date": "1988-07-16", "height_cm": 189.0, "weight_kg": 76.0,
-            "country_id": 214, "country_name": "Spain",
-            "starting_position": "Center Midfield", "starting_position_id": 13,
-        })
+        rows.append(
+            {
+                "match_id": match_id,
+                "team_id": 101,
+                "team_name": "Barcelona",
+                "player_id": 6832,
+                "player_name": "Sergio Busquets",
+                "player_nickname": "Busquets",
+                "jersey_number": 5,
+                "birth_date": "1988-07-16",
+                "height_cm": 189.0,
+                "weight_kg": 76.0,
+                "country_id": 214,
+                "country_name": "Spain",
+                "starting_position": "Center Midfield",
+                "starting_position_id": 13,
+            }
+        )
     # Moreno — both matches for Villarreal
     for match_id in [3001, 3002]:
-        rows.append({
-            "match_id": match_id, "team_id": 102, "team_name": "Villarreal",
-            "player_id": 9001, "player_name": "Gerard Moreno",
-            "player_nickname": None, "jersey_number": 7,
-            "birth_date": "1992-04-07", "height_cm": 178.0, "weight_kg": 73.0,
-            "country_id": 214, "country_name": "Spain",
-            "starting_position": "Center Forward", "starting_position_id": 21,
-        })
+        rows.append(
+            {
+                "match_id": match_id,
+                "team_id": 102,
+                "team_name": "Villarreal",
+                "player_id": 9001,
+                "player_name": "Gerard Moreno",
+                "player_nickname": None,
+                "jersey_number": 7,
+                "birth_date": "1992-04-07",
+                "height_cm": 178.0,
+                "weight_kg": 73.0,
+                "country_id": 214,
+                "country_name": "Spain",
+                "starting_position": "Center Forward",
+                "starting_position_id": 21,
+            }
+        )
     return pd.DataFrame(rows)
 
 
@@ -123,111 +177,328 @@ def sample_events() -> pd.DataFrame:
     def ev(match_id, player_id, player_name, team_id, team_name, type_name, **kwargs):
         nonlocal eid
         base = {
-            "event_id": f"evt-{eid:04d}", "match_id": match_id,
-            "index": eid, "period": 1, "timestamp": "00:10:00.000",
-            "minute": 10, "second": 0, "type_id": 30, "type_name": type_name,
-            "play_pattern": "Regular Play", "possession": eid,
-            "team_id": team_id, "team_name": team_name,
-            "player_id": player_id, "player_name": player_name,
-            "position_name": "Right Wing", "location_x": 60.0, "location_y": 40.0,
-            "duration": 0.0, "under_pressure": False,
+            "event_id": f"evt-{eid:04d}",
+            "match_id": match_id,
+            "index": eid,
+            "period": 1,
+            "timestamp": "00:10:00.000",
+            "minute": 10,
+            "second": 0,
+            "type_id": 30,
+            "type_name": type_name,
+            "play_pattern": "Regular Play",
+            "possession": eid,
+            "team_id": team_id,
+            "team_name": team_name,
+            "player_id": player_id,
+            "player_name": player_name,
+            "position_name": "Right Wing",
+            "location_x": 60.0,
+            "location_y": 40.0,
+            "duration": 0.0,
+            "under_pressure": False,
             # Pass nulls
-            "pass_length": None, "pass_angle": None, "pass_end_x": None,
-            "pass_end_y": None, "pass_recipient_id": None, "pass_recipient_name": None,
-            "pass_height": None, "pass_type": None, "pass_outcome": None,
-            "pass_switch": False, "pass_through_ball": False, "pass_shot_assist": False,
-            "pass_goal_assist": False, "pass_cross": False,
+            "pass_length": None,
+            "pass_angle": None,
+            "pass_end_x": None,
+            "pass_end_y": None,
+            "pass_recipient_id": None,
+            "pass_recipient_name": None,
+            "pass_height": None,
+            "pass_type": None,
+            "pass_outcome": None,
+            "pass_switch": False,
+            "pass_through_ball": False,
+            "pass_shot_assist": False,
+            "pass_goal_assist": False,
+            "pass_cross": False,
             # Shot nulls
-            "shot_statsbomb_xg": None, "shot_end_x": None, "shot_end_y": None,
-            "shot_end_z": None, "shot_outcome": None, "shot_type": None,
-            "shot_technique": None, "shot_body_part": None,
-            "shot_first_time": False, "shot_one_on_one": False,
+            "shot_statsbomb_xg": None,
+            "shot_end_x": None,
+            "shot_end_y": None,
+            "shot_end_z": None,
+            "shot_outcome": None,
+            "shot_type": None,
+            "shot_technique": None,
+            "shot_body_part": None,
+            "shot_first_time": False,
+            "shot_one_on_one": False,
             # Carry nulls
-            "carry_end_x": None, "carry_end_y": None,
+            "carry_end_x": None,
+            "carry_end_y": None,
             # Dribble nulls
-            "dribble_outcome": None, "dribble_overrun": False, "dribble_nutmeg": False,
+            "dribble_outcome": None,
+            "dribble_overrun": False,
+            "dribble_nutmeg": False,
         }
         base.update(kwargs)
         eid += 1
         return base
 
     # ── Messi: shots ──────────────────────────────────────────────────────────
-    rows.append(ev(3001, 5503, "Lionel Messi", 101, "Barcelona", "Shot",
-                   shot_statsbomb_xg=0.30, shot_outcome="Goal",
-                   shot_type="Open Play", location_x=110.0, location_y=38.0))
-    rows.append(ev(3001, 5503, "Lionel Messi", 101, "Barcelona", "Shot",
-                   shot_statsbomb_xg=0.20, shot_outcome="Goal",
-                   shot_type="Open Play", location_x=108.0, location_y=36.0))
-    rows.append(ev(3001, 5503, "Lionel Messi", 101, "Barcelona", "Shot",
-                   shot_statsbomb_xg=0.10, shot_outcome="Saved",
-                   shot_type="Open Play", location_x=105.0, location_y=40.0))
+    rows.append(
+        ev(
+            3001,
+            5503,
+            "Lionel Messi",
+            101,
+            "Barcelona",
+            "Shot",
+            shot_statsbomb_xg=0.30,
+            shot_outcome="Goal",
+            shot_type="Open Play",
+            location_x=110.0,
+            location_y=38.0,
+        )
+    )
+    rows.append(
+        ev(
+            3001,
+            5503,
+            "Lionel Messi",
+            101,
+            "Barcelona",
+            "Shot",
+            shot_statsbomb_xg=0.20,
+            shot_outcome="Goal",
+            shot_type="Open Play",
+            location_x=108.0,
+            location_y=36.0,
+        )
+    )
+    rows.append(
+        ev(
+            3001,
+            5503,
+            "Lionel Messi",
+            101,
+            "Barcelona",
+            "Shot",
+            shot_statsbomb_xg=0.10,
+            shot_outcome="Saved",
+            shot_type="Open Play",
+            location_x=105.0,
+            location_y=40.0,
+        )
+    )
     # Messi: second match shots
-    rows.append(ev(3002, 5503, "Lionel Messi", 101, "Barcelona", "Shot",
-                   shot_statsbomb_xg=0.15, shot_outcome="Goal",
-                   shot_type="Open Play", location_x=112.0, location_y=35.0))
+    rows.append(
+        ev(
+            3002,
+            5503,
+            "Lionel Messi",
+            101,
+            "Barcelona",
+            "Shot",
+            shot_statsbomb_xg=0.15,
+            shot_outcome="Goal",
+            shot_type="Open Play",
+            location_x=112.0,
+            location_y=35.0,
+        )
+    )
 
     # ── Messi: passes ─────────────────────────────────────────────────────────
-    for i in range(8):   # 8 accurate passes
-        rows.append(ev(3001, 5503, "Lionel Messi", 101, "Barcelona", "Pass",
-                       pass_length=15.0 + i, pass_angle=0.5,
-                       pass_end_x=75.0, pass_end_y=35.0,
-                       pass_outcome=None))  # None = successful
-    for i in range(2):   # 2 inaccurate passes
-        rows.append(ev(3001, 5503, "Lionel Messi", 101, "Barcelona", "Pass",
-                       pass_length=30.0, pass_angle=1.0,
-                       pass_end_x=90.0, pass_end_y=20.0,
-                       pass_outcome="Incomplete"))
+    for i in range(8):  # 8 accurate passes
+        rows.append(
+            ev(
+                3001,
+                5503,
+                "Lionel Messi",
+                101,
+                "Barcelona",
+                "Pass",
+                pass_length=15.0 + i,
+                pass_angle=0.5,
+                pass_end_x=75.0,
+                pass_end_y=35.0,
+                pass_outcome=None,
+            )
+        )  # None = successful
+    for _ in range(2):  # 2 inaccurate passes
+        rows.append(
+            ev(
+                3001,
+                5503,
+                "Lionel Messi",
+                101,
+                "Barcelona",
+                "Pass",
+                pass_length=30.0,
+                pass_angle=1.0,
+                pass_end_x=90.0,
+                pass_end_y=20.0,
+                pass_outcome="Incomplete",
+            )
+        )
 
     # ── Messi: carries ────────────────────────────────────────────────────────
     for i in range(5):
-        rows.append(ev(3001, 5503, "Lionel Messi", 101, "Barcelona", "Carry",
-                       location_x=60.0, location_y=40.0,
-                       carry_end_x=72.0 + i, carry_end_y=38.0))  # progressive
+        rows.append(
+            ev(
+                3001,
+                5503,
+                "Lionel Messi",
+                101,
+                "Barcelona",
+                "Carry",
+                location_x=60.0,
+                location_y=40.0,
+                carry_end_x=72.0 + i,
+                carry_end_y=38.0,
+            )
+        )  # progressive
 
     # ── Messi: dribbles ───────────────────────────────────────────────────────
-    rows.append(ev(3001, 5503, "Lionel Messi", 101, "Barcelona", "Dribble",
-                   dribble_outcome="Complete"))
-    rows.append(ev(3001, 5503, "Lionel Messi", 101, "Barcelona", "Dribble",
-                   dribble_outcome="Complete"))
-    rows.append(ev(3001, 5503, "Lionel Messi", 101, "Barcelona", "Dribble",
-                   dribble_outcome="Incomplete"))
+    rows.append(
+        ev(
+            3001,
+            5503,
+            "Lionel Messi",
+            101,
+            "Barcelona",
+            "Dribble",
+            dribble_outcome="Complete",
+        )
+    )
+    rows.append(
+        ev(
+            3001,
+            5503,
+            "Lionel Messi",
+            101,
+            "Barcelona",
+            "Dribble",
+            dribble_outcome="Complete",
+        )
+    )
+    rows.append(
+        ev(
+            3001,
+            5503,
+            "Lionel Messi",
+            101,
+            "Barcelona",
+            "Dribble",
+            dribble_outcome="Incomplete",
+        )
+    )
 
     # ── Busquets: passes ──────────────────────────────────────────────────────
-    for i in range(18):  # 18 accurate
-        rows.append(ev(3001, 6832, "Sergio Busquets", 101, "Barcelona", "Pass",
-                       pass_length=12.0, pass_angle=0.2,
-                       pass_end_x=65.0, pass_end_y=40.0,
-                       pass_outcome=None))
-    for i in range(2):   # 2 inaccurate
-        rows.append(ev(3001, 6832, "Sergio Busquets", 101, "Barcelona", "Pass",
-                       pass_length=20.0, pass_angle=0.8,
-                       pass_end_x=80.0, pass_end_y=30.0,
-                       pass_outcome="Out"))
+    for _ in range(18):  # 18 accurate
+        rows.append(
+            ev(
+                3001,
+                6832,
+                "Sergio Busquets",
+                101,
+                "Barcelona",
+                "Pass",
+                pass_length=12.0,
+                pass_angle=0.2,
+                pass_end_x=65.0,
+                pass_end_y=40.0,
+                pass_outcome=None,
+            )
+        )
+    for _ in range(2):  # 2 inaccurate
+        rows.append(
+            ev(
+                3001,
+                6832,
+                "Sergio Busquets",
+                101,
+                "Barcelona",
+                "Pass",
+                pass_length=20.0,
+                pass_angle=0.8,
+                pass_end_x=80.0,
+                pass_end_y=30.0,
+                pass_outcome="Out",
+            )
+        )
     # Busquets second match — 15 accurate passes
-    for i in range(15):
-        rows.append(ev(3002, 6832, "Sergio Busquets", 101, "Barcelona", "Pass",
-                       pass_length=11.0, pass_angle=0.3,
-                       pass_end_x=63.0, pass_end_y=41.0,
-                       pass_outcome=None))
+    for _ in range(15):
+        rows.append(
+            ev(
+                3002,
+                6832,
+                "Sergio Busquets",
+                101,
+                "Barcelona",
+                "Pass",
+                pass_length=11.0,
+                pass_angle=0.3,
+                pass_end_x=63.0,
+                pass_end_y=41.0,
+                pass_outcome=None,
+            )
+        )
 
     # ── Moreno: shots ─────────────────────────────────────────────────────────
-    rows.append(ev(3001, 9001, "Gerard Moreno", 102, "Villarreal", "Shot",
-                   shot_statsbomb_xg=0.25, shot_outcome="Saved",
-                   shot_type="Open Play", location_x=109.0, location_y=36.0))
-    rows.append(ev(3001, 9001, "Gerard Moreno", 102, "Villarreal", "Shot",
-                   shot_statsbomb_xg=0.15, shot_outcome="Blocked",
-                   shot_type="Open Play", location_x=107.0, location_y=34.0))
+    rows.append(
+        ev(
+            3001,
+            9001,
+            "Gerard Moreno",
+            102,
+            "Villarreal",
+            "Shot",
+            shot_statsbomb_xg=0.25,
+            shot_outcome="Saved",
+            shot_type="Open Play",
+            location_x=109.0,
+            location_y=36.0,
+        )
+    )
+    rows.append(
+        ev(
+            3001,
+            9001,
+            "Gerard Moreno",
+            102,
+            "Villarreal",
+            "Shot",
+            shot_statsbomb_xg=0.15,
+            shot_outcome="Blocked",
+            shot_type="Open Play",
+            location_x=107.0,
+            location_y=34.0,
+        )
+    )
 
     # ── Moreno: passes ────────────────────────────────────────────────────────
-    for i in range(7):
-        rows.append(ev(3001, 9001, "Gerard Moreno", 102, "Villarreal", "Pass",
-                       pass_length=10.0, pass_angle=0.4,
-                       pass_end_x=70.0, pass_end_y=38.0,
-                       pass_outcome=None))
-    rows.append(ev(3001, 9001, "Gerard Moreno", 102, "Villarreal", "Pass",
-                   pass_length=25.0, pass_angle=1.2,
-                   pass_end_x=85.0, pass_end_y=25.0,
-                   pass_outcome="Incomplete"))
+    for _ in range(7):
+        rows.append(
+            ev(
+                3001,
+                9001,
+                "Gerard Moreno",
+                102,
+                "Villarreal",
+                "Pass",
+                pass_length=10.0,
+                pass_angle=0.4,
+                pass_end_x=70.0,
+                pass_end_y=38.0,
+                pass_outcome=None,
+            )
+        )
+    rows.append(
+        ev(
+            3001,
+            9001,
+            "Gerard Moreno",
+            102,
+            "Villarreal",
+            "Pass",
+            pass_length=25.0,
+            pass_angle=1.2,
+            pass_end_x=85.0,
+            pass_end_y=25.0,
+            pass_outcome="Incomplete",
+        )
+    )
 
     return pd.DataFrame(rows)
 
@@ -252,9 +523,9 @@ def wh_conn(
 
     # Register DataFrames as DuckDB views (same as reading from Parquet)
     conn.register("competitions", sample_competitions)
-    conn.register("matches",      sample_matches)
-    conn.register("lineups",      sample_lineups)
-    conn.register("events",       sample_events)
+    conn.register("matches", sample_matches)
+    conn.register("lineups", sample_lineups)
+    conn.register("events", sample_events)
 
     # Use Warehouse to create all analytical SQL views
     wh = Warehouse(_conn=conn)
@@ -321,9 +592,17 @@ class TestMatchSummaryView:
     def test_required_columns_present(self, q) -> None:
         df = q.get_match_summary()
         required = {
-            "match_id", "competition_name", "home_team_name", "away_team_name",
-            "home_score", "away_score", "result", "total_goals",
-            "match_classification", "xg_differential", "home_shot_share_pct",
+            "match_id",
+            "competition_name",
+            "home_team_name",
+            "away_team_name",
+            "home_score",
+            "away_score",
+            "result",
+            "total_goals",
+            "match_classification",
+            "xg_differential",
+            "home_shot_share_pct",
         }
         assert required.issubset(df.columns)
 
@@ -375,9 +654,18 @@ class TestPlayerSummaryView:
     def test_required_columns_present(self, q) -> None:
         df = q.get_player_summary()
         required = {
-            "player_id", "player_name", "team_name", "position_name",
-            "matches_played", "minutes_played", "goals", "xg_total",
-            "total_passes", "pass_accuracy_pct", "goals_p90", "xg_p90",
+            "player_id",
+            "player_name",
+            "team_name",
+            "position_name",
+            "matches_played",
+            "minutes_played",
+            "goals",
+            "xg_total",
+            "total_passes",
+            "pass_accuracy_pct",
+            "goals_p90",
+            "xg_p90",
         }
         assert required.issubset(df.columns)
 
@@ -467,9 +755,19 @@ class TestTeamSummaryView:
     def test_required_columns_present(self, q) -> None:
         df = q.get_team_summary()
         required = {
-            "team_id", "team_name", "matches_played", "wins", "draws",
-            "losses", "points", "goals_scored", "goals_conceded",
-            "goal_difference", "xg_for", "xg_against", "xg_difference",
+            "team_id",
+            "team_name",
+            "matches_played",
+            "wins",
+            "draws",
+            "losses",
+            "points",
+            "goals_scored",
+            "goals_conceded",
+            "goal_difference",
+            "xg_for",
+            "xg_against",
+            "xg_difference",
             "pass_accuracy_pct",
         }
         assert required.issubset(df.columns)
@@ -519,20 +817,29 @@ class TestPlayerPercentilesView:
     def test_required_columns_present(self, q) -> None:
         df = q.get_player_percentiles()
         required = {
-            "player_id", "position_name",
-            "xg_p90_pct_in_position", "goals_p90_pct_in_position",
-            "pass_acc_pct_in_position", "overall_percentile",
-            "xg_decile", "xg_p90_decile_in_position",
+            "player_id",
+            "position_name",
+            "xg_p90_pct_in_position",
+            "goals_p90_pct_in_position",
+            "pass_acc_pct_in_position",
+            "overall_percentile",
+            "xg_decile",
+            "xg_p90_decile_in_position",
         }
         assert required.issubset(df.columns)
 
     def test_percentile_values_in_0_to_100_range(self, q) -> None:
         df = q.get_player_percentiles()
-        pct_cols = [c for c in df.columns if c.endswith("_pct_in_position") or c == "overall_percentile"]
+        pct_cols = [
+            c
+            for c in df.columns
+            if c.endswith("_pct_in_position") or c == "overall_percentile"
+        ]
         for col in pct_cols:
             vals = df[col].dropna()
-            assert (vals >= 0).all() and (vals <= 100).all(), \
+            assert (vals >= 0).all() and (vals <= 100).all(), (
                 f"Column {col!r} has values outside [0, 100]"
+            )
 
     def test_ntile_decile_in_1_to_10_range(self, q) -> None:
         df = q.get_player_percentiles()
@@ -563,10 +870,17 @@ class TestRecruitmentCandidatesView:
     def test_required_columns_present(self, q) -> None:
         df = q.get_recruitment_candidates(min_matches=2)
         required = {
-            "player_id", "player_name", "position_name", "team_name",
-            "contribution_score", "position_rank", "position_pool_size",
-            "is_clinical_finisher", "is_high_volume_passer",
-            "is_progressive_passer", "is_elite_dribbler",
+            "player_id",
+            "player_name",
+            "position_name",
+            "team_name",
+            "contribution_score",
+            "position_rank",
+            "position_pool_size",
+            "is_clinical_finisher",
+            "is_high_volume_passer",
+            "is_progressive_passer",
+            "is_elite_dribbler",
         }
         assert required.issubset(df.columns)
 
@@ -586,9 +900,7 @@ class TestRecruitmentCandidatesView:
         assert len(df) == 1
 
     def test_position_filter(self, q) -> None:
-        df = q.get_recruitment_candidates(
-            position="Center Midfield", min_matches=2
-        )
+        df = q.get_recruitment_candidates(position="Center Midfield", min_matches=2)
         if not df.empty:
             assert (df["position_name"] == "Center Midfield").all()
 
@@ -602,8 +914,11 @@ class TestWarehouseQueries:
     def test_list_views_returns_all_five(self, q) -> None:
         views = q.list_views()
         expected = {
-            "vw_match_summary", "vw_player_summary", "vw_team_summary",
-            "vw_player_percentiles", "vw_recruitment_candidates",
+            "vw_match_summary",
+            "vw_player_summary",
+            "vw_team_summary",
+            "vw_player_percentiles",
+            "vw_recruitment_candidates",
         }
         assert expected.issubset(set(views))
 

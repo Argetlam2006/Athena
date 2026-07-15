@@ -7,31 +7,30 @@ models into structured, verified evidence payloads for the LLM.
 
 import logging
 
-from shared.schemas import (
-    PlayerProfile, 
-    TeamProfile, 
-    RecruitmentCandidate, 
-    RecruitmentCriteria, 
-    ComparisonResult
+from backend.explanation.builder import (
+    build_comparison_context,
+    build_player_context,
+    build_recruitment_context,
+    build_team_context,
 )
 from backend.explanation.context import (
+    ComparisonExplanationContext,
     PlayerExplanationContext,
-    TeamExplanationContext,
     RecruitmentExplanationContext,
-    ComparisonExplanationContext
-)
-from backend.explanation.builder import (
-    build_player_context,
-    build_team_context,
-    build_recruitment_context,
-    build_comparison_context
+    TeamExplanationContext,
 )
 from backend.explanation.validator import (
-    validate_player_context,
-    validate_team_context,
-    validate_recruitment_context,
     validate_comparison_context,
-    ContextValidationError
+    validate_player_context,
+    validate_recruitment_context,
+    validate_team_context,
+)
+from shared.schemas import (
+    ComparisonResult,
+    PlayerProfile,
+    RecruitmentCandidate,
+    RecruitmentCriteria,
+    TeamProfile,
 )
 
 logger = logging.getLogger(__name__)
@@ -60,8 +59,10 @@ class ExplanationContextEngine:
         context = build_team_context(profile)
         validate_team_context(context)
         return context
-        
-    def get_recruitment_context(self, criteria: RecruitmentCriteria, candidates: list[RecruitmentCandidate]) -> RecruitmentExplanationContext:
+
+    def get_recruitment_context(
+        self, criteria: RecruitmentCriteria, candidates: list[RecruitmentCandidate]
+    ) -> RecruitmentExplanationContext:
         """
         Builds and validates an explanation context for a recruitment recommendation.
         Raises ContextValidationError if incomplete.
@@ -70,7 +71,9 @@ class ExplanationContextEngine:
         validate_recruitment_context(context)
         return context
 
-    def get_comparison_context(self, result: ComparisonResult) -> ComparisonExplanationContext:
+    def get_comparison_context(
+        self, result: ComparisonResult
+    ) -> ComparisonExplanationContext:
         """
         Builds and validates an explanation context for a comparison result.
         Raises ContextValidationError if incomplete.

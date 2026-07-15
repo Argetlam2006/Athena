@@ -17,9 +17,9 @@ Usage:
 
 from __future__ import annotations
 
+from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Generator
 
 import duckdb
 
@@ -28,7 +28,7 @@ import duckdb
 # ─────────────────────────────────────────────────────────────────────────────
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
-DB_PATH  = ROOT_DIR / "data" / "warehouse" / "athena.duckdb"
+DB_PATH = ROOT_DIR / "data" / "warehouse" / "athena.duckdb"
 
 
 # ─────────────────────────────────────────────────────────────────────────────

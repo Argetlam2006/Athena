@@ -15,18 +15,15 @@ All tests use pytest's tmp_path fixture — no files are written to data/raw/.
 from __future__ import annotations
 
 import json
-import urllib.error
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
 from backend.ingestion.load_data import DownloadSummary, StatsBombDownloader
 from backend.ingestion.manifest import (
-    CompetitionRecord,
     DownloadManifest,
     ManifestManager,
-    _now,
 )
 from backend.ingestion.validator import (
     validate_competitions_file,
@@ -36,7 +33,6 @@ from backend.ingestion.validator import (
     validate_matches_file,
     validate_raw_directory,
 )
-
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Fixtures — minimal valid StatsBomb-format JSON
@@ -327,7 +323,9 @@ class TestStatsBombDownloaderFileOps:
     _fetch_json is patched to return fixture data immediately.
     """
 
-    def _make_downloader(self, tmp_path: Path, force: bool = False) -> StatsBombDownloader:
+    def _make_downloader(
+        self, tmp_path: Path, force: bool = False
+    ) -> StatsBombDownloader:
         return StatsBombDownloader(raw_dir=tmp_path, delay_s=0.0, force=force)
 
     def test_download_competitions_saves_json(
@@ -470,8 +468,8 @@ class TestDownloadSummary:
         s = DownloadSummary(mode="sample")
         lines = s.report_lines()
         assert isinstance(lines, list)
-        assert all(isinstance(l, str) for l in lines)
-        assert any("sample" in l for l in lines)
+        assert all(isinstance(line, str) for line in lines)
+        assert any("sample" in line for line in lines)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -573,7 +571,9 @@ class TestValidateMatchesFile:
         assert not result.is_valid
         assert any("negative" in e for e in result.errors)
 
-    def test_duplicate_match_id_fails(self, tmp_path: Path, matches_json: list[dict]) -> None:
+    def test_duplicate_match_id_fails(
+        self, tmp_path: Path, matches_json: list[dict]
+    ) -> None:
         # Duplicate first match
         data = matches_json + [matches_json[0]]
         path = self._write_matches(tmp_path, data)
@@ -594,15 +594,15 @@ class TestValidateMatchesFile:
 
 
 class TestValidateEventsFile:
-    def _write_events(self, tmp_path: Path, data: list[dict], match_id: int = 3772064) -> Path:
+    def _write_events(
+        self, tmp_path: Path, data: list[dict], match_id: int = 3772064
+    ) -> Path:
         path = tmp_path / "events" / f"{match_id}.json"
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(data), encoding="utf-8")
         return path
 
-    def test_valid_events_passes(
-        self, tmp_path: Path, events_json: list[dict]
-    ) -> None:
+    def test_valid_events_passes(self, tmp_path: Path, events_json: list[dict]) -> None:
         path = self._write_events(tmp_path, events_json)
         result = validate_events_file(path, 3772064)
         assert result.is_valid
@@ -617,7 +617,9 @@ class TestValidateEventsFile:
         result = validate_events_file(path, 3772064)
         assert not result.is_valid
 
-    def test_negative_minute_fails(self, tmp_path: Path, events_json: list[dict]) -> None:
+    def test_negative_minute_fails(
+        self, tmp_path: Path, events_json: list[dict]
+    ) -> None:
         bad_event = dict(events_json[0])
         bad_event["minute"] = -1
         path = self._write_events(tmp_path, [bad_event])
@@ -657,7 +659,9 @@ class TestValidateEventsFile:
 
 
 class TestValidateLineupsFile:
-    def _write_lineups(self, tmp_path: Path, data: list[dict], match_id: int = 3772064) -> Path:
+    def _write_lineups(
+        self, tmp_path: Path, data: list[dict], match_id: int = 3772064
+    ) -> Path:
         path = tmp_path / "lineups" / f"{match_id}.json"
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(data), encoding="utf-8")
@@ -690,7 +694,9 @@ class TestValidateLineupsFile:
         result = validate_lineups_file(path, 3772064)
         assert not result.is_valid
 
-    def test_missing_team_id_fails(self, tmp_path: Path, lineups_json: list[dict]) -> None:
+    def test_missing_team_id_fails(
+        self, tmp_path: Path, lineups_json: list[dict]
+    ) -> None:
         bad = [
             {"team_name": "Barcelona", "lineup": []},  # missing team_id
             lineups_json[1],
@@ -758,9 +764,7 @@ class TestValidateManifestConsistency:
         assert not result.is_valid
         assert any("events/3772064.json" in e for e in result.errors)
 
-    def test_fails_when_matches_file_missing(
-        self, tmp_path: Path
-    ) -> None:
+    def test_fails_when_matches_file_missing(self, tmp_path: Path) -> None:
         manager = ManifestManager(tmp_path)
         manifest = DownloadManifest(mode="sample")
         manifest.record_competition(11, "La Liga", 90, "2020/2021", [])
@@ -784,9 +788,7 @@ class TestValidateRawDirectory:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(data), encoding="utf-8")
 
-    def test_returns_no_data_warning_for_empty_directory(
-        self, tmp_path: Path
-    ) -> None:
+    def test_returns_no_data_warning_for_empty_directory(self, tmp_path: Path) -> None:
         results = validate_raw_directory(tmp_path)
         # Should have at least one result
         assert len(results) > 0

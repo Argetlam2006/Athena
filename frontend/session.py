@@ -6,6 +6,7 @@ to the ApplicationState.
 """
 
 import streamlit as st
+
 from frontend.state import ApplicationState
 
 

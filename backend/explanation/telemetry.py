@@ -4,35 +4,37 @@ backend/explanation/telemetry.py — Telemetry for the Explanation Layer.
 
 import logging
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import UTC, datetime
 
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class ExplanationTelemetry:
     """Records metrics for an explanation generation request."""
+
     provider: str
     model: str
     prompt_version: str
-    
+
     context_size_bytes: int
-    
+
     latency_ms: float
     streaming_duration_ms: float
-    
+
     tokens_prompt: int
     tokens_completion: int
-    
+
     status: str  # "success", "error", "timeout"
     error_message: str | None = None
     retries: int = 0
-    
+
     timestamp: str = ""
-    
+
     def __post_init__(self):
         if not self.timestamp:
-            self.timestamp = datetime.utcnow().isoformat() + "Z"
-            
+            self.timestamp = datetime.now(UTC).isoformat().replace("+00:00", "Z")
+
     @property
     def tokens_per_second(self) -> float:
         if self.streaming_duration_ms <= 0:

@@ -13,7 +13,6 @@ from __future__ import annotations
 
 from pydantic import BaseModel, Field
 
-
 # ─────────────────────────────────────────────────────────────────────────────
 # Request models
 # ─────────────────────────────────────────────────────────────────────────────
@@ -25,7 +24,9 @@ class PlayerSearchRequest(BaseModel):
     query: str = Field(..., min_length=2, description="Player name or partial name")
     competition: str | None = Field(None, description="Filter by competition name")
     season: str | None = Field(None, description="Filter by season")
-    position: str | None = Field(None, description="Filter by position group code (e.g. CM, ST)")
+    position: str | None = Field(
+        None, description="Filter by position group code (e.g. CM, ST)"
+    )
 
 
 class RecruitmentSearchRequest(BaseModel):
@@ -57,8 +58,12 @@ class AthenaQueryRequest(BaseModel):
     """Request to Ask Athena a question."""
 
     question: str = Field(..., min_length=5, max_length=1000)
-    context_player_id: int | None = Field(None, description="Player context for the question")
-    context_team_name: str | None = Field(None, description="Team context for the question")
+    context_player_id: int | None = Field(
+        None, description="Player context for the question"
+    )
+    context_team_name: str | None = Field(
+        None, description="Team context for the question"
+    )
 
 
 # ─────────────────────────────────────────────────────────────────────────────

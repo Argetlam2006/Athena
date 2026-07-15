@@ -78,7 +78,7 @@ class DownloadManifest:
     """
 
     version: str = MANIFEST_VERSION
-    mode: str = "unknown"           # "sample" | "competition" | "full"
+    mode: str = "unknown"  # "sample" | "competition" | "full"
     created_at: str = field(default_factory=lambda: _now())
     updated_at: str = field(default_factory=lambda: _now())
     competitions: list[CompetitionRecord] = field(default_factory=list)
@@ -140,7 +140,8 @@ class DownloadManifest:
         """Record that a competition+season has been downloaded."""
         # Replace existing record if present
         self.competitions = [
-            c for c in self.competitions
+            c
+            for c in self.competitions
             if not (c.competition_id == competition_id and c.season_id == season_id)
         ]
         self.competitions.append(
@@ -238,7 +239,7 @@ class ManifestManager:
             with open(self.manifest_path, encoding="utf-8") as f:
                 data = json.load(f)
             return DownloadManifest.from_dict(data)
-        except (json.JSONDecodeError, KeyError) as exc:
+        except (json.JSONDecodeError, KeyError):
             # Manifest is corrupted — start fresh rather than abort
             return DownloadManifest()
 

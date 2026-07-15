@@ -7,7 +7,6 @@ Defines the dynamic workspace navigation structure for the Athena frontend.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
 
 
 @dataclass
@@ -63,7 +62,8 @@ WORKSPACES: list[WorkspaceConfig] = [
     ),
 ]
 
-def get_workspace_by_id(workspace_id: str) -> Optional[WorkspaceConfig]:
+
+def get_workspace_by_id(workspace_id: str) -> WorkspaceConfig | None:
     for w in WORKSPACES:
         if w.id == workspace_id:
             return w

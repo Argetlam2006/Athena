@@ -15,13 +15,12 @@ import pandas as pd
 import pytest
 
 from backend.ingestion.validator import (
+    generate_validation_report,
     validate_competitions,
     validate_events,
     validate_matches,
-    generate_validation_report,
 )
 from shared.schemas import ValidationResult
-
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Fixtures — minimal valid DataFrames
@@ -107,7 +106,9 @@ def valid_events_df() -> pd.DataFrame:
 class TestValidateCompetitions:
     """Tests for competition dataset validation."""
 
-    def test_valid_competitions_passes(self, valid_competitions_df: pd.DataFrame) -> None:
+    def test_valid_competitions_passes(
+        self, valid_competitions_df: pd.DataFrame
+    ) -> None:
         """A clean competitions DataFrame should produce no errors."""
         result = validate_competitions(valid_competitions_df)
         assert result.is_valid, f"Expected valid but got errors: {result.errors}"
@@ -117,7 +118,13 @@ class TestValidateCompetitions:
     def test_missing_required_column_fails(self) -> None:
         """A DataFrame missing a required column should fail."""
         df = pd.DataFrame(
-            [{"competition_name": "La Liga", "season_id": 90, "season_name": "2020/2021"}]
+            [
+                {
+                    "competition_name": "La Liga",
+                    "season_id": 90,
+                    "season_name": "2020/2021",
+                }
+            ]
         )  # missing competition_id
         result = validate_competitions(df)
         assert not result.is_valid
@@ -199,9 +206,7 @@ class TestValidateMatches:
 
     def test_null_match_id_fails(self) -> None:
         """A match with null match_id should be flagged as invalid."""
-        df = pd.DataFrame(
-            [{"match_id": None, "home_score": 1, "away_score": 0}]
-        )
+        df = pd.DataFrame([{"match_id": None, "home_score": 1, "away_score": 0}])
         result = validate_matches(df)
         assert result.invalid_rows > 0
 

@@ -103,7 +103,7 @@ CAPABILITY_METRIC_WEIGHTS: dict[str, Any] = {
             "goal_assists_p90": 0.25,
             "through_balls_p90": 0.15,
             "crosses_p90": 0.25,
-        }
+        },
     },
     "ball_security": {
         "pass_accuracy_pct": 0.50,
@@ -113,7 +113,7 @@ CAPABILITY_METRIC_WEIGHTS: dict[str, Any] = {
     },
     "press_resistance": {
         "pressure_pct": 0.50,
-        "events_under_pressure_p90": 0.50, # Simplified proxy for V1 since pass accuracy proxy was rejected
+        "events_under_pressure_p90": 0.50,  # Simplified proxy for V1 since pass accuracy proxy was rejected
     },
     "defensive_activity": {
         "default": {
@@ -130,7 +130,7 @@ CAPABILITY_METRIC_WEIGHTS: dict[str, Any] = {
             "pressures_p90": 0.55,
             "recoveries_p90": 0.35,
             "clearances_p90": 0.10,
-        }
+        },
     },
     "attacking_threat": {
         "npxg_p90": 0.35,
@@ -148,7 +148,7 @@ CAPABILITY_METRIC_WEIGHTS: dict[str, Any] = {
         "positions_played_count": 0.25,
         "capability_breadth": 0.40,
         "phase_balance": 0.35,
-    }
+    },
 }
 
 # The weights to combine capabilities into the Overall Profile.
@@ -182,5 +182,5 @@ POSITION_GROUP_WEIGHTS: dict[str, dict[str, float]] = {
         "attacking_threat": 0.05,
         "physical_availability": 0.13,
         "tactical_versatility": 0.08,
-    }
+    },
 }

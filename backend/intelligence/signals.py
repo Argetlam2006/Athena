@@ -10,24 +10,26 @@ from __future__ import annotations
 from shared.schemas import PlayerProfile
 
 
-def generate_decision_signals(profile: PlayerProfile, normalized_metrics: dict[str, float]) -> list[str]:
+def generate_decision_signals(
+    profile: PlayerProfile, normalized_metrics: dict[str, float]
+) -> list[str]:
     """
     Evaluate all decision signal rules against a PlayerProfile.
     Returns a list of signal IDs that evaluated to True.
     """
     signals = []
-    
+
     # Helper for capability scores
     def cap_score(name: str) -> float:
         if not profile.capability_profile:
             return 0.0
         cap = getattr(profile.capability_profile, name)
         return cap.score if cap else 0.0
-        
+
     # Helper for normalized metrics
     def norm(metric: str) -> float:
         return normalized_metrics.get(metric, 0.0)
-        
+
     # Helper for raw metrics
     def raw(metric: str) -> float:
         if not profile.feature_vector:
@@ -51,7 +53,11 @@ def generate_decision_signals(profile: PlayerProfile, normalized_metrics: dict[s
     # Progression
     if cap_score("ball_progression") >= 85:
         signals.append("elite_ball_progressor")
-    if cap_score("ball_progression") >= 75 and cap_score("chance_creation") >= 60 and profile.position_group in ["RB", "LB", "Defender"]:
+    if (
+        cap_score("ball_progression") >= 75
+        and cap_score("chance_creation") >= 60
+        and profile.position_group in ["RB", "LB", "Defender"]
+    ):
         signals.append("progressive_fullback")
     if norm("progressive_passes_p90") >= 80:
         signals.append("line_breaking_passer")
@@ -79,14 +85,18 @@ def generate_decision_signals(profile: PlayerProfile, normalized_metrics: dict[s
         signals.append("tactically_versatile")
     if cap_score("ball_progression") >= 70 and cap_score("defensive_activity") >= 70:
         signals.append("box_to_box_profile")
-        
+
     scores = [
-        cap_score("ball_progression"), cap_score("chance_creation"), cap_score("ball_security"),
-        cap_score("press_resistance"), cap_score("defensive_activity"), cap_score("attacking_threat")
+        cap_score("ball_progression"),
+        cap_score("chance_creation"),
+        cap_score("ball_security"),
+        cap_score("press_resistance"),
+        cap_score("defensive_activity"),
+        cap_score("attacking_threat"),
     ]
     if all(s >= 60 for s in scores):
         signals.append("well_rounded")
-        
+
     if cap_score("physical_availability") >= 80:
         signals.append("low_availability_risk")
     if raw("matches_played") < 5:

@@ -50,9 +50,7 @@ ROOT_DIR = Path(__file__).resolve().parents[2]
 RAW_DIR = ROOT_DIR / "data" / "raw"
 
 #: StatsBomb Open Data raw GitHub URL. Every file is fetched from here.
-STATSBOMB_BASE_URL = (
-    "https://raw.githubusercontent.com/statsbomb/open-data/master/data"
-)
+STATSBOMB_BASE_URL = "https://raw.githubusercontent.com/statsbomb/open-data/master/data"
 
 #: Polite inter-request delay in seconds (default). Prevents hammering GitHub CDN.
 DEFAULT_DELAY_S: float = 0.4
@@ -164,7 +162,9 @@ class StatsBombDownloader:
             try:
                 req = urllib.request.Request(
                     url,
-                    headers={"User-Agent": "Athena/1.0 (football-intelligence; portfolio)"},
+                    headers={
+                        "User-Agent": "Athena/1.0 (football-intelligence; portfolio)"
+                    },
                 )
                 with urllib.request.urlopen(req, timeout=30) as resp:
                     return json.loads(resp.read().decode("utf-8"))
@@ -175,7 +175,7 @@ class StatsBombDownloader:
             except urllib.error.URLError as exc:
                 last_exc = exc
 
-            wait = self.delay_s * (2 ** attempt)
+            wait = self.delay_s * (2**attempt)
             logger.warning(
                 "download.retry",
                 url=url,
@@ -227,7 +227,11 @@ class StatsBombDownloader:
             (matches_list, was_downloaded)
         """
         dest = self.raw_dir / "matches" / str(competition_id) / f"{season_id}.json"
-        if dest.exists() and not self.force and manifest.has_matches(competition_id, season_id):
+        if (
+            dest.exists()
+            and not self.force
+            and manifest.has_matches(competition_id, season_id)
+        ):
             logger.info(
                 "download.skip",
                 file=f"matches/{competition_id}/{season_id}.json",
@@ -245,9 +249,7 @@ class StatsBombDownloader:
         time.sleep(self.delay_s)
         return data, True
 
-    def download_events(
-        self, match_id: int, manifest: DownloadManifest
-    ) -> bool:
+    def download_events(self, match_id: int, manifest: DownloadManifest) -> bool:
         """
         Download events/{match_id}.json.
 
@@ -269,9 +271,7 @@ class StatsBombDownloader:
         time.sleep(self.delay_s)
         return True
 
-    def download_lineups(
-        self, match_id: int, manifest: DownloadManifest
-    ) -> bool:
+    def download_lineups(self, match_id: int, manifest: DownloadManifest) -> bool:
         """
         Download lineups/{match_id}.json.
 
@@ -387,7 +387,12 @@ class StatsBombDownloader:
         manifest = self._manifest_manager.load()
         manifest.mode = "sample"
 
-        logger.info("pipeline.start", mode="sample", competition_id=competition_id, n_matches=n_matches)
+        logger.info(
+            "pipeline.start",
+            mode="sample",
+            competition_id=competition_id,
+            n_matches=n_matches,
+        )
 
         # Step 1 — competitions
         try:
@@ -399,10 +404,7 @@ class StatsBombDownloader:
             return summary
 
         # Step 2 — find a season for this competition
-        seasons = [
-            c for c in competitions
-            if c.get("competition_id") == competition_id
-        ]
+        seasons = [c for c in competitions if c.get("competition_id") == competition_id]
         if not seasons:
             logger.error(
                 "pipeline.no_seasons",
@@ -428,7 +430,9 @@ class StatsBombDownloader:
 
         # Step 3 — matches
         try:
-            match_list, was_new = self.download_matches(competition_id, season_id, manifest)
+            match_list, was_new = self.download_matches(
+                competition_id, season_id, manifest
+            )
             summary.downloaded_matches += int(was_new)
             summary.skipped_matches += int(not was_new)
         except Exception as exc:
@@ -436,7 +440,9 @@ class StatsBombDownloader:
             return summary
 
         # Step 4 — events and lineups for first n_matches
-        match_ids = self._process_matches(match_list, manifest, summary, n_limit=n_matches)
+        match_ids = self._process_matches(
+            match_list, manifest, summary, n_limit=n_matches
+        )
 
         # Step 5 — update manifest
         manifest.record_competition(
@@ -491,8 +497,12 @@ class StatsBombDownloader:
 
         # Filter seasons for this competition
         seasons = [
-            c for c in competitions
-            if (competition_name is None or c.get("competition_name") == competition_name)
+            c
+            for c in competitions
+            if (
+                competition_name is None
+                or c.get("competition_name") == competition_name
+            )
             and (competition_id is None or c.get("competition_id") == competition_id)
         ]
 
@@ -626,8 +636,11 @@ class StatsBombDownloader:
         print("  StatsBomb Open Data — Available Competitions")
         print("  ─" * 30)
         print(f"  {'ID':>5}  {'Season ID':>9}  {'Competition':<30}  {'Season'}")
-        print(f"  {'─'*5}  {'─'*9}  {'─'*30}  {'─'*15}")
-        for c in sorted(competitions, key=lambda x: (x.get("competition_name", ""), x.get("season_name", ""))):
+        print(f"  {'─' * 5}  {'─' * 9}  {'─' * 30}  {'─' * 15}")
+        for c in sorted(
+            competitions,
+            key=lambda x: (x.get("competition_name", ""), x.get("season_name", "")),
+        ):
             print(
                 f"  {c.get('competition_id', '?'):>5}  "
                 f"{c.get('season_id', '?'):>9}  "

@@ -53,7 +53,7 @@ logger = get_logger(__name__)
 # Paths
 # ─────────────────────────────────────────────────────────────────────────────
 
-ROOT_DIR      = Path(__file__).resolve().parents[2]
+ROOT_DIR = Path(__file__).resolve().parents[2]
 PROCESSED_DIR = ROOT_DIR / "data" / "processed"
 SQL_VIEWS_DIR = ROOT_DIR / "sql" / "views"
 
@@ -90,15 +90,15 @@ class Warehouse:
         processed_dir: str | Path = PROCESSED_DIR,
         _conn: duckdb.DuckDBPyConnection | None = None,
     ) -> None:
-        self.db_path       = Path(db_path)
+        self.db_path = Path(db_path)
         self.processed_dir = Path(processed_dir)
-        self._test_conn    = _conn   # injected for unit tests (in-memory DuckDB)
+        self._test_conn = _conn  # injected for unit tests (in-memory DuckDB)
 
     # ─────────────────────────────────────────────────────────────────────────
     # Lifecycle
     # ─────────────────────────────────────────────────────────────────────────
 
-    def build(self) -> "Warehouse":
+    def build(self) -> Warehouse:
         """
         Initialize the warehouse: register Parquet files and create all
         analytical views. Idempotent — safe to call repeatedly.
@@ -257,10 +257,10 @@ class Warehouse:
             conn = self._open_query_conn()
             views = WarehouseQueries(conn).list_views()
             return {
-                "db_path":       str(self.db_path),
+                "db_path": str(self.db_path),
                 "processed_dir": str(self.processed_dir),
-                "views":         views,
-                "db_exists":     self.db_path.exists(),
+                "views": views,
+                "db_exists": self.db_path.exists(),
             }
         except Exception as exc:
             return {"error": str(exc)}
@@ -284,7 +284,9 @@ Examples:
   make warehouse
         """,
     )
-    parser.add_argument("--info", action="store_true", help="Print warehouse info and exit")
+    parser.add_argument(
+        "--info", action="store_true", help="Print warehouse info and exit"
+    )
     args = parser.parse_args()
 
     wh = Warehouse()

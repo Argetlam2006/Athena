@@ -24,7 +24,6 @@ from backend.etl.normalize import (
     normalize_matches,
 )
 
-
 # ─────────────────────────────────────────────────────────────────────────────
 # Fixtures — minimal valid StatsBomb-format JSON
 # ─────────────────────────────────────────────────────────────────────────────
@@ -80,7 +79,11 @@ def raw_matches() -> list[dict]:
             },
             "home_score": 4,
             "away_score": 0,
-            "stadium": {"id": 4, "name": "Camp Nou", "country": {"id": 214, "name": "Spain"}},
+            "stadium": {
+                "id": 4,
+                "name": "Camp Nou",
+                "country": {"id": 214, "name": "Spain"},
+            },
             "referee": {"id": 123, "name": "Gil Manzano, Juan Martínez"},
             "match_status": "available",
             "metadata": {"data_version": "1.1.0"},
@@ -145,7 +148,7 @@ def raw_events_pass() -> list[dict]:
                 "height": {"id": 1, "name": "Ground Pass"},
                 "end_location": [75.0, 35.0],
                 "type": {"id": 65, "name": "Recovery"},
-                "outcome": None,   # successful pass — no outcome key
+                "outcome": None,  # successful pass — no outcome key
                 "switch": False,
                 "through_ball": False,
                 "shot_assist": False,
@@ -323,8 +326,14 @@ class TestNormalizeCompetitions:
 
     def test_required_columns_present(self, raw_competitions: list[dict]) -> None:
         df = normalize_competitions(raw_competitions)
-        required = {"competition_id", "competition_name", "country_name",
-                    "season_id", "season_name", "competition_gender"}
+        required = {
+            "competition_id",
+            "competition_name",
+            "country_name",
+            "season_id",
+            "season_name",
+            "competition_gender",
+        }
         assert required.issubset(df.columns)
 
     def test_competition_id_is_nullable_int(self, raw_competitions: list[dict]) -> None:
@@ -366,9 +375,16 @@ class TestNormalizeMatches:
     def test_required_columns_present(self, raw_matches: list[dict]) -> None:
         df = normalize_matches(raw_matches)
         required = {
-            "match_id", "match_date", "competition_id", "season_id",
-            "home_team_id", "home_team_name", "away_team_id", "away_team_name",
-            "home_score", "away_score",
+            "match_id",
+            "match_date",
+            "competition_id",
+            "season_id",
+            "home_team_id",
+            "home_team_name",
+            "away_team_id",
+            "away_team_name",
+            "home_score",
+            "away_score",
         }
         assert required.issubset(df.columns)
 
@@ -394,17 +410,26 @@ class TestNormalizeMatches:
         """Match without a stadium should have null stadium_name."""
         df = normalize_matches(raw_matches)
         row = df[df["match_id"] == 3772065].iloc[0]
-        assert row["stadium_name"] is None or (isinstance(row["stadium_name"], float) and math.isnan(row["stadium_name"]))
+        assert row["stadium_name"] is None or (
+            isinstance(row["stadium_name"], float) and math.isnan(row["stadium_name"])
+        )
 
     def test_match_date_is_python_date(self, raw_matches: list[dict]) -> None:
         import datetime
+
         df = normalize_matches(raw_matches)
         row = df[df["match_id"] == 3772064].iloc[0]
         assert isinstance(row["match_date"], datetime.date)
 
     def test_id_columns_are_nullable_int(self, raw_matches: list[dict]) -> None:
         df = normalize_matches(raw_matches)
-        for col in ["match_id", "competition_id", "season_id", "home_team_id", "away_team_id"]:
+        for col in [
+            "match_id",
+            "competition_id",
+            "season_id",
+            "home_team_id",
+            "away_team_id",
+        ]:
             assert df[col].dtype == pd.Int64Dtype(), f"Column {col!r} should be Int64"
 
     def test_empty_input_returns_empty_dataframe(self) -> None:
@@ -431,16 +456,33 @@ class TestNormalizeEvents:
     def test_core_columns_present(self, raw_events_pass: list[dict]) -> None:
         df = normalize_events(raw_events_pass, self.MATCH_ID)
         required = {
-            "event_id", "match_id", "index", "period", "minute", "second",
-            "type_id", "type_name", "team_id", "team_name",
-            "location_x", "location_y", "under_pressure",
+            "event_id",
+            "match_id",
+            "index",
+            "period",
+            "minute",
+            "second",
+            "type_id",
+            "type_name",
+            "team_id",
+            "team_name",
+            "location_x",
+            "location_y",
+            "under_pressure",
         }
         assert required.issubset(df.columns)
 
     def test_pass_columns_present(self, raw_events_pass: list[dict]) -> None:
         df = normalize_events(raw_events_pass, self.MATCH_ID)
-        pass_cols = {"pass_length", "pass_angle", "pass_end_x", "pass_end_y",
-                     "pass_recipient_id", "pass_outcome", "pass_cross"}
+        pass_cols = {
+            "pass_length",
+            "pass_angle",
+            "pass_end_x",
+            "pass_end_y",
+            "pass_recipient_id",
+            "pass_outcome",
+            "pass_cross",
+        }
         assert pass_cols.issubset(df.columns)
 
     def test_shot_columns_present(self, raw_events_pass: list[dict]) -> None:
@@ -457,7 +499,9 @@ class TestNormalizeEvents:
         assert float(pass_row["location_y"]) == pytest.approx(40.5, abs=0.1)
         assert float(pass_row["pass_end_x"]) == pytest.approx(75.0, abs=0.1)
 
-    def test_non_pass_event_has_null_pass_columns(self, raw_events_pass: list[dict]) -> None:
+    def test_non_pass_event_has_null_pass_columns(
+        self, raw_events_pass: list[dict]
+    ) -> None:
         """Starting XI event must have null pass columns — not carry-over from previous row."""
         df = normalize_events(raw_events_pass, self.MATCH_ID)
         xi_row = df[df["type_name"] == "Starting XI"].iloc[0]
@@ -480,7 +524,9 @@ class TestNormalizeEvents:
         df = normalize_events(raw_events_pass, self.MATCH_ID)
         assert df["under_pressure"].dtype == bool
 
-    def test_under_pressure_none_becomes_false(self, raw_events_pass: list[dict]) -> None:
+    def test_under_pressure_none_becomes_false(
+        self, raw_events_pass: list[dict]
+    ) -> None:
         """Null under_pressure in source should normalize to False."""
         df = normalize_events(raw_events_pass, self.MATCH_ID)
         xi_row = df[df["type_name"] == "Starting XI"].iloc[0]
@@ -521,10 +567,17 @@ class TestNormalizeLineups:
     def test_required_columns_present(self, raw_lineups: list[dict]) -> None:
         df = normalize_lineups(raw_lineups, self.MATCH_ID)
         required = {
-            "match_id", "team_id", "team_name",
-            "player_id", "player_name", "jersey_number",
-            "height_cm", "weight_kg", "country_name",
-            "starting_position", "starting_position_id",
+            "match_id",
+            "team_id",
+            "team_name",
+            "player_id",
+            "player_name",
+            "jersey_number",
+            "height_cm",
+            "weight_kg",
+            "country_name",
+            "starting_position",
+            "starting_position_id",
         }
         assert required.issubset(df.columns)
 
@@ -547,7 +600,13 @@ class TestNormalizeLineups:
 
     def test_id_columns_are_nullable_int(self, raw_lineups: list[dict]) -> None:
         df = normalize_lineups(raw_lineups, self.MATCH_ID)
-        for col in ["player_id", "team_id", "jersey_number", "country_id", "starting_position_id"]:
+        for col in [
+            "player_id",
+            "team_id",
+            "jersey_number",
+            "country_id",
+            "starting_position_id",
+        ]:
             assert df[col].dtype == pd.Int64Dtype(), f"Column {col!r} should be Int64"
 
     def test_height_is_float32(self, raw_lineups: list[dict]) -> None:

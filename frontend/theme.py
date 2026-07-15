@@ -85,6 +85,7 @@ p, li, span {
 </style>
 """
 
+
 def load_theme():
     """Injects the Athena enterprise theme CSS into the Streamlit app."""
     st.markdown(ATHENA_CSS, unsafe_allow_html=True)

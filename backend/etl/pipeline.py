@@ -43,8 +43,8 @@ logger = get_logger(__name__)
 # Paths
 # ─────────────────────────────────────────────────────────────────────────────
 
-ROOT_DIR      = Path(__file__).resolve().parents[2]
-RAW_DIR       = ROOT_DIR / "data" / "raw"
+ROOT_DIR = Path(__file__).resolve().parents[2]
+RAW_DIR = ROOT_DIR / "data" / "raw"
 PROCESSED_DIR = ROOT_DIR / "data" / "processed"
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -57,13 +57,14 @@ class ETLSummary:
     """
     Records what was produced by one ETL run.
     """
+
     competitions_rows: int = 0
-    matches_rows:      int = 0
-    events_rows:       int = 0
-    lineups_rows:      int = 0
+    matches_rows: int = 0
+    events_rows: int = 0
+    lineups_rows: int = 0
     matches_processed: int = 0
-    matches_failed:    int = 0
-    output_dir:        str = ""
+    matches_failed: int = 0
+    output_dir: str = ""
 
     def report_lines(self) -> list[str]:
         return [
@@ -85,6 +86,7 @@ class ETLSummary:
 def _load_json(path: Path) -> list | dict | None:
     """Load JSON from path. Returns None on failure (logged)."""
     import json
+
     try:
         with open(path, encoding="utf-8") as f:
             return json.load(f)
@@ -97,7 +99,12 @@ def _save_parquet(df: pd.DataFrame, path: Path, label: str) -> None:
     """Write DataFrame to Parquet. Creates parent directory if needed."""
     path.parent.mkdir(parents=True, exist_ok=True)
     df.to_parquet(path, index=False, engine="pyarrow")
-    logger.info("etl.save", file=path.name, rows=len(df), size_kb=round(path.stat().st_size / 1024, 1))
+    logger.info(
+        "etl.save",
+        file=path.name,
+        rows=len(df),
+        size_kb=round(path.stat().st_size / 1024, 1),
+    )
     print(f"  ✓ {label:<28} {len(df):>8,} rows  →  {path.name}")
 
 
@@ -146,7 +153,9 @@ def _run_matches(raw_dir: Path, processed_dir: Path) -> pd.DataFrame:
         logger.warning("etl.matches.empty")
         return pd.DataFrame()
 
-    combined = pd.concat(all_frames, ignore_index=True).drop_duplicates(subset=["match_id"])
+    combined = pd.concat(all_frames, ignore_index=True).drop_duplicates(
+        subset=["match_id"]
+    )
     _save_parquet(combined, processed_dir / "matches.parquet", "matches")
     return combined
 
@@ -286,7 +295,9 @@ def run_etl(
         # Fall back to scanning the events directory if manifest is empty
         events_dir = raw_dir / "events"
         if events_dir.exists():
-            match_ids = [int(p.stem) for p in events_dir.glob("*.json") if p.stem.isdigit()]
+            match_ids = [
+                int(p.stem) for p in events_dir.glob("*.json") if p.stem.isdigit()
+            ]
             logger.info("etl.match_ids.from_scan", count=len(match_ids))
         else:
             logger.warning(
@@ -298,7 +309,11 @@ def run_etl(
             print()
             return summary
 
-    logger.info("etl.scope", match_count=len(match_ids), competition_count=len(manifest.competitions))
+    logger.info(
+        "etl.scope",
+        match_count=len(match_ids),
+        competition_count=len(manifest.competitions),
+    )
 
     # Step 1 — Competitions
     if force or not (processed_dir / "competitions.parquet").exists():
@@ -307,7 +322,9 @@ def run_etl(
     else:
         existing = pd.read_parquet(processed_dir / "competitions.parquet")
         summary.competitions_rows = len(existing)
-        print(f"  ↷ competitions.parquet        {summary.competitions_rows:>8,} rows  (skipped, exists)")
+        print(
+            f"  ↷ competitions.parquet        {summary.competitions_rows:>8,} rows  (skipped, exists)"
+        )
 
     # Step 2 — Matches
     if force or not (processed_dir / "matches.parquet").exists():
@@ -316,18 +333,24 @@ def run_etl(
     else:
         existing = pd.read_parquet(processed_dir / "matches.parquet")
         summary.matches_rows = len(existing)
-        print(f"  ↷ matches.parquet             {summary.matches_rows:>8,} rows  (skipped, exists)")
+        print(
+            f"  ↷ matches.parquet             {summary.matches_rows:>8,} rows  (skipped, exists)"
+        )
 
     # Step 3 — Events
     if force or not (processed_dir / "events.parquet").exists():
-        events_df, processed_count, failed_count = _run_events(raw_dir, processed_dir, match_ids)
-        summary.events_rows      = len(events_df)
+        events_df, processed_count, failed_count = _run_events(
+            raw_dir, processed_dir, match_ids
+        )
+        summary.events_rows = len(events_df)
         summary.matches_processed = processed_count
-        summary.matches_failed    = failed_count
+        summary.matches_failed = failed_count
     else:
         existing = pd.read_parquet(processed_dir / "events.parquet")
         summary.events_rows = len(existing)
-        print(f"  ↷ events.parquet              {summary.events_rows:>8,} rows  (skipped, exists)")
+        print(
+            f"  ↷ events.parquet              {summary.events_rows:>8,} rows  (skipped, exists)"
+        )
 
     # Step 4 — Lineups
     if force or not (processed_dir / "lineups.parquet").exists():
@@ -336,7 +359,9 @@ def run_etl(
     else:
         existing = pd.read_parquet(processed_dir / "lineups.parquet")
         summary.lineups_rows = len(existing)
-        print(f"  ↷ lineups.parquet             {summary.lineups_rows:>8,} rows  (skipped, exists)")
+        print(
+            f"  ↷ lineups.parquet             {summary.lineups_rows:>8,} rows  (skipped, exists)"
+        )
 
     # Final summary
     print()

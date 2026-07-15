@@ -20,7 +20,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-
 # ─────────────────────────────────────────────────────────────────────────────
 # Layer 1–2: Raw and Statistical Data
 # ─────────────────────────────────────────────────────────────────────────────
@@ -219,14 +218,28 @@ class CapabilityProfile:
     def as_radar_dict(self) -> dict[str, float]:
         """Return capability scores suitable for radar chart rendering."""
         return {
-            "Ball Progression":     self.ball_progression.score if self.ball_progression else 0.0,
-            "Chance Creation":      self.chance_creation.score if self.chance_creation else 0.0,
-            "Ball Security":        self.ball_security.score if self.ball_security else 0.0,
-            "Press Resistance":     self.press_resistance.score if self.press_resistance else 0.0,
-            "Defensive Activity":   self.defensive_activity.score if self.defensive_activity else 0.0,
-            "Attacking Threat":     self.attacking_threat.score if self.attacking_threat else 0.0,
-            "Physical Availability": self.physical_availability.score if self.physical_availability else 0.0,
-            "Tactical Versatility": self.tactical_versatility.score if self.tactical_versatility else 0.0,
+            "Ball Progression": self.ball_progression.score
+            if self.ball_progression
+            else 0.0,
+            "Chance Creation": self.chance_creation.score
+            if self.chance_creation
+            else 0.0,
+            "Ball Security": self.ball_security.score if self.ball_security else 0.0,
+            "Press Resistance": self.press_resistance.score
+            if self.press_resistance
+            else 0.0,
+            "Defensive Activity": self.defensive_activity.score
+            if self.defensive_activity
+            else 0.0,
+            "Attacking Threat": self.attacking_threat.score
+            if self.attacking_threat
+            else 0.0,
+            "Physical Availability": self.physical_availability.score
+            if self.physical_availability
+            else 0.0,
+            "Tactical Versatility": self.tactical_versatility.score
+            if self.tactical_versatility
+            else 0.0,
         }
 
     def overall_confidence(self) -> float:
@@ -234,9 +247,14 @@ class CapabilityProfile:
         scores = [
             cap.confidence
             for cap in [
-                self.ball_progression, self.chance_creation, self.ball_security,
-                self.press_resistance, self.defensive_activity, self.attacking_threat,
-                self.physical_availability, self.tactical_versatility,
+                self.ball_progression,
+                self.chance_creation,
+                self.ball_security,
+                self.press_resistance,
+                self.defensive_activity,
+                self.attacking_threat,
+                self.physical_availability,
+                self.tactical_versatility,
             ]
             if cap is not None
         ]
@@ -287,6 +305,7 @@ class PlayerProfile:
     def is_analytically_sufficient(self) -> bool:
         """True if player has enough minutes for reliable analytics."""
         from shared.constants import MIN_MINUTES_THRESHOLD
+
         return self.minutes_played >= MIN_MINUTES_THRESHOLD
 
 
@@ -331,14 +350,14 @@ class TeamProfile:
     def as_radar_dict(self) -> dict[str, float]:
         """Return average capability scores for radar chart rendering."""
         return {
-            "Ball Progression":      self.avg_ball_progression,
-            "Chance Creation":       self.avg_chance_creation,
-            "Ball Security":         self.avg_ball_security,
-            "Press Resistance":      self.avg_press_resistance,
-            "Defensive Activity":    self.avg_defensive_activity,
-            "Attacking Threat":      self.avg_attacking_threat,
+            "Ball Progression": self.avg_ball_progression,
+            "Chance Creation": self.avg_chance_creation,
+            "Ball Security": self.avg_ball_security,
+            "Press Resistance": self.avg_press_resistance,
+            "Defensive Activity": self.avg_defensive_activity,
+            "Attacking Threat": self.avg_attacking_threat,
             "Physical Availability": self.avg_physical_availability,
-            "Tactical Versatility":  self.avg_tactical_versatility,
+            "Tactical Versatility": self.avg_tactical_versatility,
         }
 
 
@@ -352,6 +371,7 @@ class RecruitmentCriteria:
     """
     Strongly typed criteria for finding and ranking recruitment candidates.
     """
+
     position: str | None = None
     min_minutes: float = 0.0
     tactical_style: str | None = None
@@ -368,6 +388,7 @@ class RecruitmentCandidate:
 
     Self-contained for the AI Explanation Layer.
     """
+
     player: PlayerProfile
     fit_score: float = 0.0
     rank: int = 0
@@ -377,7 +398,7 @@ class RecruitmentCandidate:
     strengths: list[str] = field(default_factory=list)
     trade_offs: list[str] = field(default_factory=list)
     confidence: str = "medium"
-    
+
     # Traceability context
     explanation_context: dict[str, Any] = field(default_factory=dict)
 
@@ -387,8 +408,9 @@ class ComparisonResult:
     """
     Side-by-side comparison of two or more players.
     """
+
     players: list[PlayerProfile]
-    
+
     shared_strengths: list[str] = field(default_factory=list)
     key_differences: list[str] = field(default_factory=list)
     capability_comparison: dict[str, dict[str, float]] = field(default_factory=dict)

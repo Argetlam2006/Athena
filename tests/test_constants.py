@@ -7,15 +7,14 @@ incorrectly, these tests catch it before the change breaks downstream modules.
 
 from __future__ import annotations
 
-import pytest
-
-from shared.config import (
+from shared.config.capabilities import (
     CAPABILITIES,
     CAPABILITY_DESCRIPTIONS,
     CAPABILITY_DISPLAY_NAMES,
     CAPABILITY_METRIC_MAP,
     CAPABILITY_METRIC_WEIGHTS,
 )
+from shared.config.navigation import WORKSPACES
 
 
 class TestCapabilityConstants:
@@ -33,7 +32,9 @@ class TestCapabilityConstants:
     }
 
     def test_exactly_eight_capabilities(self) -> None:
-        assert len(CAPABILITIES) == 8, f"Expected 8 capabilities, got {len(CAPABILITIES)}"
+        assert len(CAPABILITIES) == 8, (
+            f"Expected 8 capabilities, got {len(CAPABILITIES)}"
+        )
 
     def test_tactical_versatility_present(self) -> None:
         """Tactical Versatility replaces Financial Value — verify it exists."""
@@ -86,8 +87,6 @@ class TestCapabilityConstants:
         """The exact set of capabilities must match the specification."""
         assert set(CAPABILITIES) == self.EXPECTED_CAPABILITIES
 
-
-from shared.config.navigation import WORKSPACES
 
 class TestWorkspaceConstants:
     """Verify the 5 workspace definitions."""

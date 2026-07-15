@@ -6,8 +6,8 @@ This package replaces the monolithic shared/constants.py for domain-specific con
 
 from shared.config.capabilities import (
     CAPABILITIES,
-    CAPABILITY_DISPLAY_NAMES,
     CAPABILITY_DESCRIPTIONS,
+    CAPABILITY_DISPLAY_NAMES,
     CAPABILITY_METRIC_MAP,
     CAPABILITY_METRIC_WEIGHTS,
     POSITION_GROUP_WEIGHTS,

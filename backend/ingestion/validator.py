@@ -100,9 +100,7 @@ def _load_json(path: Path) -> tuple[list | dict | None, str | None]:
         return None, f"File read error: {exc}"
 
 
-def _check_required_keys(
-    record: dict, required: set[str], label: str
-) -> list[str]:
+def _check_required_keys(record: dict, required: set[str], label: str) -> list[str]:
     """Return list of error strings for any missing required keys."""
     missing = required - record.keys()
     if missing:
@@ -156,7 +154,9 @@ def validate_competitions_file(raw_dir: Path = RAW_DIR) -> ValidationResult:
     seen_pairs: set[tuple] = set()
     for i, entry in enumerate(data):
         if not isinstance(entry, dict):
-            result.errors.append(f"Entry {i}: expected object, got {type(entry).__name__}")
+            result.errors.append(
+                f"Entry {i}: expected object, got {type(entry).__name__}"
+            )
             result.invalid_rows += 1
             continue
 
@@ -240,9 +240,7 @@ def validate_matches_file(
         for score_key in ("home_score", "away_score"):
             score = match.get(score_key)
             if isinstance(score, (int, float)) and score < 0:
-                result.errors.append(
-                    f"Match {mid}: {score_key} is negative ({score})"
-                )
+                result.errors.append(f"Match {mid}: {score_key} is negative ({score})")
                 result.invalid_rows += 1
 
     result.valid_rows = max(0, result.total_rows - result.invalid_rows)
@@ -422,9 +420,7 @@ def validate_manifest_consistency(raw_dir: Path = RAW_DIR) -> ValidationResult:
     # Check competitions — match files
     for comp in manifest.competitions:
         match_path = (
-            raw_dir / "matches"
-            / str(comp.competition_id)
-            / f"{comp.season_id}.json"
+            raw_dir / "matches" / str(comp.competition_id) / f"{comp.season_id}.json"
         )
         if not match_path.exists():
             result.errors.append(
@@ -550,7 +546,9 @@ def validate_raw_directory(raw_dir: Path = RAW_DIR) -> list[ValidationResult]:
                     total_rows=len(event_files) - MAX_EVENTS_SAMPLE,
                     valid_rows=len(event_files) - MAX_EVENTS_SAMPLE,
                     invalid_rows=0,
-                    warnings=[f"Sampled {MAX_EVENTS_SAMPLE}/{len(event_files)} event files"],
+                    warnings=[
+                        f"Sampled {MAX_EVENTS_SAMPLE}/{len(event_files)} event files"
+                    ],
                 )
             )
     else:
@@ -695,7 +693,7 @@ REQUIRED_EVENT_COLS: list[str] = [
 ]
 
 
-def validate_competitions(df: "pd.DataFrame") -> ValidationResult:
+def validate_competitions(df: pd.DataFrame) -> ValidationResult:
     """Validate the competitions DataFrame (ETL layer)."""
     result = ValidationResult(
         dataset="competitions",
@@ -718,14 +716,16 @@ def validate_competitions(df: "pd.DataFrame") -> ValidationResult:
 
     duplicates = int(df.duplicated(subset=["competition_id", "season_id"]).sum())
     if duplicates:
-        result.warnings.append(f"{duplicates} duplicate (competition_id, season_id) rows")
+        result.warnings.append(
+            f"{duplicates} duplicate (competition_id, season_id) rows"
+        )
 
     result.valid_rows = max(0, len(df) - result.invalid_rows)
     return result
 
 
 def validate_matches(
-    df: "pd.DataFrame", source_label: str = "matches"
+    df: pd.DataFrame, source_label: str = "matches"
 ) -> ValidationResult:
     """Validate a matches DataFrame (ETL layer)."""
     result = ValidationResult(
@@ -763,9 +763,7 @@ def validate_matches(
     return result
 
 
-def validate_events(
-    df: "pd.DataFrame", match_id: int
-) -> ValidationResult:
+def validate_events(df: pd.DataFrame, match_id: int) -> ValidationResult:
     """Validate events DataFrame for a single match (ETL layer)."""
     result = ValidationResult(
         dataset=f"events_match_{match_id}",
