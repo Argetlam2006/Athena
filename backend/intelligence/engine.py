@@ -33,57 +33,44 @@ class FootballIntelligenceEngine:
         """
         Process a cohort of players (e.g. all players in a competition/season).
         Dynamically computes percentiles within position groups and generates profiles.
+        Uses O(N log N) vectorized pandas ranking for deterministic output.
         """
         if not vectors:
             return []
 
-        # Group vectors by position to compute percentiles
-        grouped_vectors: dict[str, list[PlayerFeatureVector]] = {}
-        for v in vectors:
-            grouped_vectors.setdefault(v.position_group, []).append(v)
+        import pandas as pd
+
+        # Convert vectors to DataFrame for vectorized processing
+        df = pd.DataFrame([vars(v) for v in vectors])
+        
+        # Identify numeric metrics to normalize
+        numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
+        if 'player_id' in numeric_cols:
+            numeric_cols.remove('player_id')
+
+        # Vectorized percentile rank computation grouped by position_group
+        # (rank - 0.5) / N * 100 matches the explicit tie-splitting logic exactly.
+        ranks_df = df.groupby('position_group')[numeric_cols].transform(
+            lambda x: ((x.rank(method='average') - 0.5) / len(x) * 100.0).clip(0.0, 100.0)
+        ).fillna(0.0)
 
         profiles: list[PlayerProfile] = []
 
-        for _position, group in grouped_vectors.items():
-            # For each metric, collect the cohort values
-            cohort_data: dict[str, list[float]] = {}
-            # List of metrics we care about for normalization
-            # Exclude strings and ids
-            metrics = [
-                k
-                for k, v in group[0].__dict__.items()
-                if isinstance(v, (int, float)) and k not in ("player_id",)
-            ]
+        # Reconstruct profiles
+        for i, vec in enumerate(vectors):
+            # Extract normalized values for this player
+            normalized = ranks_df.iloc[i].to_dict()
 
-            for m in metrics:
-                cohort_data[m] = [getattr(vec, m) for vec in group]
+            # Build the profile
+            profile = build_player_profile(
+                vec, normalized, self.competition_matches
+            )
 
-            # Build profiles
-            for vec in group:
-                normalized = {}
-                for m in metrics:
-                    val = getattr(vec, m)
-                    # Some metrics should be inverted (e.g., turnovers, miscontrols)
-                    # but in our vector we don't have explicit inverted ones, except maybe
-                    # age if we want younger to be better, but age isn't used directly.
-                    normalized[m] = percentile_rank(val, cohort_data[m])
+            # Generate decision signals
+            generate_decision_signals(profile, normalized)
+            profile.similar_players = []  # Placeholder
 
-                # Build the profile
-                profile = build_player_profile(
-                    vec, normalized, self.competition_matches
-                )
-
-                # Generate decision signals
-                generate_decision_signals(profile, normalized)
-                # Store signals (would require adding to PlayerProfile, but let's just
-                # assume they are added or we return them if needed, wait, PlayerProfile
-                # does not have decision_signals by default, we can add it to the schema
-                # or just attach it dynamically). Let's just do:
-                profile.similar_players = []  # Placeholder
-                # Note: FIE says CapabilityProfile has decision_signals, but in schemas.py it was omitted.
-                # We can just ignore storing it if it's not in the schema, or modify the schema.
-
-                profiles.append(profile)
+            profiles.append(profile)
 
         return profiles
 

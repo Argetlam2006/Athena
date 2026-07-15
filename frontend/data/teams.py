@@ -5,26 +5,42 @@ Retrieves and caches TeamProfile objects for the UI.
 Delegates to backend services for the frontend shell.
 """
 
+import logging
 import streamlit as st
+import pandas as pd
 
-from backend.intelligence.engine import FootballIntelligenceEngine
-from frontend.data.players import get_all_players
+from backend.intelligence.store import IntelligenceStore
 from shared.schemas import TeamProfile
 
+logger = logging.getLogger(__name__)
 
 @st.cache_data
-def get_all_teams() -> list[TeamProfile]:
-    """Retrieve all teams by dynamically grouping players."""
-    players = get_all_players()
-    engine = FootballIntelligenceEngine()
-    teams = engine.process_all_teams(players)
-    return teams
-
+def get_team_index() -> pd.DataFrame:
+    store = IntelligenceStore()
+    df = store.get_team_index()
+    if df.empty:
+        st.warning("Intelligence Store not found.")
+    return df
 
 @st.cache_data
 def get_team_profile(team_id: int) -> TeamProfile | None:
-    """Retrieve a specific TeamProfile by ID."""
-    for t in get_all_teams():
-        if t.team_id == team_id:
-            return t
-    return None
+    """Retrieve a specific TeamProfile lazily in O(1)."""
+    store = IntelligenceStore()
+    return store.get_team(team_id)
+
+@st.cache_data
+def get_all_teams() -> list[TeamProfile]:
+    import json
+    from backend.intelligence.store import TEAM_PROFILES_PATH, _team_adapter
+    
+    json_path = TEAM_PROFILES_PATH.with_suffix(".json")
+    if not json_path.exists():
+        return []
+        
+    try:
+        with open(json_path, "r") as f:
+            teams = json.load(f)
+        return [_team_adapter.validate_python(t) for t in teams]
+    except Exception as e:
+        logger.error(f"Failed to load teams: {e}")
+        return []

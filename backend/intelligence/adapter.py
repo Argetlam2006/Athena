@@ -41,6 +41,9 @@ def map_player_summary_to_vectors(df: pd.DataFrame) -> list[PlayerFeatureVector]
     vectors = []
 
     # Pre-calculate required columns to avoid KeyErrors and handle defaults
+    # Replace any NULLs (which become NaN/None in pandas) with 0.0 to satisfy schemas
+    df = df.fillna(0.0)
+
     for _, row in df.iterrows():
         # Handle cases where position_played_count might not be in the view
         # We default to 1 if not present.

@@ -6,9 +6,10 @@ Directly reads from and writes to the centralized session state.
 """
 
 import streamlit as st
+import pandas as pd
 
-from frontend.data.players import get_all_players
-from frontend.data.teams import get_all_teams
+from frontend.data.players import get_player_index
+from frontend.data.teams import get_team_index
 from frontend.session import (
     get_state,
     set_active_workspace,
@@ -29,14 +30,7 @@ def render_workspace_navigation() -> None:
 
     for workspace in WORKSPACES:
         if workspace.status == "live":
-            # Determine if this is the active workspace
             is_active = state.active_workspace_id == workspace.id
-
-            # Simple button rendering to switch workspaces
-            # We use a trick: if active, display it differently
-            # For Streamlit, st.button is the primary way to handle sidebar clicks
-
-            # Button key must be unique
             btn_key = f"nav_{workspace.id}"
 
             if is_active:
@@ -58,33 +52,48 @@ def render_context_selectors() -> None:
         unsafe_allow_html=True,
     )
 
-    # Fetch from data layer
-    players = get_all_players()
-    teams = get_all_teams()
+    # 1. Player Search & Selection (Metadata Index)
+    df_players = get_player_index()
+    if not df_players.empty:
+        search_term = st.text_input("Search Player", placeholder="e.g. Rodri")
+        
+        # Filter metadata dynamically using multi-term matching
+        if search_term:
+            terms = search_term.lower().split()
+            mask = pd.Series(True, index=df_players.index)
+            for term in terms:
+                mask &= df_players["normalized_name"].str.contains(term, na=False)
+            matches = df_players[mask].head(50)
+        else:
+            matches = df_players.nlargest(20, "minutes_played")
+            
+        player_options = {"None": None}
+        for _, row in matches.iterrows():
+            player_options[f"{row['player_name']} ({row['team_name']})"] = row['player_id']
+            
+        selected_player_name = st.selectbox(
+            "Select Focus Player",
+            options=list(player_options.keys()),
+            index=0,
+            help="Select a player to focus all workspaces on."
+        )
+        set_selected_player(player_options[selected_player_name])
+    else:
+        st.selectbox("Focus Player", ["Data not loaded"])
 
-    player_options = {"None": None}
-    for p in players:
-        player_options[f"{p.player_name} ({p.team_name})"] = p.player_id
-
+    # 2. Team Selection (Metadata Index)
+    df_teams = get_team_index()
     team_options = {"None": None}
-    for t in teams:
-        team_options[t.team_name] = t.team_id
-
-    # Player Selection
-    selected_player_name = st.selectbox(
-        "Focus Player",
-        options=list(player_options.keys()),
-        index=0,
-        help="Select a player to focus all workspaces on.",
-    )
-    set_selected_player(player_options[selected_player_name])
-
-    # Team Selection
+    if not df_teams.empty:
+        df_teams = df_teams.sort_values("team_name")
+        for _, row in df_teams.iterrows():
+            team_options[row["team_name"]] = row["team_id"]
+            
     selected_team_name = st.selectbox(
         "Focus Team",
         options=list(team_options.keys()),
         index=0,
-        help="Select a team to focus all workspaces on.",
+        help="Select a team to focus all workspaces on."
     )
     set_selected_team(team_options[selected_team_name])
 

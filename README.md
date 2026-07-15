@@ -54,12 +54,21 @@ cd athena
 # 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Download Data and Build Warehouse (May take 20-40 mins initially)
+# 3. Data Generation (First Bootstrap)
 python scripts/bootstrap.py
+```
 
+**What happens during Bootstrap?**
+The first time you run this command, Athena will download the dataset, run ETL, build the warehouse, and generate the Intelligence Store. This heavy analytical processing may take **20-40 minutes**.
+
+However, `scripts/bootstrap.py` is entirely idempotent and safe to rerun. Only changed data will trigger a rebuild.
+
+```bash
 # 4. Launch the application
 streamlit run frontend/app.py
 ```
+
+**Subsequent Launches**: Because heavy computations are handled by the Intelligence Store during bootstrap, running the Streamlit app on subsequent launches is nearly **instantaneous**.
 
 ## Configuration & Real LLM Providers
 
@@ -77,15 +86,25 @@ OPENAI_API_KEY=your_key_here
 
 ## Architecture
 
-Athena follows a strictly decoupled architecture:
+Athena follows a strictly decoupled architecture designed to feel like a commercial analytics platform like Power BI or Tableau. 
 
+**Data Flow Pipeline:**
+```text
+StatsBomb → ETL → Warehouse → Football Intelligence Engine → Intelligence Store → Frontend → Ask Athena
+```
+
+Heavy deterministic analytics execute **only once** during data generation. 
+- **The Intelligence Store**: A set of Parquet files containing mathematically processed Player and Team capability profiles. 
+- **Deterministic**: The Store is rebuilt *only* when the warehouse fingerprint changes.
+- **Excluded from Git**: The generated Intelligence Store is treated exactly like raw JSON or DuckDB data.
+
+### Subsystems
 - **Ingestion & Warehouse**: DuckDB-powered analytics store.
 - **Intelligence Framework**: Feature engineering and mathematical capability generation.
+- **Intelligence Store**: O(1) Parquet storage enabling near-instantaneous frontend loading.
 - **Decision Engine**: Recruitment algorithms, comparisons, and tactical fit scoring.
 - **Explanation Platform**: Provider-agnostic Prompt Builders, Context Validators, and Conversation Managers.
-- **Frontend**: A highly modular Streamlit application shell featuring a contextual sidebar.
-
-*(See the `docs/` folder for detailed Architecture, Intelligence, and Data Flow diagrams).*
+- **Frontend**: A highly modular Streamlit application shell operating purely as a thin presentation layer.
 
 ## Tech Stack
 - **Data**: DuckDB, Pandas, NumPy

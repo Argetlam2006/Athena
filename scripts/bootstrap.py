@@ -60,6 +60,12 @@ def main() -> None:
         "Step 3: Building DuckDB Analytics Warehouse"
     )
 
+    # Step 4: Intelligence Store Build (Skips if warehouse is unchanged)
+    run_command(
+        ["-m", "backend.intelligence.build_store"],
+        "Step 4: Building Intelligence Store"
+    )
+
     print("=" * 60)
     print("  Bootstrap Successful!")
     print("  Athena is now fully initialized with real data.")
