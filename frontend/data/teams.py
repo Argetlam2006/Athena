@@ -24,9 +24,8 @@ def _get_mock_teams() -> list[TeamProfile]:
         competition="Ligue 1",
         season="2023",
         squad_size=len(psg_players),
-        average_age=29.5,
+        avg_age=29.5,
         style_label="Direct and Progressive",
-        capability_profile=None,  # Mocking requires aggregation, we leave this None for empty state tests
     )
 
     t2 = TeamProfile(
@@ -35,9 +34,8 @@ def _get_mock_teams() -> list[TeamProfile]:
         competition="Premier League",
         season="2023",
         squad_size=len(mci_players),
-        average_age=24.0,
+        avg_age=24.0,
         style_label="Possession-Dominant",
-        capability_profile=None,
     )
 
     return [t1, t2]
