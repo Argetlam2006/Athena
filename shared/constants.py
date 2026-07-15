@@ -115,39 +115,4 @@ AIF_LAYERS: list[str] = [
     "natural_language_intelligence",
 ]
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Workspace names (used in navigation and routing)
-# ─────────────────────────────────────────────────────────────────────────────
-
-WORKSPACES: dict[str, dict] = {
-    "dashboard": {
-        "display": "Dashboard",
-        "icon": "⬡",
-        "question": "What deserves my attention?",
-        "route": "/",
-    },
-    "player_intelligence": {
-        "display": "Player Intelligence",
-        "icon": "◈",
-        "question": "What kind of player is this?",
-        "route": "/player",
-    },
-    "team_intelligence": {
-        "display": "Team Intelligence",
-        "icon": "◉",
-        "question": "How does this team play?",
-        "route": "/team",
-    },
-    "recruitment": {
-        "display": "Recruitment Intelligence",
-        "icon": "◎",
-        "question": "Who should we sign?",
-        "route": "/recruitment",
-    },
-    "ask_athena": {
-        "display": "Ask Athena",
-        "icon": "◇",
-        "question": "Help me understand.",
-        "route": "/ask",
-    },
-}
+# Workspace configurations have been migrated to shared.config.navigation

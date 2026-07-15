@@ -16,7 +16,6 @@ from shared.config import (
     CAPABILITY_METRIC_MAP,
     CAPABILITY_METRIC_WEIGHTS,
 )
-from shared.constants import WORKSPACES
 
 
 class TestCapabilityConstants:
@@ -88,6 +87,8 @@ class TestCapabilityConstants:
         assert set(CAPABILITIES) == self.EXPECTED_CAPABILITIES
 
 
+from shared.config.navigation import WORKSPACES
+
 class TestWorkspaceConstants:
     """Verify the 5 workspace definitions."""
 
@@ -103,10 +104,14 @@ class TestWorkspaceConstants:
         assert len(WORKSPACES) == 5
 
     def test_all_workspaces_present(self) -> None:
-        assert set(WORKSPACES.keys()) == self.EXPECTED_WORKSPACES
+        workspace_ids = {w.id for w in WORKSPACES}
+        assert workspace_ids == self.EXPECTED_WORKSPACES
 
     def test_all_workspaces_have_required_fields(self) -> None:
-        required_fields = {"display", "icon", "question", "route"}
-        for name, config in WORKSPACES.items():
-            missing = required_fields - set(config.keys())
-            assert not missing, f"Workspace {name!r} missing fields: {missing}"
+        for w in WORKSPACES:
+            assert hasattr(w, "id")
+            assert hasattr(w, "name")
+            assert hasattr(w, "icon")
+            assert hasattr(w, "question")
+            assert hasattr(w, "status")
+            assert hasattr(w, "description")
