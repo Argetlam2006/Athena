@@ -278,6 +278,9 @@ class PlayerProfile:
     archetype: str | None = None
     archetype_description: str | None = None
 
+    # Generated decision signals
+    decision_signals: list[str] = field(default_factory=list)
+
     # Similarity results (populated on demand)
     similar_players: list[dict[str, Any]] = field(default_factory=list)
 
@@ -345,35 +348,38 @@ class TeamProfile:
 
 
 @dataclass
+class RecruitmentCriteria:
+    """
+    Strongly typed criteria for finding and ranking recruitment candidates.
+    """
+    position: str | None = None
+    min_minutes: float = 0.0
+    tactical_style: str | None = None
+    required_capabilities: dict[str, float] = field(default_factory=dict)
+    preferred_capabilities: dict[str, float] = field(default_factory=dict)
+    excluded_player_ids: set[int] = field(default_factory=set)
+    max_results: int = 10
+
+
+@dataclass
 class RecruitmentCandidate:
     """
     A ranked recruitment candidate produced by the Decision Engine.
 
-    Every candidate must have:
-      - A composite fitness score
-      - A breakdown of how that score was computed
-      - The evidence supporting it
+    Self-contained for the AI Explanation Layer.
     """
-
-    player_id: int
-    player_name: str
-    position_group: str
-    team_name: str
-    season: str
-    age_years: float
-    minutes_played: float
-
-    # Overall fitness for the specified requirements
+    player: PlayerProfile
     fit_score: float = 0.0
-
-    # Component scores (subset of capabilities relevant to the query)
-    capability_scores: dict[str, float] = field(default_factory=dict)
-
-    # Evidence text for explainability
-    evidence_summary: str = ""
-
-    # Rank within the candidate list
     rank: int = 0
+
+    # Explicit inclusions for explanation
+    decision_signals: list[str] = field(default_factory=list)
+    strengths: list[str] = field(default_factory=list)
+    trade_offs: list[str] = field(default_factory=list)
+    confidence: str = "medium"
+    
+    # Traceability context
+    explanation_context: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -381,16 +387,12 @@ class ComparisonResult:
     """
     Side-by-side comparison of two or more players.
     """
-
     players: list[PlayerProfile]
+    
+    shared_strengths: list[str] = field(default_factory=list)
+    key_differences: list[str] = field(default_factory=list)
     capability_comparison: dict[str, dict[str, float]] = field(default_factory=dict)
-    # capability_comparison structure:
-    # { "ball_progression": {"Player A": 87.0, "Player B": 72.0}, ... }
-
-    winner_by_capability: dict[str, str] = field(default_factory=dict)
-    # { "ball_progression": "Player A", ... }
-
-    summary: str = ""
+    recommendation_summary: str = ""
 
 
 # ─────────────────────────────────────────────────────────────────────────────
