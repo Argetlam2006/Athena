@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  athena:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: athena-app
+    ports:
+      - "8501:8501"
+    environment:
+      - ATHENA_ENV=development
+      - ATHENA_PROVIDER=auto
+      # - OPENAI_API_KEY=${OPENAI_API_KEY}
+      # - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      # - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      # Mount codebase for hot-reloading in dev mode
+      - .:/app
+    restart: unless-stopped

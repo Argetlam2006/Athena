@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2026 Bhaskar Pareek
+Copyright (c) 2024 Athena Contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,21 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-──────────────────────────────────────────────────────────────────────────────
-
-StatsBomb Open Data Notice
-──────────────────────────────────────────────────────────────────────────────
-
-The sample data included in data/sample/ originates from the StatsBomb Open
-Data repository (https://github.com/statsbomb/open-data) and is licensed
-under the Creative Commons Attribution-ShareAlike 4.0 International License
-(CC BY-SA 4.0).
-
-You are free to share and adapt this data provided that:
-  - Appropriate credit is given to StatsBomb
-  - You indicate any changes made
-  - You distribute derivatives under the same license
-
-Full license text: https://creativecommons.org/licenses/by-sa/4.0/
-StatsBomb Open Data: https://github.com/statsbomb/open-data

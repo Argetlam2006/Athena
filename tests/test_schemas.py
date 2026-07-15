@@ -161,7 +161,7 @@ class TestPlayerFeatureVector:
     def test_to_vector_returns_list_of_floats(self) -> None:
         vec = PlayerFeatureVector(
             player_id=1, player_name="Test", season="2020/2021",
-            competition="La Liga", position_group="CM", minutes_played=900.0,
+            competition="La Liga", position_group="CM", minutes_played=900.0, matches_played=10,
         )
         result = vec.to_vector()
         assert isinstance(result, list)
@@ -176,10 +176,10 @@ class TestPlayerFeatureVector:
         """
         vec = PlayerFeatureVector(
             player_id=1, player_name="Test", season="2020/2021",
-            competition="La Liga", position_group="CM", minutes_played=900.0,
+            competition="La Liga", position_group="CM", minutes_played=900.0, matches_played=10,
         )
         result = vec.to_vector()
-        assert len(result) == 36, f"Expected 36 features, got {len(result)}"
+        assert len(result) == 23, f"Expected 23 features, got {len(result)}"
 
 
 class TestTeamProfile:
