@@ -31,7 +31,8 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from shared.constants import CAPABILITIES, CAPABILITY_DISPLAY_NAMES, WORKSPACES  # noqa: E402
+from shared.config import CAPABILITIES, CAPABILITY_DISPLAY_NAMES
+from shared.constants import WORKSPACES  # noqa: E402
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Page configuration
