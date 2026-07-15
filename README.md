@@ -31,6 +31,17 @@ LLMs are prone to hallucinating statistics, especially in highly nuanced domains
 - **Recruitment Intelligence**: Semantic player search utilizing deterministic fit-scoring algorithms.
 - **Ask Athena**: A persistent, context-aware AI assistant capable of streaming intelligent explanations based entirely on validated telemetry.
 
+## Download Football Data
+
+Athena does NOT ship with the StatsBomb dataset because the generated data (several gigabytes of JSON and Parquet files) is intentionally excluded from GitHub to keep the repository lightweight.
+
+However, you only need to run a single command to completely bootstrap the platform. The `scripts/bootstrap.py` script automatically:
+1. Discovers and downloads every available competition, season, and match from the StatsBomb Open Data catalogue.
+2. Runs the ETL pipeline to clean and normalize the JSON into Parquet.
+3. Builds the DuckDB warehouse and creates all analytical views.
+
+**Note:** The first time you run this bootstrap, it downloads and processes the complete StatsBomb Open Data catalogue, which may take **20-40 minutes**. However, the script is fully idempotent. Subsequent runs will safely reuse the local dataset whenever possible, skipping redundant downloads and ETL processing.
+
 ## Quick Start (Zero Config)
 
 Athena is designed to run perfectly out of the box with zero configuration required, thanks to the built-in `DemoProvider`.
@@ -43,7 +54,10 @@ cd athena
 # 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Launch the application
+# 3. Download Data and Build Warehouse (May take 20-40 mins initially)
+python scripts/bootstrap.py
+
+# 4. Launch the application
 streamlit run frontend/app.py
 ```
 
