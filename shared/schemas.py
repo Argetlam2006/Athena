@@ -72,14 +72,11 @@ class MatchRaw:
 @dataclass
 class PlayerFeatureVector:
     """
-    Normalized per-90 features for a player in a given season.
-    Produced by the Analytics Engine.
+    Normalized per-90 and contextual features for a player in a given season.
+    Produced by the Analytics Engine from the DuckDB warehouse output.
 
-    All numeric features are:
-      - normalized to per-90-minute rates (where applicable)
-      - expressed as percentiles within position group (0–100)
-
-    This is the direct input to the Athena Intelligence Framework.
+    These are the exact primitive statistics that feed into the 8 capabilities
+    defined in the Football Intelligence Engine specification.
     """
 
     player_id: int
@@ -88,116 +85,81 @@ class PlayerFeatureVector:
     competition: str
     position_group: str
     minutes_played: float
+    matches_played: int
 
-    # Ball Progression features
-    progressive_passes_per90: float = 0.0
-    progressive_carries_per90: float = 0.0
-    deep_completions_per90: float = 0.0
-    final_third_entries_per90: float = 0.0
-    penalty_area_entries_per90: float = 0.0
+    # Ball Progression (4)
+    progressive_passes_p90: float = 0.0
+    progressive_carries_p90: float = 0.0
+    carry_distance_p90: float = 0.0
+    switches_p90: float = 0.0
 
-    # Chance Creation features
-    key_passes_per90: float = 0.0
-    xa_per90: float = 0.0
-    shot_assists_per90: float = 0.0
-    through_balls_per90: float = 0.0
-    crosses_per90: float = 0.0
+    # Chance Creation (4)
+    shot_assists_p90: float = 0.0
+    goal_assists_p90: float = 0.0
+    through_balls_p90: float = 0.0
+    crosses_p90: float = 0.0
 
-    # Ball Security features
-    pass_completion_pct: float = 0.0
-    turnovers_per90: float = 0.0
-    dispossessions_per90: float = 0.0
-    miscontrols_per90: float = 0.0
-    progressive_pass_accuracy: float = 0.0
-
-    # Press Resistance features
-    successful_dribbles_per90: float = 0.0
+    # Ball Security (4)
+    pass_accuracy_pct: float = 0.0
     dribble_success_pct: float = 0.0
-    carries_into_final_third_per90: float = 0.0
+    passes_p90: float = 0.0
+    avg_pass_length_m: float = 0.0
 
-    # Defensive Activity features
-    pressures_per90: float = 0.0
-    ball_recoveries_per90: float = 0.0
-    interceptions_per90: float = 0.0
-    blocks_per90: float = 0.0
-    counterpressures_per90: float = 0.0
+    # Press Resistance (2)
+    pressure_pct: float = 0.0
+    events_under_pressure_p90: float = 0.0
 
-    # Attacking Threat features
-    xg_per90: float = 0.0
-    touches_in_box_per90: float = 0.0
-    shot_quality_pct: float = 0.0
-    goals_per90: float = 0.0
-    shots_on_target_per90: float = 0.0
+    # Defensive Activity (3)
+    pressures_p90: float = 0.0
+    recoveries_p90: float = 0.0
+    clearances_p90: float = 0.0
 
-    # Physical Availability features
-    matches_started: int = 0
-    availability_pct: float = 0.0
-    age_years: float = 0.0
+    # Attacking Threat (5)
+    npxg_p90: float = 0.0
+    goals_p90: float = 0.0
+    xg_per_shot: float = 0.0
+    shot_accuracy_pct: float = 0.0
+    goals_minus_xg: float = 0.0
 
-    # Tactical Versatility features
+    # Tactical Versatility (1)
     positions_played_count: int = 1
-    primary_position_pct: float = 100.0
-    formation_appearances_count: int = 1
-    performance_consistency_score: float = 0.0
 
     def to_vector(self) -> list[float]:
         """
         Return all numeric features as a flat list for ML computations.
-
-        Vector composition (36 features):
-          Ball Progression (5) + Chance Creation (5) + Ball Security (5)
-          + Press Resistance (3) + Defensive Activity (5) + Attacking Threat (5)
-          + Physical Availability (4) + Tactical Versatility (4) = 36
-
-        Physical Availability raw features (minutes_played, matches_started,
-        availability_pct, age_years) are normalized before similarity computation
-        in the ML layer — they are included here as raw values.
+        Matches the 23 explicit metrics from the FIE spec.
         """
         return [
-            # Ball Progression (5)
-            self.progressive_passes_per90,
-            self.progressive_carries_per90,
-            self.deep_completions_per90,
-            self.final_third_entries_per90,
-            self.penalty_area_entries_per90,
-            # Chance Creation (5)
-            self.key_passes_per90,
-            self.xa_per90,
-            self.shot_assists_per90,
-            self.through_balls_per90,
-            self.crosses_per90,
-            # Ball Security (5)
-            self.pass_completion_pct,
-            self.turnovers_per90,
-            self.dispossessions_per90,
-            self.miscontrols_per90,
-            self.progressive_pass_accuracy,
-            # Press Resistance (3)
-            self.successful_dribbles_per90,
+            # Ball Progression (4)
+            self.progressive_passes_p90,
+            self.progressive_carries_p90,
+            self.carry_distance_p90,
+            self.switches_p90,
+            # Chance Creation (4)
+            self.shot_assists_p90,
+            self.goal_assists_p90,
+            self.through_balls_p90,
+            self.crosses_p90,
+            # Ball Security (4)
+            self.pass_accuracy_pct,
             self.dribble_success_pct,
-            self.carries_into_final_third_per90,
-            # Defensive Activity (5)
-            self.pressures_per90,
-            self.ball_recoveries_per90,
-            self.interceptions_per90,
-            self.blocks_per90,
-            self.counterpressures_per90,
+            self.passes_p90,
+            self.avg_pass_length_m,
+            # Press Resistance (2)
+            self.pressure_pct,
+            self.events_under_pressure_p90,
+            # Defensive Activity (3)
+            self.pressures_p90,
+            self.recoveries_p90,
+            self.clearances_p90,
             # Attacking Threat (5)
-            self.xg_per90,
-            self.touches_in_box_per90,
-            self.shot_quality_pct,
-            self.goals_per90,
-            self.shots_on_target_per90,
-            # Physical Availability (4)
-            self.minutes_played,
-            float(self.matches_started),
-            self.availability_pct,
-            self.age_years,
-            # Tactical Versatility (4)
+            self.npxg_p90,
+            self.goals_p90,
+            self.xg_per_shot,
+            self.shot_accuracy_pct,
+            self.goals_minus_xg,
+            # Contextual (1)
             float(self.positions_played_count),
-            self.primary_position_pct,
-            float(self.formation_appearances_count),
-            self.performance_consistency_score,
         ]
 
 

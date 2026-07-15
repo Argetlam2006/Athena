@@ -110,6 +110,20 @@ dribble_stats AS (
     GROUP  BY match_id, player_id
 ),
 
+-- ─── CTE 4b: defensive statistics per player per match ─────────────────────────
+defensive_stats AS (
+    SELECT
+        match_id,
+        player_id,
+        COUNT(*) FILTER (WHERE type_name = 'Pressure')                       AS pressures,
+        COUNT(*) FILTER (WHERE type_name = 'Ball Recovery')                  AS ball_recoveries,
+        COUNT(*) FILTER (WHERE type_name = 'Clearance')                      AS clearances
+    FROM   events
+    WHERE  type_name IN ('Pressure', 'Ball Recovery', 'Clearance')
+      AND  player_id IS NOT NULL
+    GROUP  BY match_id, player_id
+),
+
 -- ─── CTE 5: pressure & volume stats per player per match ─────────────────────
 pressure_stats AS (
     SELECT
@@ -213,6 +227,11 @@ aggregated AS (
         COALESCE(SUM(ds.total_dribbles),         0)                          AS total_dribbles,
         COALESCE(SUM(ds.dribbles_completed),     0)                          AS dribbles_completed,
 
+        -- ── Defensive aggregations ───────────────────────────────────────────
+        COALESCE(SUM(def.pressures),             0)                          AS pressures,
+        COALESCE(SUM(def.ball_recoveries),       0)                          AS ball_recoveries,
+        COALESCE(SUM(def.clearances),            0)                          AS clearances,
+
         -- ── Pressure / volume ────────────────────────────────────────────────
         COALESCE(SUM(prs.total_events),          0)                          AS total_events,
         COALESCE(SUM(prs.events_under_pressure), 0)                          AS events_under_pressure
@@ -229,6 +248,8 @@ aggregated AS (
                                      AND pa.player_id       = cs.player_id
     LEFT JOIN  dribble_stats      ds  ON pa.match_id        = ds.match_id
                                      AND pa.player_id       = ds.player_id
+    LEFT JOIN  defensive_stats    def ON pa.match_id        = def.match_id
+                                     AND pa.player_id       = def.player_id
     LEFT JOIN  pressure_stats     prs ON pa.match_id        = prs.match_id
                                      AND pa.player_id       = prs.player_id
     GROUP BY
@@ -300,6 +321,11 @@ SELECT
         1
     )                                                                         AS dribble_success_pct,
 
+    -- ── Defensive metrics ───────────────────────────────────────────────────
+    pressures,
+    ball_recoveries,
+    clearances,
+
     -- ── Pressure ────────────────────────────────────────────────────────────
     events_under_pressure,
     ROUND(
@@ -314,9 +340,18 @@ SELECT
     ROUND(total_shots  * 90.0 / NULLIF(minutes_played, 0), 2)                AS shots_p90,
     ROUND(total_passes * 90.0 / NULLIF(minutes_played, 0), 2)                AS passes_p90,
     ROUND(total_carries * 90.0 / NULLIF(minutes_played, 0), 2)               AS carries_p90,
+    ROUND(total_carry_distance_m * 90.0 / NULLIF(minutes_played, 0), 1)      AS carry_distance_p90,
     ROUND(progressive_passes  * 90.0 / NULLIF(minutes_played, 0), 2)         AS progressive_passes_p90,
     ROUND(progressive_carries * 90.0 / NULLIF(minutes_played, 0), 2)         AS progressive_carries_p90,
-    ROUND(goal_assists * 90.0 / NULLIF(minutes_played, 0), 3)                AS goal_assists_p90
+    ROUND(switches * 90.0 / NULLIF(minutes_played, 0), 3)                    AS switches_p90,
+    ROUND(crosses * 90.0 / NULLIF(minutes_played, 0), 3)                     AS crosses_p90,
+    ROUND(through_balls * 90.0 / NULLIF(minutes_played, 0), 3)               AS through_balls_p90,
+    ROUND(shot_assists * 90.0 / NULLIF(minutes_played, 0), 3)                AS shot_assists_p90,
+    ROUND(goal_assists * 90.0 / NULLIF(minutes_played, 0), 3)                AS goal_assists_p90,
+    ROUND(pressures * 90.0 / NULLIF(minutes_played, 0), 2)                   AS pressures_p90,
+    ROUND(ball_recoveries * 90.0 / NULLIF(minutes_played, 0), 2)             AS recoveries_p90,
+    ROUND(clearances * 90.0 / NULLIF(minutes_played, 0), 2)                  AS clearances_p90,
+    ROUND(events_under_pressure * 90.0 / NULLIF(minutes_played, 0), 2)       AS events_under_pressure_p90
 
 FROM   aggregated
 ORDER  BY xg_total DESC, goals DESC, total_passes DESC
