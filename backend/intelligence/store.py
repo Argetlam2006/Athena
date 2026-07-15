@@ -8,11 +8,12 @@ It also creates lightweight metadata indexes for instantaneous frontend loading.
 
 import json
 import logging
-from pathlib import Path
-from typing import Sequence
-import pandas as pd
-import duckdb
+from collections.abc import Sequence
 from dataclasses import asdict
+from pathlib import Path
+
+import duckdb
+import pandas as pd
 from pydantic import TypeAdapter
 
 from backend.warehouse.connection import DB_PATH
@@ -39,7 +40,7 @@ class IntelligenceStore:
         """Generate a deterministic fingerprint of the current warehouse state."""
         if not DB_PATH.exists():
             return {}
-            
+
         con = duckdb.connect(str(DB_PATH), read_only=True)
         try:
             # Query row counts of the core base tables for fingerprinting
@@ -57,14 +58,14 @@ class IntelligenceStore:
     def is_valid(self) -> bool:
         """Check if the Intelligence Store is up-to-date with the warehouse."""
         paths = [
-            PLAYER_PROFILES_PATH, TEAM_PROFILES_PATH, 
+            PLAYER_PROFILES_PATH, TEAM_PROFILES_PATH,
             PLAYER_INDEX_PATH, TEAM_INDEX_PATH, FINGERPRINT_PATH
         ]
         if not all(p.exists() for p in paths):
             return False
 
         try:
-            with open(FINGERPRINT_PATH, "r") as f:
+            with open(FINGERPRINT_PATH) as f:
                 stored = json.load(f)
             current = self._generate_fingerprint()
             return stored == current
@@ -74,12 +75,12 @@ class IntelligenceStore:
     def save(self, players: Sequence[PlayerProfile], teams: Sequence[TeamProfile]) -> None:
         """Serialize profiles and generate lightweight discovery indexes."""
         logger.info("Building Intelligence Store...")
-        
+
         # 1. Full Profiles (Parquet for players, JSON for teams to avoid struct schema issues)
         if players:
             df_players = pd.DataFrame([asdict(p) for p in players])
             df_players.to_parquet(PLAYER_PROFILES_PATH, engine="pyarrow", index=False)
-            
+
             # Player Metadata Index
             index_data = [{
                 "player_id": p.player_id,
@@ -100,7 +101,7 @@ class IntelligenceStore:
         if teams:
             with open(TEAM_PROFILES_PATH.with_suffix(".json"), "w") as f:
                 json.dump([asdict(t) for t in teams], f)
-            
+
             # Team Metadata Index
             team_index_data = [{
                 "team_id": t.team_id,
@@ -117,7 +118,7 @@ class IntelligenceStore:
         # 2. Fingerprint Validation
         with open(FINGERPRINT_PATH, "w") as f:
             json.dump(self._generate_fingerprint(), f)
-            
+
         logger.info("Intelligence Store serialized successfully.")
 
     def get_player_index(self) -> pd.DataFrame:
@@ -135,7 +136,7 @@ class IntelligenceStore:
         """O(1) lazy loading via DuckDB predicate pushdown."""
         if not PLAYER_PROFILES_PATH.exists():
             return None
-            
+
         con = duckdb.connect(":memory:")
         try:
             query = f"SELECT * FROM read_parquet('{PLAYER_PROFILES_PATH}') WHERE player_id = ?"
@@ -143,8 +144,8 @@ class IntelligenceStore:
             if df.empty:
                 return None
             dict_row = df.to_dict(orient="records")[0]
-            
-            # Handle nested duckdb dicts for schemas 
+
+            # Handle nested duckdb dicts for schemas
             return _player_adapter.validate_python(dict_row)
         except Exception as e:
             logger.error(f"Failed to load player {player_id}: {e}")
@@ -157,9 +158,9 @@ class IntelligenceStore:
         json_path = TEAM_PROFILES_PATH.with_suffix(".json")
         if not json_path.exists():
             return None
-            
+
         try:
-            with open(json_path, "r") as f:
+            with open(json_path) as f:
                 teams = json.load(f)
             for t in teams:
                 if t["team_id"] == team_id:

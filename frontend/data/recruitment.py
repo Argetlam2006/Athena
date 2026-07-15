@@ -22,7 +22,7 @@ def search_candidates(criteria: RecruitmentCriteria) -> list[RecruitmentCandidat
     else:
         # Fallback for debugging/CLI usage if no position is specified
         pool = get_all_players()
-        
+
     engine = DecisionIntelligenceEngine()
 
     return engine.rank_candidates(pool, criteria)

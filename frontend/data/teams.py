@@ -6,8 +6,9 @@ Delegates to backend services for the frontend shell.
 """
 
 import logging
-import streamlit as st
+
 import pandas as pd
+import streamlit as st
 
 from backend.intelligence.store import IntelligenceStore
 from shared.schemas import TeamProfile
@@ -31,14 +32,15 @@ def get_team_profile(team_id: int) -> TeamProfile | None:
 @st.cache_data
 def get_all_teams() -> list[TeamProfile]:
     import json
+
     from backend.intelligence.store import TEAM_PROFILES_PATH, _team_adapter
-    
+
     json_path = TEAM_PROFILES_PATH.with_suffix(".json")
     if not json_path.exists():
         return []
-        
+
     try:
-        with open(json_path, "r") as f:
+        with open(json_path) as f:
             teams = json.load(f)
         return [_team_adapter.validate_python(t) for t in teams]
     except Exception as e:

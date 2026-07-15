@@ -6,8 +6,9 @@ Delegates to backend services for the frontend shell.
 """
 
 import logging
-import streamlit as st
+
 import pandas as pd
+import streamlit as st
 
 from backend.intelligence.store import IntelligenceStore
 from shared.schemas import PlayerProfile
@@ -38,11 +39,12 @@ def get_players_by_position(position: str) -> list[PlayerProfile]:
     Load profiles dynamically based on position to avoid full 22k memory loads.
     """
     import duckdb
+
     from backend.intelligence.store import PLAYER_PROFILES_PATH, _player_adapter
-    
+
     if not PLAYER_PROFILES_PATH.exists():
         return []
-        
+
     con = duckdb.connect(":memory:")
     try:
         query = f"SELECT * FROM read_parquet('{PLAYER_PROFILES_PATH}') WHERE position_group = ?"
@@ -64,13 +66,14 @@ def get_all_players() -> list[PlayerProfile]:
     Load all PlayerProfiles. Do not use in production UI.
     """
     import duckdb
+
     from backend.intelligence.store import PLAYER_PROFILES_PATH, _player_adapter
-    
+
     if not PLAYER_PROFILES_PATH.exists():
         logger.warning("Intelligence Store not found.")
         st.warning("Data Warehouse not found. Please run scripts/bootstrap.py.")
         return []
-        
+
     con = duckdb.connect(":memory:")
     try:
         df = con.execute(f"SELECT * FROM read_parquet('{PLAYER_PROFILES_PATH}')").fetchdf()

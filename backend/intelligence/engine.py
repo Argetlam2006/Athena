@@ -10,7 +10,6 @@ from __future__ import annotations
 import logging
 from collections.abc import Sequence
 
-from backend.intelligence.normalization import percentile_rank
 from backend.intelligence.player import build_player_profile
 from backend.intelligence.signals import generate_decision_signals
 from backend.intelligence.team import build_team_profile
@@ -42,7 +41,7 @@ class FootballIntelligenceEngine:
 
         # Convert vectors to DataFrame for vectorized processing
         df = pd.DataFrame([vars(v) for v in vectors])
-        
+
         # Identify numeric metrics to normalize
         numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
         if 'player_id' in numeric_cols:

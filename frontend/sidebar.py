@@ -5,8 +5,8 @@ Renders navigation, context selectors, system status, and the Ask Athena placeho
 Directly reads from and writes to the centralized session state.
 """
 
-import streamlit as st
 import pandas as pd
+import streamlit as st
 
 from frontend.data.players import get_player_index
 from frontend.data.teams import get_team_index
@@ -56,7 +56,7 @@ def render_context_selectors() -> None:
     df_players = get_player_index()
     if not df_players.empty:
         search_term = st.text_input("Search Player", placeholder="e.g. Rodri")
-        
+
         # Filter metadata dynamically using multi-term matching
         if search_term:
             terms = search_term.lower().split()
@@ -66,11 +66,11 @@ def render_context_selectors() -> None:
             matches = df_players[mask].head(50)
         else:
             matches = df_players.nlargest(20, "minutes_played")
-            
+
         player_options = {"None": None}
         for _, row in matches.iterrows():
             player_options[f"{row['player_name']} ({row['team_name']})"] = row['player_id']
-            
+
         selected_player_name = st.selectbox(
             "Select Focus Player",
             options=list(player_options.keys()),
@@ -88,7 +88,7 @@ def render_context_selectors() -> None:
         df_teams = df_teams.sort_values("team_name")
         for _, row in df_teams.iterrows():
             team_options[row["team_name"]] = row["team_id"]
-            
+
     selected_team_name = st.selectbox(
         "Focus Team",
         options=list(team_options.keys()),

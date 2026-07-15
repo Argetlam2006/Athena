@@ -6,12 +6,12 @@ by running the Football Intelligence Engine over the entire DuckDB warehouse.
 """
 
 import sys
-import logging
+
+from backend.intelligence.adapter import map_player_summary_to_vectors
+from backend.intelligence.engine import FootballIntelligenceEngine
+from backend.intelligence.store import IntelligenceStore
 from backend.utils.logger import get_logger
 from backend.warehouse.warehouse import Warehouse
-from backend.intelligence.engine import FootballIntelligenceEngine
-from backend.intelligence.adapter import map_player_summary_to_vectors
-from backend.intelligence.store import IntelligenceStore
 
 logger = get_logger(__name__)
 
@@ -37,7 +37,7 @@ def main() -> int:
         logger.info(f"Computing Football Intelligence for {len(vectors)} players...")
         engine = FootballIntelligenceEngine()
         players = engine.process_cohort(vectors)
-        
+
         logger.info("Computing Team Intelligence...")
         teams = engine.process_all_teams(players)
 
