@@ -187,10 +187,10 @@ def build_player_profile(
         player_id=vector.player_id,
         player_name=vector.player_name,
         position_group=vector.position_group,
-        team_name="",  # Would be populated if part of vector
+        team_name=vector.team_name,
         competition=vector.competition,
         season=vector.season,
-        age_years=0.0,
+        age_years=vector.age_years,
         minutes_played=vector.minutes_played,
         capability_profile=cap_profile,
         feature_vector=vector,

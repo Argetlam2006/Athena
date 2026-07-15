@@ -2,49 +2,23 @@
 frontend/data/teams.py — Frontend Data Access for Teams.
 
 Retrieves and caches TeamProfile objects for the UI.
+Delegates to backend services for the frontend shell.
 """
 
 import streamlit as st
 
+from backend.intelligence.engine import FootballIntelligenceEngine
 from frontend.data.players import get_all_players
 from shared.schemas import TeamProfile
 
 
 @st.cache_data
-def _get_mock_teams() -> list[TeamProfile]:
-    """Generates mock teams based on the mock players."""
-    all_players = get_all_players()
-
-    psg_players = [p for p in all_players if p.team_name == "Paris Saint-Germain"]
-    mci_players = [p for p in all_players if p.team_name == "Manchester City"]
-
-    t1 = TeamProfile(
-        team_id=101,
-        team_name="Paris Saint-Germain",
-        competition="Ligue 1",
-        season="2023",
-        squad_size=len(psg_players),
-        avg_age=29.5,
-        style_label="Direct and Progressive",
-    )
-
-    t2 = TeamProfile(
-        team_id=102,
-        team_name="Manchester City",
-        competition="Premier League",
-        season="2023",
-        squad_size=len(mci_players),
-        avg_age=24.0,
-        style_label="Possession-Dominant",
-    )
-
-    return [t1, t2]
-
-
-@st.cache_data
 def get_all_teams() -> list[TeamProfile]:
-    """Retrieve all available teams."""
-    return _get_mock_teams()
+    """Retrieve all teams by dynamically grouping players."""
+    players = get_all_players()
+    engine = FootballIntelligenceEngine()
+    teams = engine.process_all_teams(players)
+    return teams
 
 
 @st.cache_data

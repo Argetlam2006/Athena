@@ -99,3 +99,37 @@ class FootballIntelligenceEngine:
         Aggregate a squad of PlayerProfiles into a TeamProfile.
         """
         return build_team_profile(team_id, team_name, competition, season, players)
+
+    def process_all_teams(self, players: Sequence[PlayerProfile]) -> list[TeamProfile]:
+        """
+        Groups players by team and builds TeamProfiles for all teams.
+        """
+        teams_data: dict[str, dict] = {}
+        for p in players:
+            # We use team_name as a key since team_id isn't on PlayerProfile directly,
+            # or wait, is team_id on PlayerFeatureVector? Yes. But not on PlayerProfile.
+            # Actually, PlayerProfile doesn't have team_id. Let's use team_name.
+            key = p.team_name
+            if not key:
+                continue
+            if key not in teams_data:
+                teams_data[key] = {
+                    "team_name": p.team_name,
+                    "competition": p.competition,
+                    "season": p.season,
+                    "players": []
+                }
+            teams_data[key]["players"].append(p)
+
+        profiles = []
+        # Generate a dummy team_id based on a hash if we don't have it
+        for team_name, data in teams_data.items():
+            team_id = hash(team_name) & 0x7FFFFFFF
+            profiles.append(self.process_team(
+                team_id=team_id,
+                team_name=data["team_name"],
+                competition=data["competition"],
+                season=data["season"],
+                players=data["players"]
+            ))
+        return sorted(profiles, key=lambda x: x.team_name)

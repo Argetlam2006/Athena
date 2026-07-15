@@ -2,13 +2,13 @@
 backend/explanation/providers/gemini_provider.py — Google Gemini Provider.
 """
 
-import os
 import time
 from collections.abc import Generator
 
 from backend.explanation.prompt_builder import PromptPackage
 from backend.explanation.providers.base import ExplanationProvider
 from backend.explanation.response import ExplanationResponse
+from shared.config.settings import settings
 
 try:
     import google.generativeai as genai
@@ -22,13 +22,13 @@ class GeminiProvider(ExplanationProvider):
     def __init__(self, model_name: str = "gemini-1.5-flash", temperature: float = 0.2):
         super().__init__(model_name, temperature)
         if self.is_available():
-            genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+            genai.configure(api_key=settings.GEMINI_API_KEY)
             self.model = genai.GenerativeModel(self.model_name)
         else:
             self.model = None
 
     def is_available(self) -> bool:
-        return HAS_GEMINI and bool(os.getenv("GEMINI_API_KEY"))
+        return HAS_GEMINI and bool(settings.GEMINI_API_KEY)
 
     def generate(self, prompt: PromptPackage) -> ExplanationResponse:
         if not self.is_available() or not self.model:

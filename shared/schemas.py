@@ -85,6 +85,8 @@ class PlayerFeatureVector:
     position_group: str
     minutes_played: float
     matches_played: int
+    team_name: str = ""
+    age_years: float = 0.0
 
     # Ball Progression (4)
     progressive_passes_p90: float = 0.0

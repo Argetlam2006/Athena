@@ -14,13 +14,14 @@ from backend.explanation.telemetry import ExplanationTelemetry, record_telemetry
 from frontend.data.players import get_player_profile
 from frontend.data.teams import get_team_profile
 from frontend.session import get_state
+from shared.config.settings import settings
 
 
 def _init_chat_state():
     if "chat_manager" not in st.session_state:
         st.session_state.chat_manager = ConversationManager()
     if "chat_provider" not in st.session_state:
-        st.session_state.chat_provider = get_provider("auto")
+        st.session_state.chat_provider = get_provider(settings.ATHENA_PROVIDER)
 
 
 def _get_context_for_prompt():
@@ -110,7 +111,7 @@ def render_ask_athena_drawer() -> None:
                 continue  # Hide internal system transitions
 
             with st.chat_message(
-                msg.role, avatar="◇" if msg.role == "assistant" else "👤"
+                msg.role, avatar="🤖" if msg.role == "assistant" else "👤"
             ):
                 st.markdown(msg.content)
 
@@ -127,7 +128,7 @@ def render_ask_athena_drawer() -> None:
                 st.markdown(user_query)
 
             # Render AI thinking state
-            with st.chat_message("assistant", avatar="◇"):
+            with st.chat_message("assistant", avatar="🤖"):
                 # Get Context & Build Prompt
                 ctx_obj, ctx_type = _get_context_for_prompt()
 

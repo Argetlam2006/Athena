@@ -25,6 +25,7 @@ LLMs are prone to hallucinating statistics, especially in highly nuanced domains
 3. **The AI Sandbox**: The AI (Claude, OpenAI, or Gemini) is restricted via a canonical System Prompt to *only* explain the structured evidence provided to it. It cannot invent numbers. It cannot infer capabilities that lack evidence.
 
 ## Features
+- **Global Data Integration**: Athena automatically discovers and ingests the *complete* publicly available StatsBomb Open Data catalogue (across all competitions and seasons) dynamically, rather than relying on a fixed or hardcoded list of leagues.
 - **Player Intelligence**: Deep capability profiling mapping event actions to overarching tactical skills.
 - **Team Intelligence**: Aggregated squad analytics and tactical style identification.
 - **Recruitment Intelligence**: Semantic player search utilizing deterministic fit-scoring algorithms.
