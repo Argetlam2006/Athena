@@ -36,38 +36,42 @@ def render_workspace_navigation() -> None:
                     st.rerun()
 
 
+from frontend.data.players import get_all_players
+from frontend.data.teams import get_all_teams
+
 def render_context_selectors() -> None:
     """Renders global player and team selectors."""
     st.markdown("<div style='margin-top: 2rem; margin-bottom: 1rem; color: #4b5563; font-size: 0.75rem; text-transform: uppercase; font-weight: 600; letter-spacing: 0.1em;'>Global Context</div>", unsafe_allow_html=True)
     
-    # In a real scenario, we would populate these from the database/warehouse
-    # For the application shell, we use mock options
-    players = {"Lionel Messi (PSG)": 1, "Kylian Mbappé (PSG)": 2, "Erling Haaland (MCI)": 3}
-    teams = {"Paris Saint-Germain": 101, "Manchester City": 102}
+    # Fetch from data layer
+    players = get_all_players()
+    teams = get_all_teams()
+    
+    player_options = {"None": None}
+    for p in players:
+        player_options[f"{p.player_name} ({p.team_name})"] = p.player_id
+        
+    team_options = {"None": None}
+    for t in teams:
+        team_options[t.team_name] = t.team_id
     
     # Player Selection
     selected_player_name = st.selectbox(
         "Focus Player",
-        options=["None"] + list(players.keys()),
+        options=list(player_options.keys()),
         index=0,
         help="Select a player to focus all workspaces on."
     )
-    if selected_player_name != "None":
-        set_selected_player(players[selected_player_name])
-    else:
-        set_selected_player(None)
+    set_selected_player(player_options[selected_player_name])
         
     # Team Selection
     selected_team_name = st.selectbox(
         "Focus Team",
-        options=["None"] + list(teams.keys()),
+        options=list(team_options.keys()),
         index=0,
         help="Select a team to focus all workspaces on."
     )
-    if selected_team_name != "None":
-        set_selected_team(teams[selected_team_name])
-    else:
-        set_selected_team(None)
+    set_selected_team(team_options[selected_team_name])
 
 
 def render_system_status() -> None:

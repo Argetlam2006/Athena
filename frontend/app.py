@@ -3,10 +3,9 @@ frontend/app.py — Athena Streamlit application entry point.
 
 This is the main application shell. Run with:
     streamlit run frontend/app.py
-    make app
 
 It delegates styling, state management, and navigation to their respective modules,
-acting purely as the orchestrator.
+and routes to the active workspace.
 """
 
 from __future__ import annotations
@@ -32,6 +31,12 @@ from frontend.components.states import render_empty_state
 from frontend.components.ask_athena import render_ask_athena_drawer
 from shared.config.navigation import get_workspace_by_id
 
+# Workspace imports
+import frontend.pages.dashboard as dashboard
+import frontend.pages.player_intelligence as player_intelligence
+import frontend.pages.team_intelligence as team_intelligence
+import frontend.pages.recruitment_intelligence as recruitment_intelligence
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Application Initialization
@@ -56,43 +61,46 @@ render_global_sidebar()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Routing & Active Workspace Render
+# Main Layout & Routing
 # ─────────────────────────────────────────────────────────────────────────────
 
-# In Phase 5, we only render the application shell and placeholders.
-# The actual workspace pages (e.g. dashboard.py) will be implemented in future phases.
+# Create a master layout: 3/4 Main Content, 1/4 Ask Athena Drawer
+main_col, athena_col = st.columns([3, 1], gap="large")
 
-active_ws = get_workspace_by_id(state.active_workspace_id)
-
-if active_ws:
-    render_page_header(
-        title=active_ws.name,
-        subtitle=active_ws.question,
-        icon=active_ws.icon
-    )
+with main_col:
+    active_ws = get_workspace_by_id(state.active_workspace_id)
     
-    # Placeholder content
-    render_empty_state(
-        icon=active_ws.icon,
-        title=f"{active_ws.name} Workspace",
-        description=f"This workspace is currently under construction. Future updates will bring: {active_ws.description}.",
-        suggestion="Use the sidebar to navigate to a different workspace."
-    )
-    
-    # Global context debug view
-    st.markdown("<div style='margin-top: 3rem;'></div>", unsafe_allow_html=True)
-    with st.expander("System State Debug"):
-        st.json({
-            "active_workspace": state.active_workspace_id,
-            "selected_player_id": state.selected_player_id,
-            "selected_team_id": state.selected_team_id
-        })
+    if not active_ws:
+        render_page_header("Error", "Invalid Workspace")
+        render_empty_state("⚠", "Workspace Not Found", "The requested workspace does not exist in the configuration.")
+    elif state.active_workspace_id == "dashboard":
+        dashboard.render()
+    elif state.active_workspace_id == "player_intelligence":
+        player_intelligence.render()
+    elif state.active_workspace_id == "team_intelligence":
+        team_intelligence.render()
+    elif state.active_workspace_id == "recruitment":
+        recruitment_intelligence.render()
+    elif state.active_workspace_id == "ask_athena":
+        # The user clicked Ask Athena in the navigation.
+        # Since Ask Athena is a persistent drawer, we can show a placeholder or
+        # default to dashboard for the main view and highlight the drawer.
+        render_empty_state(
+            icon="◇",
+            title="Ask Athena",
+            description="Athena is integrated directly into your workflow. Use the contextual drawer on the right to interact with her at any time.",
+            suggestion="Select another workspace to continue your analysis."
+        )
+    else:
+        # Fallback for future workspaces
+        render_page_header(active_ws.name, active_ws.question, active_ws.icon)
+        render_empty_state(
+            icon=active_ws.icon,
+            title=f"{active_ws.name} Workspace",
+            description=f"This workspace is currently under construction.",
+            suggestion="Use the sidebar to navigate to a different workspace."
+        )
 
-else:
-    # Fallback
-    render_page_header("Error", "Invalid Workspace")
-    render_empty_state("⚠", "Workspace Not Found", "The requested workspace does not exist in the configuration.")
-
-# Optional drawer test (Ask Athena)
-if state.active_workspace_id == "ask_athena":
+# Render Contextual Drawer
+with athena_col:
     render_ask_athena_drawer()
