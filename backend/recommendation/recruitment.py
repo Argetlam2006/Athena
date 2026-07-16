@@ -93,6 +93,8 @@ def rank_candidates(
             overall_team_impact="Aligns with requested recruitment criteria.",
             confidence=confidence,
             explanation_context=explanation_context,
+            system_compatibility=tactical_fit,
+            player_attributes=player.player_attributes,
         )
         candidates.append(candidate)
 
@@ -186,6 +188,8 @@ def recommend_replacement(
             overall_team_impact=f"Restores majority profile with {len(trade_offs_positive)} enhancements and {len(trade_offs_negative)} regressions.",
             confidence=confidence,
             explanation_context={},
+            system_compatibility=None, # Computed separately if needed
+            player_attributes=player.player_attributes,
         )
         candidates.append(candidate)
 

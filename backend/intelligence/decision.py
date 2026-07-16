@@ -42,7 +42,6 @@ class DecisionEngine:
             "Defensive Activity": profile.capability_profile.defensive_activity,
             "Attacking Threat": profile.capability_profile.attacking_threat,
             "Physical Availability": profile.capability_profile.physical_availability,
-            "Tactical Versatility": profile.capability_profile.tactical_versatility,
         }
 
         cap_score_obj = cap_map.get(capability_name)
@@ -113,7 +112,8 @@ class DecisionEngine:
             primary_role=profile.archetype or "Balanced Profile",
             elite_traits=elite_traits[:3],  # Top 3
             weak_areas=weak_areas[:3],      # Bottom 3
-            comparable_archetype=None
+            playing_style=profile.archetype,
+            player_attributes=profile.player_attributes
         )
 
     @staticmethod

@@ -13,6 +13,7 @@ from collections.abc import Sequence
 from backend.intelligence.player import build_player_profile
 from backend.intelligence.signals import generate_decision_signals
 from backend.intelligence.team import build_team_profile
+from backend.intelligence.archetypes import assign_archetypes
 from shared.schemas import PlayerFeatureVector, PlayerProfile, TeamProfile
 
 logger = logging.getLogger(__name__)
@@ -70,6 +71,9 @@ class FootballIntelligenceEngine:
             profile.similar_players = []  # Placeholder
 
             profiles.append(profile)
+
+        # Derives playing style from positional cohort (Layer 2)
+        assign_archetypes(profiles)
 
         return profiles
 

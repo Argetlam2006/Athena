@@ -38,8 +38,7 @@ def valid_player_profile() -> PlayerProfile:
         press_resistance=CapabilityScore("press_resistance", 90.0, 1.0, {}),
         defensive_activity=CapabilityScore("defensive_activity", 25.0, 1.0, {}),
         attacking_threat=CapabilityScore("attacking_threat", 95.0, 1.0, {}),
-        physical_availability=CapabilityScore("physical_availability", 85.0, 1.0, {}),
-        tactical_versatility=CapabilityScore("tactical_versatility", 70.0, 1.0, {}),
+        physical_availability=CapabilityScore("physical_availability", 90.0, 1.0, {}),
     )
     return PlayerProfile(
         player_id=1,
@@ -61,7 +60,7 @@ def test_valid_player_context_builds(valid_player_profile):
     ctx = engine.get_player_context(valid_player_profile)
 
     assert ctx.player_name == "Test Player"
-    assert len(ctx.evidence_packets) == 8  # 8 capabilities
+    assert len(ctx.evidence_packets) == 7  # 7 capabilities
 
     # Check that a packet contains supporting metrics
     bp_packet = next(

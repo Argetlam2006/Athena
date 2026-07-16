@@ -156,7 +156,6 @@ def build_team_profile(
         avg_defensive_activity=agg.get("defensive_activity", 0.0),
         avg_attacking_threat=agg.get("attacking_threat", 0.0),
         avg_physical_availability=agg.get("physical_availability", 0.0),
-        avg_tactical_versatility=agg.get("tactical_versatility", 0.0),
         style_label=style,
         strengths=strengths,
         weaknesses=weaknesses

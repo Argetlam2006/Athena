@@ -12,7 +12,6 @@ CORE_CAPABILITIES: list[str] = [
     "defensive_activity",
     "attacking_threat",
     "physical_availability",
-    "tactical_versatility",
 ]
 
 CAPABILITY_DISPLAY_NAMES: dict[str, str] = {
@@ -23,7 +22,6 @@ CAPABILITY_DISPLAY_NAMES: dict[str, str] = {
     "defensive_activity": "Defensive Activity",
     "attacking_threat": "Attacking Threat",
     "physical_availability": "Physical Availability",
-    "tactical_versatility": "Tactical Versatility",
 }
 
 CAPABILITY_DESCRIPTIONS: dict[str, str] = {
@@ -34,7 +32,6 @@ CAPABILITY_DESCRIPTIONS: dict[str, str] = {
     "defensive_activity": "Ability to disrupt opposition possession and win the ball back.",
     "attacking_threat": "Ability to generate dangerous attacking outcomes and score.",
     "physical_availability": "Ability to contribute consistently across a full season.",
-    "tactical_versatility": "Ability to perform effectively across multiple positions and roles.",
 }
 
 # The metric map maps capability name to the attributes in PlayerFeatureVector.
@@ -76,9 +73,6 @@ CAPABILITY_METRIC_MAP: dict[str, list[str]] = {
     "physical_availability": [
         "matches_played",
         "minutes_played",
-    ],
-    "tactical_versatility": [
-        "positions_played_count",
     ],
 }
 
@@ -144,11 +138,6 @@ CAPABILITY_METRIC_WEIGHTS: dict[str, Any] = {
         "matches_played": 0.40,
         "coverage_rate": 0.60,
     },
-    "tactical_versatility": {
-        "positions_played_count": 0.25,
-        "capability_breadth": 0.40,
-        "phase_balance": 0.35,
-    },
 }
 
 # The weights to combine capabilities into the Overall Profile.
@@ -161,7 +150,6 @@ POSITION_GROUP_WEIGHTS: dict[str, dict[str, float]] = {
         "defensive_activity": 0.07,
         "attacking_threat": 0.28,
         "physical_availability": 0.10,
-        "tactical_versatility": 0.07,
     },
     "Midfielder": {
         "ball_progression": 0.18,
@@ -171,7 +159,6 @@ POSITION_GROUP_WEIGHTS: dict[str, dict[str, float]] = {
         "defensive_activity": 0.13,
         "attacking_threat": 0.08,
         "physical_availability": 0.10,
-        "tactical_versatility": 0.06,
     },
     "Defender": {
         "ball_progression": 0.12,
@@ -181,6 +168,5 @@ POSITION_GROUP_WEIGHTS: dict[str, dict[str, float]] = {
         "defensive_activity": 0.25,
         "attacking_threat": 0.05,
         "physical_availability": 0.13,
-        "tactical_versatility": 0.08,
     },
 }

@@ -34,7 +34,6 @@ def mock_profiles():
         defensive_activity=CapabilityScore("defensive_activity", 40.0, 1.0),
         attacking_threat=CapabilityScore("attacking_threat", 95.0, 1.0),
         physical_availability=CapabilityScore("physical_availability", 90.0, 1.0),
-        tactical_versatility=CapabilityScore("tactical_versatility", 60.0, 1.0),
     )
     p1 = PlayerProfile(
         player_id=1,
@@ -62,8 +61,7 @@ def mock_profiles():
         press_resistance=CapabilityScore("press_resistance", 75.0, 1.0),
         defensive_activity=CapabilityScore("defensive_activity", 45.0, 1.0),
         attacking_threat=CapabilityScore("attacking_threat", 92.0, 1.0),
-        physical_availability=CapabilityScore("physical_availability", 88.0, 1.0),
-        tactical_versatility=CapabilityScore("tactical_versatility", 65.0, 1.0),
+        physical_availability=CapabilityScore("physical_availability", 85.0, 1.0),
     )
     p2 = PlayerProfile(
         player_id=2,
@@ -91,8 +89,7 @@ def mock_profiles():
         press_resistance=CapabilityScore("press_resistance", 70.0, 1.0),
         defensive_activity=CapabilityScore("defensive_activity", 95.0, 1.0),
         attacking_threat=CapabilityScore("attacking_threat", 20.0, 1.0),
-        physical_availability=CapabilityScore("physical_availability", 95.0, 1.0),
-        tactical_versatility=CapabilityScore("tactical_versatility", 50.0, 1.0),
+        physical_availability=CapabilityScore("physical_availability", 80.0, 1.0),
     )
     p3 = PlayerProfile(
         player_id=3,

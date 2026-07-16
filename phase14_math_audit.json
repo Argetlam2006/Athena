@@ -1,0 +1,232 @@
+{
+  "Feature_Importance": {
+    "ball_progression": {
+      "progressive_passes_p90": 0.35,
+      "progressive_carries_p90": 0.35,
+      "carry_distance_p90": 0.15,
+      "switches_p90": 0.15
+    },
+    "chance_creation": {
+      "default": {
+        "shot_assists_p90": 0.4,
+        "goal_assists_p90": 0.3,
+        "through_balls_p90": 0.2,
+        "crosses_p90": 0.1
+      },
+      "wide": {
+        "shot_assists_p90": 0.35,
+        "goal_assists_p90": 0.25,
+        "through_balls_p90": 0.15,
+        "crosses_p90": 0.25
+      }
+    },
+    "ball_security": {
+      "pass_accuracy_pct": 0.5,
+      "dribble_success_pct": 0.25,
+      "passes_p90": 0.15,
+      "avg_pass_length_m": 0.1
+    },
+    "press_resistance": {
+      "pressure_pct": 0.5,
+      "events_under_pressure_p90": 0.5
+    },
+    "defensive_activity": {
+      "default": {
+        "pressures_p90": 0.45,
+        "recoveries_p90": 0.35,
+        "clearances_p90": 0.2
+      },
+      "Defender": {
+        "pressures_p90": 0.35,
+        "recoveries_p90": 0.35,
+        "clearances_p90": 0.3
+      },
+      "Forward": {
+        "pressures_p90": 0.55,
+        "recoveries_p90": 0.35,
+        "clearances_p90": 0.1
+      }
+    },
+    "attacking_threat": {
+      "npxg_p90": 0.35,
+      "goals_p90": 0.25,
+      "xg_per_shot": 0.2,
+      "shot_accuracy_pct": 0.15,
+      "goals_minus_xg": 0.05
+    },
+    "physical_availability": {
+      "matches_played": 0.4,
+      "coverage_rate": 0.6
+    },
+    "tactical_versatility": {
+      "positions_played_count": 0.25,
+      "capability_breadth": 0.4,
+      "phase_balance": 0.35
+    }
+  },
+  "Calibration_Curves": {
+    "overall_rating": {
+      "10%": 34.2,
+      "25%": 41.1,
+      "50%": 48.9,
+      "75%": 56.4,
+      "90%": 62.9,
+      "95%": 66.5,
+      "99%": 72.9
+    },
+    "ball_progression": {
+      "10%": 19.649479199854355,
+      "25%": 32.69835093754652,
+      "50%": 50.01385589865399,
+      "75%": 66.96304081663007,
+      "90%": 80.27244012295957,
+      "95%": 86.4208992445229,
+      "99%": 94.62880533286527
+    },
+    "chance_creation": {
+      "10%": 29.41073080723724,
+      "25%": 37.63674732464288,
+      "50%": 47.01781564678544,
+      "75%": 62.08442522270923,
+      "90%": 73.885430202968,
+      "95%": 81.10741372111434,
+      "99%": 90.8219472174472
+    },
+    "ball_security": {
+      "10%": 27.05371789662468,
+      "25%": 36.79165302642279,
+      "50%": 50.35055051813472,
+      "75%": 63.511969542237495,
+      "90%": 72.43909937215848,
+      "95%": 76.75750170282409,
+      "99%": 83.4589065418123
+    },
+    "press_resistance": {
+      "10%": 12.902528154275464,
+      "25%": 28.94037541647355,
+      "50%": 50.65270720168214,
+      "75%": 71.34256501482317,
+      "90%": 85.67327747068846,
+      "95%": 91.57616443329677,
+      "99%": 97.63353299875885
+    },
+    "defensive_activity": {
+      "10%": 26.05672223424984,
+      "25%": 37.1835758843991,
+      "50%": 50.381548974943044,
+      "75%": 62.61131867518314,
+      "90%": 73.76512264069004,
+      "95%": 79.85765990579,
+      "99%": 89.6931883962781
+    },
+    "attacking_threat": {
+      "10%": 24.99685039370079,
+      "25%": 33.48666330717731,
+      "50%": 49.459731543624166,
+      "75%": 64.69824945186366,
+      "90%": 79.25077505210974,
+      "95%": 86.3884855919171,
+      "99%": 94.64282844655975
+    },
+    "physical_availability": {
+      "10%": 7.119657180529612,
+      "25%": 13.691623424759081,
+      "50%": 22.223505056135043,
+      "75%": 42.84161106992834,
+      "90%": 71.20083369453948,
+      "95%": 83.92726074057796,
+      "99%": 99.95237064299633
+    },
+    "tactical_versatility": {
+      "10%": 47.44982433685529,
+      "25%": 54.62390881603672,
+      "50%": 62.435849860510395,
+      "75%": 69.73302623729447,
+      "90%": 76.56561516136388,
+      "95%": 80.93843447468447,
+      "99%": 88.07324293472777
+    }
+  },
+  "Correlation_Matrix": {
+    "ball_progression": {
+      "ball_progression": 1.0,
+      "chance_creation": 0.46940070574137993,
+      "ball_security": 0.34608540836655516,
+      "press_resistance": 0.1520352504209983,
+      "defensive_activity": 0.12990291919933453,
+      "attacking_threat": 0.16292596810762758,
+      "physical_availability": 0.23461346882461176,
+      "tactical_versatility": 0.02607684168088924
+    },
+    "chance_creation": {
+      "ball_progression": 0.46940070574137993,
+      "chance_creation": 1.0,
+      "ball_security": 0.10121339449398387,
+      "press_resistance": 0.20054648135913666,
+      "defensive_activity": 0.05939116016997986,
+      "attacking_threat": 0.33580432792053533,
+      "physical_availability": 0.45932289797408205,
+      "tactical_versatility": 0.18090046304445095
+    },
+    "ball_security": {
+      "ball_progression": 0.34608540836655516,
+      "chance_creation": 0.10121339449398387,
+      "ball_security": 1.0,
+      "press_resistance": -0.11603386014185492,
+      "defensive_activity": -0.07865633390139921,
+      "attacking_threat": 0.0528593837182426,
+      "physical_availability": 0.10883617645476754,
+      "tactical_versatility": -0.0765966607333906
+    },
+    "press_resistance": {
+      "ball_progression": 0.1520352504209983,
+      "chance_creation": 0.20054648135913666,
+      "ball_security": -0.11603386014185492,
+      "press_resistance": 1.0,
+      "defensive_activity": 0.24244642267641875,
+      "attacking_threat": 0.14743751953240433,
+      "physical_availability": 0.14818076762687057,
+      "tactical_versatility": 0.08195379822433621
+    },
+    "defensive_activity": {
+      "ball_progression": 0.12990291919933453,
+      "chance_creation": 0.05939116016997986,
+      "ball_security": -0.07865633390139921,
+      "press_resistance": 0.24244642267641875,
+      "defensive_activity": 1.0,
+      "attacking_threat": -0.024262774021381543,
+      "physical_availability": 0.13532931372722,
+      "tactical_versatility": 0.1085670883987668
+    },
+    "attacking_threat": {
+      "ball_progression": 0.16292596810762758,
+      "chance_creation": 0.33580432792053533,
+      "ball_security": 0.0528593837182426,
+      "press_resistance": 0.14743751953240433,
+      "defensive_activity": -0.024262774021381543,
+      "attacking_threat": 1.0,
+      "physical_availability": 0.4305356037521293,
+      "tactical_versatility": 0.14387955694195656
+    },
+    "physical_availability": {
+      "ball_progression": 0.23461346882461176,
+      "chance_creation": 0.45932289797408205,
+      "ball_security": 0.10883617645476754,
+      "press_resistance": 0.14818076762687057,
+      "defensive_activity": 0.13532931372722,
+      "attacking_threat": 0.4305356037521293,
+      "physical_availability": 1.0,
+      "tactical_versatility": 0.42689690599106017
+    },
+    "tactical_versatility": {
+      "ball_progression": 0.02607684168088924,
+      "chance_creation": 0.18090046304445095,
+      "ball_security": -0.0765966607333906,
+      "press_resistance": 0.08195379822433621,
+      "defensive_activity": 0.1085670883987668,
+      "attacking_threat": 0.14387955694195656,
+      "physical_availability": 0.42689690599106017,
+      "tactical_versatility": 1.0
+    }
+  }
+}

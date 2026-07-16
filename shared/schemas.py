@@ -197,6 +197,22 @@ class PlayerFeatureVector:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Layer 2.5: Player Attributes
+# ─────────────────────────────────────────────────────────────────────────────
+
+@dataclass
+class PlayerAttributes:
+    """
+    Contextual properties that describe a player without inflating their football ability rating.
+    """
+    tactical_versatility: float | None = None
+    minutes_reliability: str | None = None
+    positional_history: list[str] = field(default_factory=list)
+    seasons_indexed: int = 1
+    competitions_indexed: int = 1
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Layer 3: Capability Scores
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -248,7 +264,6 @@ class CapabilityProfile:
     defensive_activity: CapabilityScore | None = None
     attacking_threat: CapabilityScore | None = None
     physical_availability: CapabilityScore | None = None
-    tactical_versatility: CapabilityScore | None = None
 
     overall_rating: float | None = None
 
@@ -274,9 +289,6 @@ class CapabilityProfile:
             "Physical Availability": self.physical_availability.score
             if self.physical_availability
             else 0.0,
-            "Tactical Versatility": self.tactical_versatility.score
-            if self.tactical_versatility
-            else 0.0,
         }
 
     def overall_confidence(self) -> float:
@@ -291,7 +303,6 @@ class CapabilityProfile:
                 self.defensive_activity,
                 self.attacking_threat,
                 self.physical_availability,
-                self.tactical_versatility,
             ]
             if cap is not None
         ]
@@ -329,6 +340,7 @@ class PlayerProfile:
 
     capability_profile: CapabilityProfile | None = None
     feature_vector: PlayerFeatureVector | None = None
+    player_attributes: PlayerAttributes | None = None
 
     @property
     def age_years(self) -> float | None:
@@ -387,7 +399,6 @@ class TeamProfile:
     avg_defensive_activity: float = 0.0
     avg_attacking_threat: float = 0.0
     avg_physical_availability: float = 0.0
-    avg_tactical_versatility: float = 0.0
 
     # Squad composition
     avg_age: float = 0.0
@@ -408,7 +419,6 @@ class TeamProfile:
             "Defensive Activity": self.avg_defensive_activity,
             "Attacking Threat": self.avg_attacking_threat,
             "Physical Availability": self.avg_physical_availability,
-            "Tactical Versatility": self.avg_tactical_versatility,
         }
 
 
@@ -452,7 +462,8 @@ class PlayerDecisionCard:
     primary_role: str
     elite_traits: list[CapabilityExplanation] = field(default_factory=list)
     weak_areas: list[CapabilityExplanation] = field(default_factory=list)
-    comparable_archetype: str | None = None
+    playing_style: str | None = None
+    player_attributes: PlayerAttributes | None = None
 
 
 @dataclass
@@ -507,6 +518,8 @@ class RecruitmentCandidate:
     player: PlayerProfile
     fit_score: float = 0.0
     rank: int = 0
+    system_compatibility: float | None = None
+    player_attributes: PlayerAttributes | None = None
 
     # Capability Restoration (Counterfactual impact)
     restoration: dict[str, str] = field(default_factory=dict) # e.g. {"Ball Progression": "83%"}

@@ -28,17 +28,15 @@ class TestCapabilityConstants:
         "defensive_activity",
         "attacking_threat",
         "physical_availability",
-        "tactical_versatility",
     }
 
-    def test_exactly_eight_capabilities(self) -> None:
-        assert len(CORE_CAPABILITIES) == 8, (
-            f"Expected 8 capabilities, got {len(CORE_CAPABILITIES)}"
+    def test_exactly_seven_capabilities(self) -> None:
+        assert len(CORE_CAPABILITIES) == 7, (
+            f"Expected 7 capabilities, got {len(CORE_CAPABILITIES)}"
         )
 
-    def test_tactical_versatility_present(self) -> None:
-        """Tactical Versatility replaces Financial Value — verify it exists."""
-        assert "tactical_versatility" in CORE_CAPABILITIES
+    def test_ball_progression_present(self) -> None:
+        assert "ball_progression" in CORE_CAPABILITIES
 
     def test_all_capabilities_have_display_names(self) -> None:
         for cap in CORE_CAPABILITIES:

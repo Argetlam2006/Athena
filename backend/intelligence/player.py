@@ -17,6 +17,7 @@ from shared.schemas import (
     CapabilityScore,
     PlayerFeatureVector,
     PlayerProfile,
+    PlayerAttributes,
 )
 
 
@@ -147,7 +148,6 @@ def build_capability_profile(
         defensive_activity=cap_scores["defensive_activity"],
         attacking_threat=cap_scores["attacking_threat"],
         physical_availability=cap_scores["physical_availability"],
-        tactical_versatility=cap_scores["tactical_versatility"],
         overall_rating=compute_overall_rating(cap_scores, vector.position_group)
     )
 
@@ -160,8 +160,7 @@ def compute_overall_rating(scores: dict, position_group: str) -> float:
             "ball_security": 1.5,
             "press_resistance": 1.0,
             "defensive_activity": 0.5,
-            "physical_availability": 1.0,
-            "tactical_versatility": 0.5
+            "physical_availability": 1.0
         },
         "Midfielder": {
             "ball_progression": 3.0,
@@ -170,8 +169,7 @@ def compute_overall_rating(scores: dict, position_group: str) -> float:
             "chance_creation": 2.0,
             "defensive_activity": 1.5,
             "attacking_threat": 1.0,
-            "physical_availability": 1.0,
-            "tactical_versatility": 0.5
+            "physical_availability": 1.0
         },
         "Defender": {
             "ball_security": 3.0,
@@ -180,8 +178,7 @@ def compute_overall_rating(scores: dict, position_group: str) -> float:
             "physical_availability": 1.5,
             "press_resistance": 1.5,
             "chance_creation": 0.5,
-            "attacking_threat": 0.2,
-            "tactical_versatility": 0.5
+            "attacking_threat": 0.2
         }
     }
 
@@ -223,12 +220,33 @@ def build_player_profile(
         "defensive_activity": cap_profile.defensive_activity,
         "attacking_threat": cap_profile.attacking_threat,
         "physical_availability": cap_profile.physical_availability,
-        "tactical_versatility": cap_profile.tactical_versatility,
     }
     # For role assignment we pass the raw dict (which has type dict[str, CapabilityScore])
     # However we need a dictionary of CapabilityScore
     typed_cap_dict = {k: v for k, v in cap_dict.items() if v is not None}
+    
+    # Delegate to Archetype Engine (deterministic percentile based) 
+    # For now, fallback to determine_role until archetype engine is fully written
     role_label, role_desc = determine_role(typed_cap_dict, vector.position_group)
+
+    # Compute Tactical Versatility for attributes
+    confidence_val = calculate_confidence(vector.matches_played)
+    is_low_sample = vector.matches_played < 8
+    raw_scores = {name: score.score for name, score in typed_cap_dict.items()}
+    versatility_score = compute_tactical_versatility(
+        positions_played_count=vector.positions_played_count,
+        capability_scores=raw_scores,
+        confidence=confidence_val,
+        is_low_sample=is_low_sample,
+    ).score
+
+    attributes = PlayerAttributes(
+        tactical_versatility=versatility_score,
+        minutes_reliability="High" if vector.matches_played >= 25 else "Medium" if vector.matches_played >= 15 else "Low",
+        positional_history=[vector.position_group], # Simplified for now
+        seasons_indexed=1,
+        competitions_indexed=1,
+    )
 
     # Use age_years=0.0 as it's not in PlayerFeatureVector directly in the spec
     # unless we pass it separately. We will default to 0.0 for now.
@@ -244,6 +262,7 @@ def build_player_profile(
         minutes_played=vector.minutes_played,
         capability_profile=cap_profile,
         feature_vector=vector,
+        player_attributes=attributes,
         archetype=role_label,
         archetype_description=role_desc,
         similar_players=[],

@@ -81,7 +81,7 @@ def generate_decision_signals(
         signals.append("ball_winner")
 
     # Profile
-    if cap_score("tactical_versatility") >= 80:
+    if profile.player_attributes and profile.player_attributes.tactical_versatility and profile.player_attributes.tactical_versatility >= 80:
         signals.append("tactically_versatile")
     if cap_score("ball_progression") >= 70 and cap_score("defensive_activity") >= 70:
         signals.append("box_to_box_profile")

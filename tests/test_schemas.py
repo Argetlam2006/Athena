@@ -78,18 +78,12 @@ class TestCapabilityProfile:
             defensive_activity=CapabilityScore("defensive_activity", 60.0, 0.7),
             attacking_threat=CapabilityScore("attacking_threat", 55.0, 0.8),
             physical_availability=CapabilityScore("physical_availability", 85.0, 0.95),
-            tactical_versatility=CapabilityScore("tactical_versatility", 50.0, 0.6),
         )
 
     def test_radar_dict_has_eight_keys(self) -> None:
         profile = self._make_profile()
         radar = profile.as_radar_dict()
-        assert len(radar) == 8
-
-    def test_radar_dict_contains_tactical_versatility(self) -> None:
-        profile = self._make_profile()
-        radar = profile.as_radar_dict()
-        assert "Tactical Versatility" in radar
+        assert len(radar) == 7
 
     def test_radar_dict_does_not_contain_financial_value(self) -> None:
         profile = self._make_profile()
@@ -99,7 +93,7 @@ class TestCapabilityProfile:
     def test_overall_confidence_computed_correctly(self) -> None:
         profile = self._make_profile()
         confidence = profile.overall_confidence()
-        # All 8 capabilities present — should be mean of their confidences
+        # All 7 capabilities present — should be mean of their confidences
         assert 0.0 <= confidence <= 1.0
 
     def test_overall_confidence_zero_when_no_capabilities(self) -> None:
@@ -211,8 +205,6 @@ class TestTeamProfile:
             avg_defensive_activity=65.0,
             avg_attacking_threat=71.0,
             avg_physical_availability=80.0,
-            avg_tactical_versatility=60.0,
         )
         radar = team.as_radar_dict()
-        assert len(radar) == 8
-        assert "Tactical Versatility" in radar
+        assert len(radar) == 7
