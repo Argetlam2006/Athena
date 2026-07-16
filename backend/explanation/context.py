@@ -28,18 +28,16 @@ class EvidencePacket:
 
 @dataclass
 class PlayerExplanationContext:
-    """
-    Structured context for explaining a single player profile.
-    """
+    """Context block for analyzing a specific player."""
 
     player_id: int
     player_name: str
     team_name: str
     position_group: str
-    age_years: float
+    birth_date: str | None
     minutes_played: float
 
-    archetype: str
+    archetype: str | None
     overall_confidence: float
 
     # Fully validated, structured evidence blocks

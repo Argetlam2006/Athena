@@ -4,7 +4,7 @@ shared/config/capabilities.py — Capability and metric definitions.
 
 from typing import Any
 
-CAPABILITIES: list[str] = [
+CORE_CAPABILITIES: list[str] = [
     "ball_progression",
     "chance_creation",
     "ball_security",

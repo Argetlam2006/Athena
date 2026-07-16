@@ -8,7 +8,7 @@ incorrectly, these tests catch it before the change breaks downstream modules.
 from __future__ import annotations
 
 from shared.config.capabilities import (
-    CAPABILITIES,
+    CORE_CAPABILITIES,
     CAPABILITY_DESCRIPTIONS,
     CAPABILITY_DISPLAY_NAMES,
     CAPABILITY_METRIC_MAP,
@@ -32,28 +32,28 @@ class TestCapabilityConstants:
     }
 
     def test_exactly_eight_capabilities(self) -> None:
-        assert len(CAPABILITIES) == 8, (
-            f"Expected 8 capabilities, got {len(CAPABILITIES)}"
+        assert len(CORE_CAPABILITIES) == 8, (
+            f"Expected 8 capabilities, got {len(CORE_CAPABILITIES)}"
         )
 
     def test_tactical_versatility_present(self) -> None:
         """Tactical Versatility replaces Financial Value — verify it exists."""
-        assert "tactical_versatility" in CAPABILITIES
+        assert "tactical_versatility" in CORE_CAPABILITIES
 
     def test_all_capabilities_have_display_names(self) -> None:
-        for cap in CAPABILITIES:
+        for cap in CORE_CAPABILITIES:
             assert cap in CAPABILITY_DISPLAY_NAMES, (
                 f"Missing display name for capability: {cap}"
             )
 
     def test_all_capabilities_have_descriptions(self) -> None:
-        for cap in CAPABILITIES:
+        for cap in CORE_CAPABILITIES:
             assert cap in CAPABILITY_DESCRIPTIONS, (
                 f"Missing description for capability: {cap}"
             )
 
     def test_all_capabilities_have_metric_maps(self) -> None:
-        for cap in CAPABILITIES:
+        for cap in CORE_CAPABILITIES:
             assert cap in CAPABILITY_METRIC_MAP, (
                 f"Missing metric map for capability: {cap}"
             )
@@ -62,7 +62,7 @@ class TestCapabilityConstants:
             )
 
     def test_all_capabilities_have_weights(self) -> None:
-        for cap in CAPABILITIES:
+        for cap in CORE_CAPABILITIES:
             assert cap in CAPABILITY_METRIC_WEIGHTS, (
                 f"Missing weights for capability: {cap}"
             )
@@ -85,7 +85,7 @@ class TestCapabilityConstants:
 
     def test_capability_set_matches_expected(self) -> None:
         """The exact set of capabilities must match the specification."""
-        assert set(CAPABILITIES) == self.EXPECTED_CAPABILITIES
+        assert set(CORE_CAPABILITIES) == self.EXPECTED_CAPABILITIES
 
 
 class TestWorkspaceConstants:

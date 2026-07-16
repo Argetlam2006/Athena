@@ -51,16 +51,10 @@ def build_player_context(profile: PlayerProfile) -> PlayerExplanationContext:
     if profile.capability_profile:
         cap_prof = profile.capability_profile
         # Map capabilities to packets
-        cap_names = [
-            "ball_progression",
-            "chance_creation",
-            "ball_security",
-            "press_resistance",
-            "defensive_activity",
-            "attacking_threat",
-            "physical_availability",
-            "tactical_versatility",
-        ]
+        from shared.config.capabilities import CORE_CAPABILITIES
+
+        cap_names = CORE_CAPABILITIES
+
 
         for cap_name in cap_names:
             cap_obj = getattr(cap_prof, cap_name)
@@ -91,7 +85,7 @@ def build_player_context(profile: PlayerProfile) -> PlayerExplanationContext:
         player_name=profile.player_name,
         team_name=profile.team_name,
         position_group=profile.position_group,
-        age_years=profile.age_years,
+        birth_date=profile.birth_date,
         minutes_played=profile.minutes_played,
         archetype=profile.archetype or "Unknown",
         overall_confidence=overall_conf,
@@ -104,16 +98,10 @@ def build_team_context(profile: TeamProfile) -> TeamExplanationContext:
     packets = []
 
     # We create evidence packets for the aggregated capabilities
-    cap_names = [
-        "ball_progression",
-        "chance_creation",
-        "ball_security",
-        "press_resistance",
-        "defensive_activity",
-        "attacking_threat",
-        "physical_availability",
-        "tactical_versatility",
-    ]
+    from shared.config.capabilities import CORE_CAPABILITIES
+
+    cap_names = CORE_CAPABILITIES
+
 
     for cap_name in cap_names:
         score = getattr(profile, f"avg_{cap_name}", None)

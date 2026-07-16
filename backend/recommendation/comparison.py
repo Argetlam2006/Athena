@@ -26,16 +26,10 @@ def compare_players(players: list[PlayerProfile]) -> ComparisonResult:
     if not players:
         return ComparisonResult(players=[])
 
-    capabilities = [
-        "ball_progression",
-        "chance_creation",
-        "ball_security",
-        "press_resistance",
-        "defensive_activity",
-        "attacking_threat",
-        "physical_availability",
-        "tactical_versatility",
-    ]
+    from shared.config.capabilities import CORE_CAPABILITIES
+
+    capabilities = CORE_CAPABILITIES
+
 
     cap_comparison: dict[str, dict[str, float]] = {}
 

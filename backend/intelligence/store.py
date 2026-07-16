@@ -91,7 +91,8 @@ class IntelligenceStore:
                 "minutes_played": p.minutes_played,
                 "age": p.age_years,
                 "competition": p.competition,
-                "season": p.season
+                "season": p.season,
+                "profile_type": p.profile_type
             } for p in players]
             pd.DataFrame(index_data).to_parquet(PLAYER_INDEX_PATH, engine="pyarrow", index=False)
         else:
@@ -153,6 +154,26 @@ class IntelligenceStore:
         finally:
             con.close()
 
+    def get_player_career(self, player_id: int) -> list[PlayerProfile]:
+        """O(1) lazy loading for all available career segments of a player."""
+        if not PLAYER_PROFILES_PATH.exists():
+            return []
+
+        con = duckdb.connect(":memory:")
+        try:
+            query = f"SELECT * FROM read_parquet('{PLAYER_PROFILES_PATH}') WHERE player_id = ?"
+            df = con.execute(query, [player_id]).fetchdf()
+            if df.empty:
+                return []
+
+            dicts = df.to_dict(orient="records")
+            return [_player_adapter.validate_python(d) for d in dicts]
+        except Exception as e:
+            logger.error(f"Failed to load player career {player_id}: {e}")
+            return []
+        finally:
+            con.close()
+
     def get_team(self, team_id: int) -> TeamProfile | None:
         """O(1) lazy loading for team profiles (JSON)."""
         json_path = TEAM_PROFILES_PATH.with_suffix(".json")
@@ -169,3 +190,54 @@ class IntelligenceStore:
         except Exception as e:
             logger.error(f"Failed to load team {team_id}: {e}")
             return None
+
+    def get_players_by_position(self, position: str) -> list[PlayerProfile]:
+        """Load profiles dynamically based on position to avoid full memory loads."""
+        if not PLAYER_PROFILES_PATH.exists():
+            return []
+
+        con = duckdb.connect(":memory:")
+        try:
+            query = f"SELECT * FROM read_parquet('{PLAYER_PROFILES_PATH}') WHERE position_group = ?"
+            df = con.execute(query, [position]).fetchdf()
+            if df.empty:
+                return []
+            dicts = df.to_dict(orient="records")
+            return [_player_adapter.validate_python(d) for d in dicts]
+        except Exception as e:
+            logger.error(f"Failed to retrieve players for position {position}: {e}")
+            return []
+        finally:
+            con.close()
+
+    def get_all_players(self) -> list[PlayerProfile]:
+        """[DEVELOPER ONLY / DEBUGGING] Load all PlayerProfiles."""
+        if not PLAYER_PROFILES_PATH.exists():
+            return []
+
+        con = duckdb.connect(":memory:")
+        try:
+            df = con.execute(f"SELECT * FROM read_parquet('{PLAYER_PROFILES_PATH}')").fetchdf()
+            if df.empty:
+                return []
+            dicts = df.to_dict(orient="records")
+            return [_player_adapter.validate_python(d) for d in dicts]
+        except Exception as e:
+            logger.error(f"Failed to retrieve all players: {e}")
+            return []
+        finally:
+            con.close()
+
+    def get_all_teams(self) -> list[TeamProfile]:
+        """Load all TeamProfiles from the JSON store."""
+        json_path = TEAM_PROFILES_PATH.with_suffix(".json")
+        if not json_path.exists():
+            return []
+
+        try:
+            with open(json_path) as f:
+                teams = json.load(f)
+            return [_team_adapter.validate_python(t) for t in teams]
+        except Exception as e:
+            logger.error(f"Failed to load teams: {e}")
+            return []

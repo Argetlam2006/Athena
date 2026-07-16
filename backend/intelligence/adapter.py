@@ -40,9 +40,9 @@ def map_player_summary_to_vectors(df: pd.DataFrame) -> list[PlayerFeatureVector]
     """
     vectors = []
 
-    # Pre-calculate required columns to avoid KeyErrors and handle defaults
-    # Replace any NULLs (which become NaN/None in pandas) with 0.0 to satisfy schemas
-    df = df.fillna(0.0)
+    # Fill NA with 0.0 for all metrics except the contextual ones which can be legitimately missing
+    cols_to_fill = [c for c in df.columns if c not in ('minutes_played', 'matches_played', 'birth_date')]
+    df[cols_to_fill] = df[cols_to_fill].fillna(0.0)
 
     for _, row in df.iterrows():
         # Handle cases where position_played_count might not be in the view
@@ -53,64 +53,58 @@ def map_player_summary_to_vectors(df: pd.DataFrame) -> list[PlayerFeatureVector]
 
         # Age calculation
         birth_date = row.get("birth_date")
-        age_years = 0.0
+        bd_str = None
         if pd.notna(birth_date):
-            try:
-                birth_year = pd.to_datetime(birth_date).year
-                season_str = str(row["season_name"])
-                season_year = int(season_str.split("/")[0]) if "/" in season_str else int(season_str)
-                age_years = float(season_year - birth_year)
-            except Exception:
-                pass
+            bd_str = str(birth_date).split(" ")[0]
 
-        vector = PlayerFeatureVector(
-            player_id=int(row["player_id"]),
-            player_name=str(row["player_name"]),
-            season=str(row["season_name"]),
-            competition=str(row["competition_name"]),
-            position_group=map_position_to_group(row.get("position_name")),
-            minutes_played=float(row["minutes_played"]),
-            matches_played=int(row["matches_played"]),
-            team_name=str(row.get("team_name", "")),
-            age_years=age_years,
+        mins = row.get("minutes_played")
+        minutes_played = None if pd.isna(mins) else float(mins)
 
-            # Ball Progression (4)
-            progressive_passes_p90=float(row.get("progressive_passes_p90", 0.0)),
-            progressive_carries_p90=float(row.get("progressive_carries_p90", 0.0)),
-            carry_distance_p90=float(row.get("carry_distance_p90", 0.0)),
-            switches_p90=float(row.get("switches_p90", 0.0)),
+        matches = row.get("matches_played")
+        matches_played = None if pd.isna(matches) else int(matches)
 
-            # Chance Creation (4)
-            shot_assists_p90=float(row.get("shot_assists_p90", 0.0)),
-            goal_assists_p90=float(row.get("goal_assists_p90", 0.0)),
-            through_balls_p90=float(row.get("through_balls_p90", 0.0)),
-            crosses_p90=float(row.get("crosses_p90", 0.0)),
-
-            # Ball Security (4)
-            pass_accuracy_pct=float(row.get("pass_accuracy_pct", 0.0)),
-            dribble_success_pct=float(row.get("dribble_success_pct", 0.0)),
-            passes_p90=float(row.get("passes_p90", 0.0)),
-            avg_pass_length_m=float(row.get("avg_pass_length_m", 0.0)),
-
-            # Press Resistance (2)
-            pressure_pct=float(row.get("pressure_pct", 0.0)),
-            events_under_pressure_p90=float(row.get("events_under_pressure_p90", 0.0)),
-
-            # Defensive Activity (3)
-            pressures_p90=float(row.get("pressures_p90", 0.0)),
-            recoveries_p90=float(row.get("recoveries_p90", 0.0)),
-            clearances_p90=float(row.get("clearances_p90", 0.0)),
-
-            # Attacking Threat (5)
-            npxg_p90=float(row.get("npxg_p90", 0.0)),
-            goals_p90=float(row.get("goals_p90", 0.0)),
-            xg_per_shot=float(row.get("xg_per_shot", 0.0)),
-            shot_accuracy_pct=float(row.get("shot_accuracy_pct", 0.0)),
-            goals_minus_xg=float(row.get("goals_minus_xg", 0.0)),
-
-            # Tactical Versatility (1)
-            positions_played_count=int(positions_played_count),
+        vectors.append(
+            PlayerFeatureVector(
+                player_id=row.get("player_id", 0),
+                player_name=row.get("player_name", "Unknown"),
+                season=row.get("season_name", "Unknown"),
+                competition=row.get("competition_name", "Unknown"),
+                position_group=map_position_to_group(row.get("position_name")),
+                minutes_played=minutes_played,
+                matches_played=matches_played,
+                team_name=row.get("team_name", "Unknown"),
+                birth_date=bd_str,
+                # Ball Progression
+                progressive_passes_p90=row.get("progressive_passes_p90", 0.0),
+                progressive_carries_p90=row.get("progressive_carries_p90", 0.0),
+                carry_distance_p90=row.get("carry_distance_p90", 0.0),
+                switches_p90=row.get("switches_p90", 0.0),
+                # Chance Creation
+                shot_assists_p90=row.get("shot_assists_p90", 0.0),
+                goal_assists_p90=row.get("goal_assists_p90", 0.0),
+                through_balls_p90=row.get("through_balls_p90", 0.0),
+                crosses_p90=row.get("crosses_p90", 0.0),
+                # Ball Security
+                pass_accuracy_pct=row.get("pass_accuracy_pct", 0.0),
+                dribble_success_pct=row.get("dribble_success_pct", 0.0),
+                passes_p90=row.get("passes_p90", 0.0),
+                avg_pass_length_m=row.get("avg_pass_length_m", 0.0),
+                # Press Resistance
+                pressure_pct=row.get("pressure_pct", 0.0),
+                events_under_pressure_p90=row.get("events_under_pressure_p90", 0.0),
+                # Defensive Activity
+                pressures_p90=row.get("pressures_p90", 0.0),
+                recoveries_p90=row.get("recoveries_p90", 0.0),
+                clearances_p90=row.get("clearances_p90", 0.0),
+                # Attacking Threat
+                npxg_p90=row.get("npxg_p90", 0.0),
+                goals_p90=row.get("goals_p90", 0.0),
+                xg_per_shot=row.get("xg_per_shot", 0.0),
+                shot_accuracy_pct=row.get("shot_accuracy_pct", 0.0),
+                goals_minus_xg=row.get("goals_minus_xg", 0.0),
+                # Contextual
+                positions_played_count=int(positions_played_count),
+            )
         )
-        vectors.append(vector)
 
     return vectors

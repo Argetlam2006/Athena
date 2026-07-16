@@ -34,16 +34,10 @@ def aggregate_capabilities(players: Sequence[PlayerProfile]) -> dict[str, float]
     if total_matches == 0:
         return {}
 
-    capabilities = [
-        "ball_progression",
-        "chance_creation",
-        "ball_security",
-        "press_resistance",
-        "defensive_activity",
-        "attacking_threat",
-        "physical_availability",
-        "tactical_versatility",
-    ]
+    from shared.config.capabilities import CORE_CAPABILITIES
+
+    capabilities = CORE_CAPABILITIES
+
 
     agg_scores = {}
     for cap in capabilities:
@@ -72,16 +66,9 @@ def compute_squad_depth(players: Sequence[PlayerProfile]) -> float:
     if not eligible:
         return 0.0
 
-    capabilities = [
-        "ball_progression",
-        "chance_creation",
-        "ball_security",
-        "press_resistance",
-        "defensive_activity",
-        "attacking_threat",
-        "physical_availability",
-        "tactical_versatility",
-    ]
+    from shared.config.capabilities import CORE_CAPABILITIES
+    capabilities = CORE_CAPABILITIES
+
 
     std_devs = []
     for cap in capabilities:
@@ -137,6 +124,24 @@ def build_team_profile(
     """Aggregate a squad of PlayerProfiles into a TeamProfile."""
     agg = aggregate_capabilities(players)
     style = determine_playing_style(agg)
+    
+    # Deterministic Strengths & Weaknesses
+    # Sort capabilities by score
+    sorted_caps = sorted([(k, v) for k, v in agg.items() if v > 0], key=lambda x: x[1], reverse=True)
+    
+    strengths = []
+    weaknesses = []
+    
+    if sorted_caps:
+        # Top 2 are strengths if they are above 60
+        for cap, score in sorted_caps[:2]:
+            if score >= 60.0:
+                strengths.append(cap.replace("_", " ").title())
+                
+        # Bottom 2 are weaknesses if they are below 50
+        for cap, score in sorted_caps[-2:]:
+            if score < 50.0:
+                weaknesses.append(cap.replace("_", " ").title())
 
     return TeamProfile(
         team_id=team_id,
@@ -153,4 +158,6 @@ def build_team_profile(
         avg_physical_availability=agg.get("physical_availability", 0.0),
         avg_tactical_versatility=agg.get("tactical_versatility", 0.0),
         style_label=style,
+        strengths=strengths,
+        weaknesses=weaknesses
     )

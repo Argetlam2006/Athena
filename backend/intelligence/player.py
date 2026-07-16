@@ -94,15 +94,11 @@ def build_capability_profile(
     """Build the 8-axis capability profile from normalized metrics."""
     confidence_val = calculate_confidence(vector.matches_played)
 
+    from shared.config.capabilities import CORE_CAPABILITIES
+
     # Standard capabilities
-    standard_caps = [
-        "ball_progression",
-        "chance_creation",
-        "ball_security",
-        "press_resistance",
-        "defensive_activity",
-        "attacking_threat",
-    ]
+    standard_caps = CORE_CAPABILITIES[:6]
+
 
     cap_scores: dict[str, CapabilityScore] = {}
     for cap in standard_caps:
@@ -152,7 +148,60 @@ def build_capability_profile(
         attacking_threat=cap_scores["attacking_threat"],
         physical_availability=cap_scores["physical_availability"],
         tactical_versatility=cap_scores["tactical_versatility"],
+        overall_rating=compute_overall_rating(cap_scores, vector.position_group)
     )
+
+def compute_overall_rating(scores: dict, position_group: str) -> float:
+    weights = {
+        "Forward": {
+            "attacking_threat": 3.5,
+            "chance_creation": 2.5,
+            "ball_progression": 1.5,
+            "ball_security": 1.5,
+            "press_resistance": 1.0,
+            "defensive_activity": 0.5,
+            "physical_availability": 1.0,
+            "tactical_versatility": 0.5
+        },
+        "Midfielder": {
+            "ball_progression": 3.0,
+            "ball_security": 3.0,
+            "press_resistance": 2.5,
+            "chance_creation": 2.0,
+            "defensive_activity": 1.5,
+            "attacking_threat": 1.0,
+            "physical_availability": 1.0,
+            "tactical_versatility": 0.5
+        },
+        "Defender": {
+            "ball_security": 3.0,
+            "ball_progression": 2.5,
+            "defensive_activity": 2.0,
+            "physical_availability": 1.5,
+            "press_resistance": 1.5,
+            "chance_creation": 0.5,
+            "attacking_threat": 0.2,
+            "tactical_versatility": 0.5
+        }
+    }
+
+    pos_weights = weights.get(position_group)
+    if not pos_weights:
+        # Default balanced weights
+        pos_weights = dict.fromkeys(scores.keys(), 1.0)
+
+    total_score = 0.0
+    total_weight = 0.0
+
+    for cap_name, weight in pos_weights.items():
+        if cap_name in scores and scores[cap_name] is not None:
+            total_score += scores[cap_name].score * weight
+            total_weight += weight
+
+    if total_weight == 0:
+        return 0.0
+
+    return round(total_score / total_weight, 1)
 
 
 def build_player_profile(
@@ -190,7 +239,8 @@ def build_player_profile(
         team_name=vector.team_name,
         competition=vector.competition,
         season=vector.season,
-        age_years=vector.age_years,
+        profile_type=vector.profile_type,
+        birth_date=vector.birth_date,
         minutes_played=vector.minutes_played,
         capability_profile=cap_profile,
         feature_vector=vector,

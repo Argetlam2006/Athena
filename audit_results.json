@@ -1,0 +1,4046 @@
+{
+  "WorldClass_vs_Average": {
+    "Messi": {
+      "player": {
+        "player_id": 5503,
+        "player_name": "Lionel Andr\u00e9s Messi Cuccittini",
+        "position_group": "Forward",
+        "team_name": "Multiple",
+        "competition": "All Competitions",
+        "season": "Career",
+        "profile_type": "career",
+        "birth_date": null,
+        "minutes_played": 50310.0,
+        "capability_profile": {
+          "player_id": 5503,
+          "player_name": "Lionel Andr\u00e9s Messi Cuccittini",
+          "season": "Career",
+          "competition": "All Competitions",
+          "position_group": "Forward",
+          "minutes_played": 50310.0,
+          "profile_type": "competition",
+          "ball_progression": {
+            "capability": "ball_progression",
+            "score": 96.00437876299944,
+            "confidence": 1.0,
+            "evidence": {
+              "progressive_passes_p90": 99.48002189381499,
+              "progressive_carries_p90": 95.8128078817734,
+              "carry_distance_p90": 99.09688013136288,
+              "switches_p90": 85.24904214559386
+            }
+          },
+          "chance_creation": {
+            "capability": "chance_creation",
+            "score": 90.07662835249042,
+            "confidence": 1.0,
+            "evidence": {
+              "shot_assists_p90": 90.1751505199781,
+              "goal_assists_p90": 94.60864805692391,
+              "through_balls_p90": 99.75369458128078,
+              "crosses_p90": 56.73234811165846
+            }
+          },
+          "ball_security": {
+            "capability": "ball_security",
+            "score": 79.46360153256705,
+            "confidence": 1.0,
+            "evidence": {
+              "pass_accuracy_pct": 91.68035030103997,
+              "dribble_success_pct": 50.0,
+              "passes_p90": 99.37055281882868,
+              "avg_pass_length_m": 62.178434592227696
+            }
+          },
+          "press_resistance": {
+            "capability": "press_resistance",
+            "score": 81.21237000547345,
+            "confidence": 1.0,
+            "evidence": {
+              "pressure_pct": 63.71100164203612,
+              "events_under_pressure_p90": 98.71373836891078
+            }
+          },
+          "defensive_activity": {
+            "capability": "defensive_activity",
+            "score": 22.2495894909688,
+            "confidence": 1.0,
+            "evidence": {
+              "pressures_p90": 5.938697318007663,
+              "recoveries_p90": 47.755883962780516,
+              "clearances_p90": 22.687465790914064
+            }
+          },
+          "attacking_threat": {
+            "capability": "attacking_threat",
+            "score": 86.52025177887245,
+            "confidence": 1.0,
+            "evidence": {
+              "npxg_p90": 92.74767378215654,
+              "goals_p90": 95.97701149425288,
+              "xg_per_shot": 69.70443349753694,
+              "shot_accuracy_pct": 74.16529830322933,
+              "goals_minus_xg": 99.97263273125341
+            }
+          },
+          "physical_availability": {
+            "capability": "physical_availability",
+            "score": 100.0,
+            "confidence": 1.0,
+            "evidence": {
+              "coverage_rate_pct": 1584.2105263157896,
+              "matches_played_pct": 99.97263273125341
+            }
+          },
+          "tactical_versatility": {
+            "capability": "tactical_versatility",
+            "score": 63.17057740425427,
+            "confidence": 1.0,
+            "evidence": {
+              "positional_breadth": 100.0,
+              "capability_breadth": 51.39546603765833,
+              "phase_balance": 50.321117111974104
+            }
+          },
+          "overall_rating": 84.6
+        },
+        "feature_vector": {
+          "player_id": 5503,
+          "player_name": "Lionel Andr\u00e9s Messi Cuccittini",
+          "season": "Career",
+          "competition": "All Competitions",
+          "position_group": "Forward",
+          "profile_type": "career",
+          "minutes_played": 50310.0,
+          "matches_played": 602,
+          "team_name": "Multiple",
+          "birth_date": null,
+          "progressive_passes_p90": 23.988,
+          "progressive_carries_p90": 7.9,
+          "carry_distance_p90": 435.833,
+          "switches_p90": 1.379,
+          "shot_assists_p90": 1.873,
+          "goal_assists_p90": 0.393,
+          "through_balls_p90": 2.1,
+          "crosses_p90": 1.247,
+          "pass_accuracy_pct": 81.5,
+          "dribble_success_pct": 0.0,
+          "passes_p90": 59.092,
+          "avg_pass_length_m": 16.8,
+          "pressure_pct": 29.5,
+          "events_under_pressure_p90": 70.328,
+          "pressures_p90": 9.513,
+          "recoveries_p90": 3.963,
+          "clearances_p90": 0.019,
+          "npxg_p90": 0.491,
+          "goals_p90": 0.909,
+          "xg_per_shot": 0.136,
+          "shot_accuracy_pct": 46.3,
+          "goals_minus_xg": 145.215,
+          "npxg_per_shot": 0.0,
+          "raw_metrics": null,
+          "positions_played_count": 6
+        },
+        "archetype": "Elite Goal Scorer",
+        "archetype_description": "Top 15% of position peers for direct goal threat",
+        "decision_signals": [],
+        "similar_players": []
+      },
+      "primary_role": "Elite Goal Scorer",
+      "elite_traits": [
+        {
+          "capability_name": "Physical Availability",
+          "score": 100.0,
+          "drivers": {
+            "coverage_rate_pct": "100th percentile",
+            "matches_played_pct": "100th percentile"
+          }
+        },
+        {
+          "capability_name": "Ball Progression",
+          "score": 96.0,
+          "drivers": {
+            "progressive_passes_p90": "99th percentile",
+            "progressive_carries_p90": "96th percentile",
+            "carry_distance_p90": "99th percentile",
+            "switches_p90": "85th percentile"
+          }
+        },
+        {
+          "capability_name": "Chance Creation",
+          "score": 90.1,
+          "drivers": {
+            "shot_assists_p90": "90th percentile",
+            "goal_assists_p90": "95th percentile",
+            "through_balls_p90": "100th percentile",
+            "crosses_p90": "57th percentile"
+          }
+        }
+      ],
+      "weak_areas": [
+        {
+          "capability_name": "Defensive Activity",
+          "score": 22.2,
+          "drivers": {
+            "pressures_p90": "6th percentile",
+            "recoveries_p90": "48th percentile",
+            "clearances_p90": "32th percentile"
+          }
+        }
+      ],
+      "comparable_archetype": null
+    },
+    "Average Winger": {
+      "player": {
+        "player_id": 5207,
+        "player_name": "Cristiano Ronaldo dos Santos Aveiro",
+        "position_group": "Forward",
+        "team_name": "Real Madrid",
+        "competition": "La Liga",
+        "season": "2015/2016",
+        "profile_type": "competition",
+        "birth_date": null,
+        "minutes_played": 3187.0,
+        "capability_profile": {
+          "player_id": 5207,
+          "player_name": "Cristiano Ronaldo dos Santos Aveiro",
+          "season": "2015/2016",
+          "competition": "La Liga",
+          "position_group": "Forward",
+          "minutes_played": 3187.0,
+          "profile_type": "competition",
+          "ball_progression": {
+            "capability": "ball_progression",
+            "score": 64.98413793103448,
+            "confidence": 1.0,
+            "evidence": {
+              "progressive_passes_p90": 52.06896551724138,
+              "progressive_carries_p90": 80.67586206896551,
+              "carry_distance_p90": 70.46896551724137,
+              "switches_p90": 53.02068965517242
+            }
+          },
+          "chance_creation": {
+            "capability": "chance_creation",
+            "score": 67.20689655172414,
+            "confidence": 1.0,
+            "evidence": {
+              "shot_assists_p90": 53.668965517241375,
+              "goal_assists_p90": 86.81379310344828,
+              "through_balls_p90": 65.26896551724138,
+              "crosses_p90": 66.41379310344827
+            }
+          },
+          "ball_security": {
+            "capability": "ball_security",
+            "score": 64.54896551724138,
+            "confidence": 1.0,
+            "evidence": {
+              "pass_accuracy_pct": 72.20689655172414,
+              "dribble_success_pct": 63.724137931034484,
+              "passes_p90": 71.58620689655173,
+              "avg_pass_length_m": 17.76551724137931
+            }
+          },
+          "press_resistance": {
+            "capability": "press_resistance",
+            "score": 24.503448275862066,
+            "confidence": 1.0,
+            "evidence": {
+              "pressure_pct": 21.117241379310343,
+              "events_under_pressure_p90": 27.88965517241379
+            }
+          },
+          "defensive_activity": {
+            "capability": "defensive_activity",
+            "score": 11.05448275862069,
+            "confidence": 1.0,
+            "evidence": {
+              "pressures_p90": 1.3379310344827586,
+              "recoveries_p90": 15.558620689655173,
+              "clearances_p90": 48.73103448275862
+            }
+          },
+          "attacking_threat": {
+            "capability": "attacking_threat",
+            "score": 86.13310344827586,
+            "confidence": 1.0,
+            "evidence": {
+              "npxg_p90": 95.48965517241379,
+              "goals_p90": 94.38620689655173,
+              "xg_per_shot": 72.71724137931035,
+              "shot_accuracy_pct": 64.8,
+              "goals_minus_xg": 97.03448275862068
+            }
+          },
+          "physical_availability": {
+            "capability": "physical_availability",
+            "score": 96.51658802177857,
+            "confidence": 1.0,
+            "evidence": {
+              "coverage_rate_pct": 94.73684210526315,
+              "matches_played_pct": 99.18620689655172
+            }
+          },
+          "tactical_versatility": {
+            "capability": "tactical_versatility",
+            "score": 42.516819268202646,
+            "confidence": 1.0,
+            "evidence": {
+              "positional_breadth": 70.0,
+              "capability_breadth": 42.599668644353585,
+              "phase_balance": 22.791290887032023
+            }
+          },
+          "overall_rating": 67.6
+        },
+        "feature_vector": {
+          "player_id": 5207,
+          "player_name": "Cristiano Ronaldo dos Santos Aveiro",
+          "season": "2015/2016",
+          "competition": "La Liga",
+          "position_group": "Forward",
+          "profile_type": "competition",
+          "minutes_played": 3187.0,
+          "matches_played": 36,
+          "team_name": "Real Madrid",
+          "birth_date": null,
+          "progressive_passes_p90": 8.39,
+          "progressive_carries_p90": 5.79,
+          "carry_distance_p90": 227.5,
+          "switches_p90": 0.508,
+          "shot_assists_p90": 0.96,
+          "goal_assists_p90": 0.282,
+          "through_balls_p90": 0.169,
+          "crosses_p90": 1.638,
+          "pass_accuracy_pct": 76.6,
+          "dribble_success_pct": 56.8,
+          "passes_p90": 32.36,
+          "avg_pass_length_m": 13.99,
+          "pressure_pct": 22.7,
+          "events_under_pressure_p90": 32.48,
+          "pressures_p90": 4.83,
+          "recoveries_p90": 2.17,
+          "clearances_p90": 0.4,
+          "npxg_p90": 0.681,
+          "goals_p90": 0.988,
+          "xg_per_shot": 0.14,
+          "shot_accuracy_pct": 42.1,
+          "goals_minus_xg": 3.032,
+          "npxg_per_shot": 0.0,
+          "raw_metrics": null,
+          "positions_played_count": 3
+        },
+        "archetype": "Elite Goal Scorer",
+        "archetype_description": "Top 15% of position peers for direct goal threat",
+        "decision_signals": [],
+        "similar_players": []
+      },
+      "primary_role": "Elite Goal Scorer",
+      "elite_traits": [
+        {
+          "capability_name": "Physical Availability",
+          "score": 96.5,
+          "drivers": {
+            "coverage_rate_pct": "97th percentile",
+            "matches_played_pct": "99th percentile"
+          }
+        },
+        {
+          "capability_name": "Attacking Threat",
+          "score": 86.1,
+          "drivers": {
+            "npxg_p90": "96th percentile",
+            "goals_p90": "94th percentile",
+            "xg_per_shot": "73th percentile",
+            "shot_accuracy_pct": "65th percentile",
+            "goals_minus_xg": "97th percentile"
+          }
+        }
+      ],
+      "weak_areas": [
+        {
+          "capability_name": "Defensive Activity",
+          "score": 11.1,
+          "drivers": {
+            "pressures_p90": "1th percentile",
+            "recoveries_p90": "16th percentile",
+            "clearances_p90": "49th percentile"
+          }
+        },
+        {
+          "capability_name": "Press Resistance",
+          "score": 24.5,
+          "drivers": {
+            "pressure_pct": "21th percentile",
+            "events_under_pressure_p90": "28th percentile"
+          }
+        }
+      ],
+      "comparable_archetype": null
+    },
+    "Rodri": {
+      "player": {
+        "player_id": 5510,
+        "player_name": "Lucas Rodrigo Biglia",
+        "position_group": "Midfielder",
+        "team_name": "Multiple",
+        "competition": "All Competitions",
+        "season": "Career",
+        "profile_type": "career",
+        "birth_date": null,
+        "minutes_played": 2354.0,
+        "capability_profile": {
+          "player_id": 5510,
+          "player_name": "Lucas Rodrigo Biglia",
+          "season": "Career",
+          "competition": "All Competitions",
+          "position_group": "Midfielder",
+          "minutes_played": 2354.0,
+          "profile_type": "competition",
+          "ball_progression": {
+            "capability": "ball_progression",
+            "score": 84.71822995461422,
+            "confidence": 1.0,
+            "evidence": {
+              "progressive_passes_p90": 94.76172465960666,
+              "progressive_carries_p90": 71.00983358547656,
+              "carry_distance_p90": 81.25945537065053,
+              "switches_p90": 96.72844175491679
+            }
+          },
+          "chance_creation": {
+            "capability": "chance_creation",
+            "score": 71.8229954614221,
+            "confidence": 1.0,
+            "evidence": {
+              "shot_assists_p90": 89.16414523449319,
+              "goal_assists_p90": 71.67170953101362,
+              "through_balls_p90": 43.589258698940995,
+              "crosses_p90": 59.379727685325264
+            }
+          },
+          "ball_security": {
+            "capability": "ball_security",
+            "score": 76.2301437216339,
+            "confidence": 1.0,
+            "evidence": {
+              "pass_accuracy_pct": 82.2428139183056,
+              "dribble_success_pct": 50.0,
+              "passes_p90": 97.33358547655068,
+              "avg_pass_length_m": 80.08698940998488
+            }
+          },
+          "press_resistance": {
+            "capability": "press_resistance",
+            "score": 53.37556732223903,
+            "confidence": 1.0,
+            "evidence": {
+              "pressure_pct": 27.04236006051437,
+              "events_under_pressure_p90": 79.70877458396369
+            }
+          },
+          "defensive_activity": {
+            "capability": "defensive_activity",
+            "score": 79.55654311649016,
+            "confidence": 1.0,
+            "evidence": {
+              "pressures_p90": 73.99773071104387,
+              "recoveries_p90": 92.17095310136158,
+              "clearances_p90": 69.98865355521936
+            }
+          },
+          "attacking_threat": {
+            "capability": "attacking_threat",
+            "score": 57.142586989409985,
+            "confidence": 1.0,
+            "evidence": {
+              "npxg_p90": 27.57186081694402,
+              "goals_p90": 74.2624810892587,
+              "xg_per_shot": 74.82980332829047,
+              "shot_accuracy_pct": 62.21633888048411,
+              "goals_minus_xg": 92.56807866868382
+            }
+          },
+          "physical_availability": {
+            "capability": "physical_availability",
+            "score": 77.81869575603153,
+            "confidence": 1.0,
+            "evidence": {
+              "coverage_rate_pct": 73.68421052631578,
+              "matches_played_pct": 84.02042360060514
+            }
+          },
+          "tactical_versatility": {
+            "capability": "tactical_versatility",
+            "score": 82.3681020496978,
+            "confidence": 1.0,
+            "evidence": {
+              "positional_breadth": 70.0,
+              "capability_breadth": 78.13469176941936,
+              "phase_balance": 96.04064383408587
+            }
+          },
+          "overall_rating": 72.8
+        },
+        "feature_vector": {
+          "player_id": 5510,
+          "player_name": "Lucas Rodrigo Biglia",
+          "season": "Career",
+          "competition": "All Competitions",
+          "position_group": "Midfielder",
+          "profile_type": "career",
+          "minutes_played": 2354.0,
+          "matches_played": 28,
+          "team_name": "Multiple",
+          "birth_date": null,
+          "progressive_passes_p90": 27.073,
+          "progressive_carries_p90": 4.202,
+          "carry_distance_p90": 270.471,
+          "switches_p90": 3.823,
+          "shot_assists_p90": 1.797,
+          "goal_assists_p90": 0.076,
+          "through_balls_p90": 0.038,
+          "crosses_p90": 0.88,
+          "pass_accuracy_pct": 85.0,
+          "dribble_success_pct": 0.0,
+          "passes_p90": 74.97,
+          "avg_pass_length_m": 21.1,
+          "pressure_pct": 19.5,
+          "events_under_pressure_p90": 46.222,
+          "pressures_p90": 24.511,
+          "recoveries_p90": 8.483,
+          "clearances_p90": 1.642,
+          "npxg_p90": 0.022,
+          "goals_p90": 0.114,
+          "xg_per_shot": 0.091,
+          "shot_accuracy_pct": 31.6,
+          "goals_minus_xg": 1.266,
+          "npxg_per_shot": 0.0,
+          "raw_metrics": null,
+          "positions_played_count": 3
+        },
+        "archetype": "Box-to-Box Midfielder",
+        "archetype_description": "Contributes strongly in both progression and defensive phases",
+        "decision_signals": [],
+        "similar_players": []
+      },
+      "primary_role": "Box-to-Box Midfielder",
+      "elite_traits": [
+        {
+          "capability_name": "Ball Progression",
+          "score": 84.7,
+          "drivers": {
+            "progressive_passes_p90": "95th percentile",
+            "progressive_carries_p90": "71th percentile",
+            "carry_distance_p90": "81th percentile",
+            "switches_p90": "97th percentile"
+          }
+        },
+        {
+          "capability_name": "Defensive Activity",
+          "score": 79.6,
+          "drivers": {
+            "pressures_p90": "74th percentile",
+            "recoveries_p90": "92th percentile",
+            "clearances_p90": "70th percentile"
+          }
+        },
+        {
+          "capability_name": "Physical Availability",
+          "score": 77.8,
+          "drivers": {
+            "coverage_rate_pct": "92th percentile",
+            "matches_played_pct": "84th percentile"
+          }
+        }
+      ],
+      "weak_areas": [],
+      "comparable_archetype": null
+    },
+    "Average DM": {
+      "player": {
+        "player_id": 3814,
+        "player_name": "Riyad Mahrez",
+        "position_group": "Midfielder",
+        "team_name": "Leicester City",
+        "competition": "Premier League",
+        "season": "2015/2016",
+        "profile_type": "competition",
+        "birth_date": null,
+        "minutes_played": 3091.0,
+        "capability_profile": {
+          "player_id": 3814,
+          "player_name": "Riyad Mahrez",
+          "season": "2015/2016",
+          "competition": "Premier League",
+          "position_group": "Midfielder",
+          "minutes_played": 3091.0,
+          "profile_type": "competition",
+          "ball_progression": {
+            "capability": "ball_progression",
+            "score": 70.90240083507305,
+            "confidence": 1.0,
+            "evidence": {
+              "progressive_passes_p90": 49.68684759916493,
+              "progressive_carries_p90": 91.82672233820459,
+              "carry_distance_p90": 85.37578288100208,
+              "switches_p90": 57.108559498956154
+            }
+          },
+          "chance_creation": {
+            "capability": "chance_creation",
+            "score": 86.74321503131524,
+            "confidence": 1.0,
+            "evidence": {
+              "shot_assists_p90": 83.62212943632568,
+              "goal_assists_p90": 90.92901878914404,
+              "through_balls_p90": 85.37578288100208,
+              "crosses_p90": 89.40501043841336
+            }
+          },
+          "ball_security": {
+            "capability": "ball_security",
+            "score": 34.194154488517746,
+            "confidence": 1.0,
+            "evidence": {
+              "pass_accuracy_pct": 22.776617954070982,
+              "dribble_success_pct": 54.95824634655533,
+              "passes_p90": 33.95615866388309,
+              "avg_pass_length_m": 39.7286012526096
+            }
+          },
+          "press_resistance": {
+            "capability": "press_resistance",
+            "score": 86.50835073068893,
+            "confidence": 1.0,
+            "evidence": {
+              "pressure_pct": 87.41127348643006,
+              "events_under_pressure_p90": 85.60542797494782
+            }
+          },
+          "defensive_activity": {
+            "capability": "defensive_activity",
+            "score": 45.591336116910234,
+            "confidence": 1.0,
+            "evidence": {
+              "pressures_p90": 33.298538622129435,
+              "recoveries_p90": 64.89561586638831,
+              "clearances_p90": 39.46764091858038
+            }
+          },
+          "attacking_threat": {
+            "capability": "attacking_threat",
+            "score": 89.86586638830897,
+            "confidence": 1.0,
+            "evidence": {
+              "npxg_p90": 89.4572025052192,
+              "goals_p90": 94.48851774530272,
+              "xg_per_shot": 89.77035490605428,
+              "shot_accuracy_pct": 79.93736951983298,
+              "goals_minus_xg": 99.78079331941545
+            }
+          },
+          "physical_availability": {
+            "capability": "physical_availability",
+            "score": 98.29579167124493,
+            "confidence": 1.0,
+            "evidence": {
+              "coverage_rate_pct": 97.36842105263158,
+              "matches_played_pct": 99.68684759916493
+            }
+          },
+          "tactical_versatility": {
+            "capability": "tactical_versatility",
+            "score": 73.36812441955811,
+            "confidence": 1.0,
+            "evidence": {
+              "positional_breadth": 100.0,
+              "capability_breadth": 54.915690152109576,
+              "phase_balance": 75.43385245346937
+            }
+          },
+          "overall_rating": 68.8
+        },
+        "feature_vector": {
+          "player_id": 3814,
+          "player_name": "Riyad Mahrez",
+          "season": "2015/2016",
+          "competition": "Premier League",
+          "position_group": "Midfielder",
+          "profile_type": "competition",
+          "minutes_played": 3091.0,
+          "matches_played": 37,
+          "team_name": "Leicester City",
+          "birth_date": null,
+          "progressive_passes_p90": 13.92,
+          "progressive_carries_p90": 7.02,
+          "carry_distance_p90": 296.1,
+          "switches_p90": 1.165,
+          "shot_assists_p90": 1.631,
+          "goal_assists_p90": 0.291,
+          "through_balls_p90": 0.699,
+          "crosses_p90": 2.271,
+          "pass_accuracy_pct": 69.5,
+          "dribble_success_pct": 56.4,
+          "passes_p90": 34.18,
+          "avg_pass_length_m": 18.23,
+          "pressure_pct": 29.9,
+          "events_under_pressure_p90": 50.63,
+          "pressures_p90": 17.09,
+          "recoveries_p90": 6.09,
+          "clearances_p90": 0.73,
+          "npxg_p90": 0.209,
+          "goals_p90": 0.495,
+          "xg_per_shot": 0.14,
+          "shot_accuracy_pct": 44.8,
+          "goals_minus_xg": 4.836,
+          "npxg_per_shot": 0.0,
+          "raw_metrics": null,
+          "positions_played_count": 4
+        },
+        "archetype": "Elite Goal Scorer",
+        "archetype_description": "Top 15% of position peers for direct goal threat",
+        "decision_signals": [],
+        "similar_players": []
+      },
+      "primary_role": "Elite Goal Scorer",
+      "elite_traits": [
+        {
+          "capability_name": "Physical Availability",
+          "score": 98.3,
+          "drivers": {
+            "coverage_rate_pct": "98th percentile",
+            "matches_played_pct": "100th percentile"
+          }
+        },
+        {
+          "capability_name": "Attacking Threat",
+          "score": 89.9,
+          "drivers": {
+            "npxg_p90": "89th percentile",
+            "goals_p90": "94th percentile",
+            "xg_per_shot": "90th percentile",
+            "shot_accuracy_pct": "80th percentile",
+            "goals_minus_xg": "100th percentile"
+          }
+        },
+        {
+          "capability_name": "Chance Creation",
+          "score": 86.7,
+          "drivers": {
+            "shot_assists_p90": "84th percentile",
+            "goal_assists_p90": "91th percentile",
+            "through_balls_p90": "85th percentile",
+            "crosses_p90": "89th percentile"
+          }
+        }
+      ],
+      "weak_areas": [
+        {
+          "capability_name": "Ball Security",
+          "score": 34.2,
+          "drivers": {
+            "pass_accuracy_pct": "23th percentile",
+            "dribble_success_pct": "82th percentile",
+            "passes_p90": "34th percentile",
+            "avg_pass_length_m": "40th percentile"
+          }
+        }
+      ],
+      "comparable_archetype": null
+    }
+  },
+  "Closely_Matched": {
+    "Rodri": {
+      "player": {
+        "player_id": 5510,
+        "player_name": "Lucas Rodrigo Biglia",
+        "position_group": "Midfielder",
+        "team_name": "Multiple",
+        "competition": "All Competitions",
+        "season": "Career",
+        "profile_type": "career",
+        "birth_date": null,
+        "minutes_played": 2354.0,
+        "capability_profile": {
+          "player_id": 5510,
+          "player_name": "Lucas Rodrigo Biglia",
+          "season": "Career",
+          "competition": "All Competitions",
+          "position_group": "Midfielder",
+          "minutes_played": 2354.0,
+          "profile_type": "competition",
+          "ball_progression": {
+            "capability": "ball_progression",
+            "score": 84.71822995461422,
+            "confidence": 1.0,
+            "evidence": {
+              "progressive_passes_p90": 94.76172465960666,
+              "progressive_carries_p90": 71.00983358547656,
+              "carry_distance_p90": 81.25945537065053,
+              "switches_p90": 96.72844175491679
+            }
+          },
+          "chance_creation": {
+            "capability": "chance_creation",
+            "score": 71.8229954614221,
+            "confidence": 1.0,
+            "evidence": {
+              "shot_assists_p90": 89.16414523449319,
+              "goal_assists_p90": 71.67170953101362,
+              "through_balls_p90": 43.589258698940995,
+              "crosses_p90": 59.379727685325264
+            }
+          },
+          "ball_security": {
+            "capability": "ball_security",
+            "score": 76.2301437216339,
+            "confidence": 1.0,
+            "evidence": {
+              "pass_accuracy_pct": 82.2428139183056,
+              "dribble_success_pct": 50.0,
+              "passes_p90": 97.33358547655068,
+              "avg_pass_length_m": 80.08698940998488
+            }
+          },
+          "press_resistance": {
+            "capability": "press_resistance",
+            "score": 53.37556732223903,
+            "confidence": 1.0,
+            "evidence": {
+              "pressure_pct": 27.04236006051437,
+              "events_under_pressure_p90": 79.70877458396369
+            }
+          },
+          "defensive_activity": {
+            "capability": "defensive_activity",
+            "score": 79.55654311649016,
+            "confidence": 1.0,
+            "evidence": {
+              "pressures_p90": 73.99773071104387,
+              "recoveries_p90": 92.17095310136158,
+              "clearances_p90": 69.98865355521936
+            }
+          },
+          "attacking_threat": {
+            "capability": "attacking_threat",
+            "score": 57.142586989409985,
+            "confidence": 1.0,
+            "evidence": {
+              "npxg_p90": 27.57186081694402,
+              "goals_p90": 74.2624810892587,
+              "xg_per_shot": 74.82980332829047,
+              "shot_accuracy_pct": 62.21633888048411,
+              "goals_minus_xg": 92.56807866868382
+            }
+          },
+          "physical_availability": {
+            "capability": "physical_availability",
+            "score": 77.81869575603153,
+            "confidence": 1.0,
+            "evidence": {
+              "coverage_rate_pct": 73.68421052631578,
+              "matches_played_pct": 84.02042360060514
+            }
+          },
+          "tactical_versatility": {
+            "capability": "tactical_versatility",
+            "score": 82.3681020496978,
+            "confidence": 1.0,
+            "evidence": {
+              "positional_breadth": 70.0,
+              "capability_breadth": 78.13469176941936,
+              "phase_balance": 96.04064383408587
+            }
+          },
+          "overall_rating": 72.8
+        },
+        "feature_vector": {
+          "player_id": 5510,
+          "player_name": "Lucas Rodrigo Biglia",
+          "season": "Career",
+          "competition": "All Competitions",
+          "position_group": "Midfielder",
+          "profile_type": "career",
+          "minutes_played": 2354.0,
+          "matches_played": 28,
+          "team_name": "Multiple",
+          "birth_date": null,
+          "progressive_passes_p90": 27.073,
+          "progressive_carries_p90": 4.202,
+          "carry_distance_p90": 270.471,
+          "switches_p90": 3.823,
+          "shot_assists_p90": 1.797,
+          "goal_assists_p90": 0.076,
+          "through_balls_p90": 0.038,
+          "crosses_p90": 0.88,
+          "pass_accuracy_pct": 85.0,
+          "dribble_success_pct": 0.0,
+          "passes_p90": 74.97,
+          "avg_pass_length_m": 21.1,
+          "pressure_pct": 19.5,
+          "events_under_pressure_p90": 46.222,
+          "pressures_p90": 24.511,
+          "recoveries_p90": 8.483,
+          "clearances_p90": 1.642,
+          "npxg_p90": 0.022,
+          "goals_p90": 0.114,
+          "xg_per_shot": 0.091,
+          "shot_accuracy_pct": 31.6,
+          "goals_minus_xg": 1.266,
+          "npxg_per_shot": 0.0,
+          "raw_metrics": null,
+          "positions_played_count": 3
+        },
+        "archetype": "Box-to-Box Midfielder",
+        "archetype_description": "Contributes strongly in both progression and defensive phases",
+        "decision_signals": [],
+        "similar_players": []
+      },
+      "primary_role": "Box-to-Box Midfielder",
+      "elite_traits": [
+        {
+          "capability_name": "Ball Progression",
+          "score": 84.7,
+          "drivers": {
+            "progressive_passes_p90": "95th percentile",
+            "progressive_carries_p90": "71th percentile",
+            "carry_distance_p90": "81th percentile",
+            "switches_p90": "97th percentile"
+          }
+        },
+        {
+          "capability_name": "Defensive Activity",
+          "score": 79.6,
+          "drivers": {
+            "pressures_p90": "74th percentile",
+            "recoveries_p90": "92th percentile",
+            "clearances_p90": "70th percentile"
+          }
+        },
+        {
+          "capability_name": "Physical Availability",
+          "score": 77.8,
+          "drivers": {
+            "coverage_rate_pct": "92th percentile",
+            "matches_played_pct": "84th percentile"
+          }
+        }
+      ],
+      "weak_areas": [],
+      "comparable_archetype": null
+    },
+    "Busquets": {
+      "player": {
+        "player_id": 5203,
+        "player_name": "Sergio Busquets i Burgos",
+        "position_group": "Midfielder",
+        "team_name": "Multiple",
+        "competition": "All Competitions",
+        "season": "Career",
+        "profile_type": "career",
+        "birth_date": null,
+        "minutes_played": 32157.0,
+        "capability_profile": {
+          "player_id": 5203,
+          "player_name": "Sergio Busquets i Burgos",
+          "season": "Career",
+          "competition": "All Competitions",
+          "position_group": "Midfielder",
+          "minutes_played": 32157.0,
+          "profile_type": "competition",
+          "ball_progression": {
+            "capability": "ball_progression",
+            "score": 73.9769288956127,
+            "confidence": 1.0,
+            "evidence": {
+              "progressive_passes_p90": 96.87972768532526,
+              "progressive_carries_p90": 50.92662632375189,
+              "carry_distance_p90": 69.6104387291982,
+              "switches_p90": 78.6875945537065
+            }
+          },
+          "chance_creation": {
+            "capability": "chance_creation",
+            "score": 56.83434190620272,
+            "confidence": 1.0,
+            "evidence": {
+              "shot_assists_p90": 40.97957639939486,
+              "goal_assists_p90": 73.39258698940998,
+              "through_balls_p90": 80.44629349470499,
+              "crosses_p90": 23.35476550680787
+            }
+          },
+          "ball_security": {
+            "capability": "ball_security",
+            "score": 79.39012859304086,
+            "confidence": 1.0,
+            "evidence": {
+              "pass_accuracy_pct": 95.83963691376702,
+              "dribble_success_pct": 50.0,
+              "passes_p90": 98.24130105900151,
+              "avg_pass_length_m": 42.3411497730711
+            }
+          },
+          "press_resistance": {
+            "capability": "press_resistance",
+            "score": 43.22995461422087,
+            "confidence": 1.0,
+            "evidence": {
+              "pressure_pct": 14.23978819969743,
+              "events_under_pressure_p90": 72.22012102874432
+            }
+          },
+          "defensive_activity": {
+            "capability": "defensive_activity",
+            "score": 40.17208774583964,
+            "confidence": 1.0,
+            "evidence": {
+              "pressures_p90": 35.41981845688351,
+              "recoveries_p90": 29.481845688350983,
+              "clearances_p90": 69.57261724659607
+            }
+          },
+          "attacking_threat": {
+            "capability": "attacking_threat",
+            "score": 48.685703479576404,
+            "confidence": 1.0,
+            "evidence": {
+              "npxg_p90": 25.321482602118,
+              "goals_p90": 62.5,
+              "xg_per_shot": 75.71860816944024,
+              "shot_accuracy_pct": 54.897881996974284,
+              "goals_minus_xg": 16.395612708018152
+            }
+          },
+          "physical_availability": {
+            "capability": "physical_availability",
+            "score": 100.0,
+            "confidence": 1.0,
+            "evidence": {
+              "coverage_rate_pct": 1071.0526315789475,
+              "matches_played_pct": 99.98108925869894
+            }
+          },
+          "tactical_versatility": {
+            "capability": "tactical_versatility",
+            "score": 72.67238118287713,
+            "confidence": 1.0,
+            "evidence": {
+              "positional_breadth": 100.0,
+              "capability_breadth": 59.202419072514864,
+              "phase_balance": 68.54689586820338
+            }
+          },
+          "overall_rating": 63.9
+        },
+        "feature_vector": {
+          "player_id": 5203,
+          "player_name": "Sergio Busquets i Burgos",
+          "season": "Career",
+          "competition": "All Competitions",
+          "position_group": "Midfielder",
+          "profile_type": "career",
+          "minutes_played": 32157.0,
+          "matches_played": 407,
+          "team_name": "Multiple",
+          "birth_date": null,
+          "progressive_passes_p90": 29.458,
+          "progressive_carries_p90": 2.983,
+          "carry_distance_p90": 231.997,
+          "switches_p90": 1.965,
+          "shot_assists_p90": 0.574,
+          "goal_assists_p90": 0.087,
+          "through_balls_p90": 0.47,
+          "crosses_p90": 0.084,
+          "pass_accuracy_pct": 90.9,
+          "dribble_success_pct": 0.0,
+          "passes_p90": 80.477,
+          "avg_pass_length_m": 18.4,
+          "pressure_pct": 17.1,
+          "events_under_pressure_p90": 43.239,
+          "pressures_p90": 17.958,
+          "recoveries_p90": 4.498,
+          "clearances_p90": 1.637,
+          "npxg_p90": 0.019,
+          "goals_p90": 0.022,
+          "xg_per_shot": 0.093,
+          "shot_accuracy_pct": 27.2,
+          "goals_minus_xg": -0.516,
+          "npxg_per_shot": 0.0,
+          "raw_metrics": null,
+          "positions_played_count": 7
+        },
+        "archetype": "All-Round Contributor",
+        "archetype_description": "Well-rounded profile with no material weaknesses",
+        "decision_signals": [],
+        "similar_players": []
+      },
+      "primary_role": "All-Round Contributor",
+      "elite_traits": [
+        {
+          "capability_name": "Physical Availability",
+          "score": 100.0,
+          "drivers": {
+            "coverage_rate_pct": "100th percentile",
+            "matches_played_pct": "100th percentile"
+          }
+        },
+        {
+          "capability_name": "Ball Security",
+          "score": 79.4,
+          "drivers": {
+            "pass_accuracy_pct": "96th percentile",
+            "dribble_success_pct": "20th percentile",
+            "passes_p90": "98th percentile",
+            "avg_pass_length_m": "42th percentile"
+          }
+        }
+      ],
+      "weak_areas": [
+        {
+          "capability_name": "Defensive Activity",
+          "score": 40.2,
+          "drivers": {
+            "pressures_p90": "35th percentile",
+            "recoveries_p90": "29th percentile",
+            "clearances_p90": "70th percentile"
+          }
+        }
+      ],
+      "comparable_archetype": null
+    },
+    "Casemiro": null,
+    "Kroos": {
+      "player": {
+        "player_id": 5574,
+        "player_name": "Toni Kroos",
+        "position_group": "Midfielder",
+        "team_name": "Multiple",
+        "competition": "All Competitions",
+        "season": "Career",
+        "profile_type": "career",
+        "birth_date": null,
+        "minutes_played": 5128.0,
+        "capability_profile": {
+          "player_id": 5574,
+          "player_name": "Toni Kroos",
+          "season": "Career",
+          "competition": "All Competitions",
+          "position_group": "Midfielder",
+          "minutes_played": 5128.0,
+          "profile_type": "competition",
+          "ball_progression": {
+            "capability": "ball_progression",
+            "score": 86.19515885022692,
+            "confidence": 1.0,
+            "evidence": {
+              "progressive_passes_p90": 98.6573373676248,
+              "progressive_carries_p90": 66.4712556732224,
+              "carry_distance_p90": 89.99621785173979,
+              "switches_p90": 99.33812405446294
+            }
+          },
+          "chance_creation": {
+            "capability": "chance_creation",
+            "score": 83.50605143721634,
+            "confidence": 1.0,
+            "evidence": {
+              "shot_assists_p90": 88.80484114977307,
+              "goal_assists_p90": 87.85930408472012,
+              "through_balls_p90": 72.71180030257186,
+              "crosses_p90": 70.83963691376702
+            }
+          },
+          "ball_security": {
+            "capability": "ball_security",
+            "score": 83.45972012102874,
+            "confidence": 1.0,
+            "evidence": {
+              "pass_accuracy_pct": 95.12102874432678,
+              "dribble_success_pct": 50.0,
+              "passes_p90": 98.69515885022693,
+              "avg_pass_length_m": 85.94931921331316
+            }
+          },
+          "press_resistance": {
+            "capability": "press_resistance",
+            "score": 25.728063540090773,
+            "confidence": 1.0,
+            "evidence": {
+              "pressure_pct": 4.236006051437216,
+              "events_under_pressure_p90": 47.22012102874433
+            }
+          },
+          "defensive_activity": {
+            "capability": "defensive_activity",
+            "score": 42.828101361573374,
+            "confidence": 1.0,
+            "evidence": {
+              "pressures_p90": 62.04614220877458,
+              "recoveries_p90": 31.656580937972766,
+              "clearances_p90": 19.13767019667171
+            }
+          },
+          "attacking_threat": {
+            "capability": "attacking_threat",
+            "score": 51.86838124054463,
+            "confidence": 1.0,
+            "evidence": {
+              "npxg_p90": 49.71633888048411,
+              "goals_p90": 66.14977307110439,
+              "xg_per_shot": 45.8018154311649,
+              "shot_accuracy_pct": 49.357034795763994,
+              "goals_minus_xg": 27.326021180030256
+            }
+          },
+          "physical_availability": {
+            "capability": "physical_availability",
+            "score": 100.0,
+            "confidence": 1.0,
+            "evidence": {
+              "coverage_rate_pct": 152.63157894736844,
+              "matches_played_pct": 98.69515885022693
+            }
+          },
+          "tactical_versatility": {
+            "capability": "tactical_versatility",
+            "score": 61.48808860287738,
+            "confidence": 1.0,
+            "evidence": {
+              "positional_breadth": 100.0,
+              "capability_breadth": 49.209439832634274,
+              "phase_balance": 48.01232191378194
+            }
+          },
+          "overall_rating": 68.1
+        },
+        "feature_vector": {
+          "player_id": 5574,
+          "player_name": "Toni Kroos",
+          "season": "Career",
+          "competition": "All Competitions",
+          "position_group": "Midfielder",
+          "profile_type": "career",
+          "minutes_played": 5128.0,
+          "matches_played": 58,
+          "team_name": "Multiple",
+          "birth_date": null,
+          "progressive_passes_p90": 33.977,
+          "progressive_carries_p90": 3.898,
+          "carry_distance_p90": 315.216,
+          "switches_p90": 5.634,
+          "shot_assists_p90": 1.773,
+          "goal_assists_p90": 0.211,
+          "through_balls_p90": 0.351,
+          "crosses_p90": 1.229,
+          "pass_accuracy_pct": 90.4,
+          "dribble_success_pct": 0.0,
+          "passes_p90": 83.629,
+          "avg_pass_length_m": 21.7,
+          "pressure_pct": 13.6,
+          "events_under_pressure_p90": 35.68,
+          "pressures_p90": 22.238,
+          "recoveries_p90": 4.632,
+          "clearances_p90": 0.334,
+          "npxg_p90": 0.052,
+          "goals_p90": 0.053,
+          "xg_per_shot": 0.05,
+          "shot_accuracy_pct": 24.7,
+          "goals_minus_xg": -0.247,
+          "npxg_per_shot": 0.0,
+          "raw_metrics": null,
+          "positions_played_count": 4
+        },
+        "archetype": "Creative Playmaker",
+        "archetype_description": "High chance creation combined with progressive passing",
+        "decision_signals": [],
+        "similar_players": []
+      },
+      "primary_role": "Creative Playmaker",
+      "elite_traits": [
+        {
+          "capability_name": "Physical Availability",
+          "score": 100.0,
+          "drivers": {
+            "coverage_rate_pct": "100th percentile",
+            "matches_played_pct": "99th percentile"
+          }
+        },
+        {
+          "capability_name": "Ball Progression",
+          "score": 86.2,
+          "drivers": {
+            "progressive_passes_p90": "99th percentile",
+            "progressive_carries_p90": "66th percentile",
+            "carry_distance_p90": "90th percentile",
+            "switches_p90": "99th percentile"
+          }
+        },
+        {
+          "capability_name": "Chance Creation",
+          "score": 83.5,
+          "drivers": {
+            "shot_assists_p90": "89th percentile",
+            "goal_assists_p90": "88th percentile",
+            "through_balls_p90": "73th percentile",
+            "crosses_p90": "71th percentile"
+          }
+        }
+      ],
+      "weak_areas": [
+        {
+          "capability_name": "Press Resistance",
+          "score": 25.7,
+          "drivers": {
+            "pressure_pct": "4th percentile",
+            "events_under_pressure_p90": "47th percentile"
+          }
+        },
+        {
+          "capability_name": "Defensive Activity",
+          "score": 42.8,
+          "drivers": {
+            "pressures_p90": "62th percentile",
+            "recoveries_p90": "32th percentile",
+            "clearances_p90": "22th percentile"
+          }
+        }
+      ],
+      "comparable_archetype": null
+    },
+    "Xavi": {
+      "player": {
+        "player_id": 20131,
+        "player_name": "Xavier Hern\u00e1ndez Creus",
+        "position_group": "Midfielder",
+        "team_name": "Multiple",
+        "competition": "All Competitions",
+        "season": "Career",
+        "profile_type": "career",
+        "birth_date": null,
+        "minutes_played": 20828.0,
+        "capability_profile": {
+          "player_id": 20131,
+          "player_name": "Xavier Hern\u00e1ndez Creus",
+          "season": "Career",
+          "competition": "All Competitions",
+          "position_group": "Midfielder",
+          "minutes_played": 20828.0,
+          "profile_type": "competition",
+          "ball_progression": {
+            "capability": "ball_progression",
+            "score": 96.13464447806352,
+            "confidence": 1.0,
+            "evidence": {
+              "progressive_passes_p90": 99.67851739788199,
+              "progressive_carries_p90": 91.54689863842663,
+              "carry_distance_p90": 98.95990922844176,
+              "switches_p90": 95.74508320726173
+            }
+          },
+          "chance_creation": {
+            "capability": "chance_creation",
+            "score": 90.71860816944026,
+            "confidence": 1.0,
+            "evidence": {
+              "shot_assists_p90": 94.45915279878972,
+              "goal_assists_p90": 92.26550680786687,
+              "through_balls_p90": 98.31694402420574,
+              "crosses_p90": 55.91906202723147
+            }
+          },
+          "ball_security": {
+            "capability": "ball_security",
+            "score": 80.58339636913767,
+            "confidence": 1.0,
+            "evidence": {
+              "pass_accuracy_pct": 93.43797276853253,
+              "dribble_success_pct": 50.0,
+              "passes_p90": 99.67851739788199,
+              "avg_pass_length_m": 64.12632375189108
+            }
+          },
+          "press_resistance": {
+            "capability": "press_resistance",
+            "score": 54.62367624810892,
+            "confidence": 1.0,
+            "evidence": {
+              "pressure_pct": 16.11195158850227,
+              "events_under_pressure_p90": 93.13540090771558
+            }
+          },
+          "defensive_activity": {
+            "capability": "defensive_activity",
+            "score": 25.6410741301059,
+            "confidence": 1.0,
+            "evidence": {
+              "pressures_p90": 10.873676248108925,
+              "recoveries_p90": 43.96747352496218,
+              "clearances_p90": 26.796520423600604
+            }
+          },
+          "attacking_threat": {
+            "capability": "attacking_threat",
+            "score": 73.00397125567322,
+            "confidence": 1.0,
+            "evidence": {
+              "npxg_p90": 68.05975794251134,
+              "goals_p90": 79.40620272314675,
+              "xg_per_shot": 69.38350983358548,
+              "shot_accuracy_pct": 69.70499243570349,
+              "goals_minus_xg": 99.98108925869894
+            }
+          },
+          "physical_availability": {
+            "capability": "physical_availability",
+            "score": 100.0,
+            "confidence": 1.0,
+            "evidence": {
+              "coverage_rate_pct": 694.7368421052632,
+              "matches_played_pct": 99.9054462934947
+            }
+          },
+          "tactical_versatility": {
+            "capability": "tactical_versatility",
+            "score": 60.325417808775384,
+            "confidence": 1.0,
+            "evidence": {
+              "positional_breadth": 100.0,
+              "capability_breadth": 50.99405526458183,
+              "phase_balance": 42.65084486555043
+            }
+          },
+          "overall_rating": 75.2
+        },
+        "feature_vector": {
+          "player_id": 20131,
+          "player_name": "Xavier Hern\u00e1ndez Creus",
+          "season": "Career",
+          "competition": "All Competitions",
+          "position_group": "Midfielder",
+          "profile_type": "career",
+          "minutes_played": 20828.0,
+          "matches_played": 264,
+          "team_name": "Multiple",
+          "birth_date": null,
+          "progressive_passes_p90": 42.961,
+          "progressive_carries_p90": 6.891,
+          "carry_distance_p90": 461.474,
+          "switches_p90": 3.561,
+          "shot_assists_p90": 2.208,
+          "goal_assists_p90": 0.294,
+          "through_balls_p90": 1.387,
+          "crosses_p90": 0.791,
+          "pass_accuracy_pct": 89.4,
+          "dribble_success_pct": 0.0,
+          "passes_p90": 100.633,
+          "avg_pass_length_m": 19.8,
+          "pressure_pct": 17.5,
+          "events_under_pressure_p90": 55.094,
+          "pressures_p90": 13.451,
+          "recoveries_p90": 5.191,
+          "clearances_p90": 0.515,
+          "npxg_p90": 0.095,
+          "goals_p90": 0.156,
+          "xg_per_shot": 0.08,
+          "shot_accuracy_pct": 34.1,
+          "goals_minus_xg": 10.691,
+          "npxg_per_shot": 0.0,
+          "raw_metrics": null,
+          "positions_played_count": 6
+        },
+        "archetype": "Creative Playmaker",
+        "archetype_description": "High chance creation combined with progressive passing",
+        "decision_signals": [],
+        "similar_players": []
+      },
+      "primary_role": "Creative Playmaker",
+      "elite_traits": [
+        {
+          "capability_name": "Physical Availability",
+          "score": 100.0,
+          "drivers": {
+            "coverage_rate_pct": "100th percentile",
+            "matches_played_pct": "100th percentile"
+          }
+        },
+        {
+          "capability_name": "Ball Progression",
+          "score": 96.1,
+          "drivers": {
+            "progressive_passes_p90": "100th percentile",
+            "progressive_carries_p90": "92th percentile",
+            "carry_distance_p90": "99th percentile",
+            "switches_p90": "96th percentile"
+          }
+        },
+        {
+          "capability_name": "Chance Creation",
+          "score": 90.7,
+          "drivers": {
+            "shot_assists_p90": "94th percentile",
+            "goal_assists_p90": "92th percentile",
+            "through_balls_p90": "98th percentile",
+            "crosses_p90": "56th percentile"
+          }
+        }
+      ],
+      "weak_areas": [
+        {
+          "capability_name": "Defensive Activity",
+          "score": 25.6,
+          "drivers": {
+            "pressures_p90": "11th percentile",
+            "recoveries_p90": "44th percentile",
+            "clearances_p90": "27th percentile"
+          }
+        }
+      ],
+      "comparable_archetype": null
+    },
+    "Pedri": null,
+    "Musiala": {
+      "player": {
+        "player_id": 39565,
+        "player_name": "Jamal Musiala",
+        "position_group": "Forward",
+        "team_name": "Multiple",
+        "competition": "All Competitions",
+        "season": "Career",
+        "profile_type": "career",
+        "birth_date": null,
+        "minutes_played": 830.0,
+        "capability_profile": {
+          "player_id": 39565,
+          "player_name": "Jamal Musiala",
+          "season": "Career",
+          "competition": "All Competitions",
+          "position_group": "Forward",
+          "minutes_played": 830.0,
+          "profile_type": "competition",
+          "ball_progression": {
+            "capability": "ball_progression",
+            "score": 78.18691844553913,
+            "confidence": 1.0,
+            "evidence": {
+              "progressive_passes_p90": 71.78434592227696,
+              "progressive_carries_p90": 95.32019704433498,
+              "carry_distance_p90": 96.90749863163656,
+              "switches_p90": 34.4280240831965
+            }
+          },
+          "chance_creation": {
+            "capability": "chance_creation",
+            "score": 61.73234811165846,
+            "confidence": 1.0,
+            "evidence": {
+              "shot_assists_p90": 75.86206896551724,
+              "goal_assists_p90": 28.051450465243573,
+              "through_balls_p90": 85.4679802955665,
+              "crosses_p90": 58.78489326765188
+            }
+          },
+          "ball_security": {
+            "capability": "ball_security",
+            "score": 75.72523262178434,
+            "confidence": 1.0,
+            "evidence": {
+              "pass_accuracy_pct": 96.82539682539682,
+              "dribble_success_pct": 50.0,
+              "passes_p90": 86.72687465790914,
+              "avg_pass_length_m": 18.035030103995624
+            }
+          },
+          "press_resistance": {
+            "capability": "press_resistance",
+            "score": 91.32457580733441,
+            "confidence": 1.0,
+            "evidence": {
+              "pressure_pct": 86.07006020799123,
+              "events_under_pressure_p90": 96.5790914066776
+            }
+          },
+          "defensive_activity": {
+            "capability": "defensive_activity",
+            "score": 52.27969348659004,
+            "confidence": 1.0,
+            "evidence": {
+              "pressures_p90": 44.14340448823207,
+              "recoveries_p90": 76.76518883415436,
+              "clearances_p90": 11.330049261083744
+            }
+          },
+          "attacking_threat": {
+            "capability": "attacking_threat",
+            "score": 57.61357416529831,
+            "confidence": 1.0,
+            "evidence": {
+              "npxg_p90": 59.578544061302686,
+              "goals_p90": 69.40339354132458,
+              "xg_per_shot": 47.56431308155446,
+              "shot_accuracy_pct": 38.91625615763547,
+              "goals_minus_xg": 81.19868637110017
+            }
+          },
+          "physical_availability": {
+            "capability": "physical_availability",
+            "score": 41.705989110707804,
+            "confidence": 1.0,
+            "evidence": {
+              "coverage_rate_pct": 31.57894736842105,
+              "matches_played_pct": 56.896551724137936
+            }
+          },
+          "tactical_versatility": {
+            "capability": "tactical_versatility",
+            "score": 71.50548175352391,
+            "confidence": 1.0,
+            "evidence": {
+              "positional_breadth": 40.0,
+              "capability_breadth": 68.37953915474705,
+              "phase_balance": 97.58190311892882
+            }
+          },
+          "overall_rating": 65.1
+        },
+        "feature_vector": {
+          "player_id": 39565,
+          "player_name": "Jamal Musiala",
+          "season": "Career",
+          "competition": "All Competitions",
+          "position_group": "Forward",
+          "profile_type": "career",
+          "minutes_played": 830.0,
+          "matches_played": 12,
+          "team_name": "Multiple",
+          "birth_date": null,
+          "progressive_passes_p90": 10.195,
+          "progressive_carries_p90": 7.807,
+          "carry_distance_p90": 361.848,
+          "switches_p90": 0.217,
+          "shot_assists_p90": 1.301,
+          "goal_assists_p90": 0.0,
+          "through_balls_p90": 0.434,
+          "crosses_p90": 1.301,
+          "pass_accuracy_pct": 85.3,
+          "dribble_success_pct": 0.0,
+          "passes_p90": 37.624,
+          "avg_pass_length_m": 14.1,
+          "pressure_pct": 33.2,
+          "events_under_pressure_p90": 61.698,
+          "pressures_p90": 17.026,
+          "recoveries_p90": 5.315,
+          "clearances_p90": 0.0,
+          "npxg_p90": 0.228,
+          "goals_p90": 0.325,
+          "xg_per_shot": 0.096,
+          "shot_accuracy_pct": 31.8,
+          "goals_minus_xg": 0.899,
+          "npxg_per_shot": 0.0,
+          "raw_metrics": null,
+          "positions_played_count": 2
+        },
+        "archetype": "Press-Resistant Anchor",
+        "archetype_description": "Maintains control when pressed aggressively",
+        "decision_signals": [],
+        "similar_players": []
+      },
+      "primary_role": "Press-Resistant Anchor",
+      "elite_traits": [
+        {
+          "capability_name": "Press Resistance",
+          "score": 91.3,
+          "drivers": {
+            "pressure_pct": "86th percentile",
+            "events_under_pressure_p90": "97th percentile"
+          }
+        },
+        {
+          "capability_name": "Ball Progression",
+          "score": 78.2,
+          "drivers": {
+            "progressive_passes_p90": "72th percentile",
+            "progressive_carries_p90": "95th percentile",
+            "carry_distance_p90": "97th percentile",
+            "switches_p90": "35th percentile"
+          }
+        },
+        {
+          "capability_name": "Ball Security",
+          "score": 75.7,
+          "drivers": {
+            "pass_accuracy_pct": "97th percentile",
+            "dribble_success_pct": "19th percentile",
+            "passes_p90": "87th percentile",
+            "avg_pass_length_m": "18th percentile"
+          }
+        }
+      ],
+      "weak_areas": [],
+      "comparable_archetype": null
+    },
+    "Salah": {
+      "player": {
+        "player_id": 3531,
+        "player_name": "Mohamed Salah",
+        "position_group": "Forward",
+        "team_name": "Multiple",
+        "competition": "All Competitions",
+        "season": "Career",
+        "profile_type": "career",
+        "birth_date": null,
+        "minutes_played": 3225.0,
+        "capability_profile": {
+          "player_id": 3531,
+          "player_name": "Mohamed Salah",
+          "season": "Career",
+          "competition": "All Competitions",
+          "position_group": "Forward",
+          "minutes_played": 3225.0,
+          "profile_type": "competition",
+          "ball_progression": {
+            "capability": "ball_progression",
+            "score": 72.41926655719759,
+            "confidence": 1.0,
+            "evidence": {
+              "progressive_passes_p90": 66.80350301039957,
+              "progressive_carries_p90": 81.58182813355226,
+              "carry_distance_p90": 83.27859879584018,
+              "switches_p90": 53.284072249589485
+            }
+          },
+          "chance_creation": {
+            "capability": "chance_creation",
+            "score": 78.23754789272029,
+            "confidence": 1.0,
+            "evidence": {
+              "shot_assists_p90": 89.24466338259441,
+              "goal_assists_p90": 78.32512315270937,
+              "through_balls_p90": 64.80569239189929,
+              "crosses_p90": 60.810071154898736
+            }
+          },
+          "ball_security": {
+            "capability": "ball_security",
+            "score": 71.08648056923919,
+            "confidence": 1.0,
+            "evidence": {
+              "pass_accuracy_pct": 87.32895457033388,
+              "dribble_success_pct": 50.0,
+              "passes_p90": 85.41324575807334,
+              "avg_pass_length_m": 21.10016420361248
+            }
+          },
+          "press_resistance": {
+            "capability": "press_resistance",
+            "score": 63.28680897646415,
+            "confidence": 1.0,
+            "evidence": {
+              "pressure_pct": 49.315818281335524,
+              "events_under_pressure_p90": 77.25779967159278
+            }
+          },
+          "defensive_activity": {
+            "capability": "defensive_activity",
+            "score": 44.202244116037214,
+            "confidence": 1.0,
+            "evidence": {
+              "pressures_p90": 33.524904214559385,
+              "recoveries_p90": 66.61193212917351,
+              "clearances_p90": 24.493705528188286
+            }
+          },
+          "attacking_threat": {
+            "capability": "attacking_threat",
+            "score": 71.49835796387521,
+            "confidence": 1.0,
+            "evidence": {
+              "npxg_p90": 68.4729064039409,
+              "goals_p90": 84.37328954570333,
+              "xg_per_shot": 68.00766283524904,
+              "shot_accuracy_pct": 52.73672687465791,
+              "goals_minus_xg": 98.54953475643131
+            }
+          },
+          "physical_availability": {
+            "capability": "physical_availability",
+            "score": 100.0,
+            "confidence": 1.0,
+            "evidence": {
+              "coverage_rate_pct": 105.26315789473684,
+              "matches_played_pct": 93.67816091954023
+            }
+          },
+          "tactical_versatility": {
+            "capability": "tactical_versatility",
+            "score": 77.0964395947766,
+            "confidence": 1.0,
+            "evidence": {
+              "positional_breadth": 100.0,
+              "capability_breadth": 69.09667624808927,
+              "phase_balance": 69.87934027297396
+            }
+          },
+          "overall_rating": 73.8
+        },
+        "feature_vector": {
+          "player_id": 3531,
+          "player_name": "Mohamed Salah",
+          "season": "Career",
+          "competition": "All Competitions",
+          "position_group": "Forward",
+          "profile_type": "career",
+          "minutes_played": 3225.0,
+          "matches_played": 40,
+          "team_name": "Multiple",
+          "birth_date": null,
+          "progressive_passes_p90": 9.658,
+          "progressive_carries_p90": 5.389,
+          "carry_distance_p90": 259.406,
+          "switches_p90": 0.475,
+          "shot_assists_p90": 1.814,
+          "goal_assists_p90": 0.167,
+          "through_balls_p90": 0.195,
+          "crosses_p90": 1.368,
+          "pass_accuracy_pct": 79.7,
+          "dribble_success_pct": 0.0,
+          "passes_p90": 36.726,
+          "avg_pass_length_m": 14.3,
+          "pressure_pct": 27.8,
+          "events_under_pressure_p90": 47.523,
+          "pressures_p90": 15.549,
+          "recoveries_p90": 4.798,
+          "clearances_p90": 0.111,
+          "npxg_p90": 0.271,
+          "goals_p90": 0.503,
+          "xg_per_shot": 0.132,
+          "shot_accuracy_pct": 36.3,
+          "goals_minus_xg": 5.935,
+          "npxg_per_shot": 0.0,
+          "raw_metrics": null,
+          "positions_played_count": 7
+        },
+        "archetype": "All-Round Contributor",
+        "archetype_description": "Well-rounded profile with no material weaknesses",
+        "decision_signals": [],
+        "similar_players": []
+      },
+      "primary_role": "All-Round Contributor",
+      "elite_traits": [
+        {
+          "capability_name": "Physical Availability",
+          "score": 100.0,
+          "drivers": {
+            "coverage_rate_pct": "99th percentile",
+            "matches_played_pct": "94th percentile"
+          }
+        },
+        {
+          "capability_name": "Chance Creation",
+          "score": 78.2,
+          "drivers": {
+            "shot_assists_p90": "89th percentile",
+            "goal_assists_p90": "78th percentile",
+            "through_balls_p90": "65th percentile",
+            "crosses_p90": "61th percentile"
+          }
+        },
+        {
+          "capability_name": "Ball Security",
+          "score": 71.1,
+          "drivers": {
+            "pass_accuracy_pct": "87th percentile",
+            "dribble_success_pct": "19th percentile",
+            "passes_p90": "85th percentile",
+            "avg_pass_length_m": "21th percentile"
+          }
+        }
+      ],
+      "weak_areas": [],
+      "comparable_archetype": null
+    },
+    "Robben": {
+      "player": {
+        "player_id": 8218,
+        "player_name": "Arjen Robben",
+        "position_group": "Forward",
+        "team_name": "Multiple",
+        "competition": "All Competitions",
+        "season": "Career",
+        "profile_type": "career",
+        "birth_date": null,
+        "minutes_played": 589.0,
+        "capability_profile": {
+          "player_id": 8218,
+          "player_name": "Arjen Robben",
+          "season": "Career",
+          "competition": "All Competitions",
+          "position_group": "Forward",
+          "minutes_played": 589.0,
+          "profile_type": "competition",
+          "ball_progression": {
+            "capability": "ball_progression",
+            "score": 96.5927750410509,
+            "confidence": 0.7,
+            "evidence": {
+              "progressive_passes_p90": 94.17077175697865,
+              "progressive_carries_p90": 98.11165845648604,
+              "carry_distance_p90": 99.15161466885604,
+              "switches_p90": 96.14121510673235
+            }
+          },
+          "chance_creation": {
+            "capability": "chance_creation",
+            "score": 88.18007662835248,
+            "confidence": 0.7,
+            "evidence": {
+              "shot_assists_p90": 94.93705528188286,
+              "goal_assists_p90": 75.97153804050356,
+              "through_balls_p90": 93.07608100711549,
+              "crosses_p90": 87.98576902025178
+            }
+          },
+          "ball_security": {
+            "capability": "ball_security",
+            "score": 58.9272030651341,
+            "confidence": 0.7,
+            "evidence": {
+              "pass_accuracy_pct": 47.263273125342096,
+              "dribble_success_pct": 50.0,
+              "passes_p90": 92.52873563218391,
+              "avg_pass_length_m": 89.16256157635468
+            }
+          },
+          "press_resistance": {
+            "capability": "press_resistance",
+            "score": 52.6135741652983,
+            "confidence": 0.7,
+            "evidence": {
+              "pressure_pct": 31.362889983579638,
+              "events_under_pressure_p90": 73.86425834701697
+            }
+          },
+          "defensive_activity": {
+            "capability": "defensive_activity",
+            "score": 26.61466885604817,
+            "confidence": 0.7,
+            "evidence": {
+              "pressures_p90": 9.496442255062945,
+              "recoveries_p90": 51.36836343732896,
+              "clearances_p90": 34.12698412698413
+            }
+          },
+          "attacking_threat": {
+            "capability": "attacking_threat",
+            "score": 70.99069512862616,
+            "confidence": 0.7,
+            "evidence": {
+              "npxg_p90": 81.99233716475096,
+              "goals_p90": 81.58182813355226,
+              "xg_per_shot": 59.496442255062945,
+              "shot_accuracy_pct": 62.34263820470717,
+              "goals_minus_xg": 12.94471811713191
+            }
+          },
+          "physical_availability": {
+            "capability": "physical_availability",
+            "score": 29.68426814161841,
+            "confidence": 0.7,
+            "evidence": {
+              "coverage_rate_pct": 18.421052631578945,
+              "matches_played_pct": 46.57909140667761
+            }
+          },
+          "tactical_versatility": {
+            "capability": "tactical_versatility",
+            "score": 46.67532210128575,
+            "confidence": 0.7,
+            "evidence": {
+              "positional_breadth": 40.0,
+              "capability_breadth": 50.19224034818968,
+              "phase_balance": 43.05597117080407
+            }
+          },
+          "overall_rating": 68.4
+        },
+        "feature_vector": {
+          "player_id": 8218,
+          "player_name": "Arjen Robben",
+          "season": "Career",
+          "competition": "All Competitions",
+          "position_group": "Forward",
+          "profile_type": "career",
+          "minutes_played": 589.0,
+          "matches_played": 7,
+          "team_name": "Multiple",
+          "birth_date": null,
+          "progressive_passes_p90": 16.349,
+          "progressive_carries_p90": 9.627,
+          "carry_distance_p90": 437.659,
+          "switches_p90": 2.445,
+          "shot_assists_p90": 2.292,
+          "goal_assists_p90": 0.153,
+          "through_balls_p90": 0.611,
+          "crosses_p90": 2.75,
+          "pass_accuracy_pct": 69.4,
+          "dribble_success_pct": 0.0,
+          "passes_p90": 42.937,
+          "avg_pass_length_m": 19.8,
+          "pressure_pct": 25.6,
+          "events_under_pressure_p90": 46.452,
+          "pressures_p90": 10.698,
+          "recoveries_p90": 4.127,
+          "clearances_p90": 0.306,
+          "npxg_p90": 0.36,
+          "goals_p90": 0.458,
+          "xg_per_shot": 0.116,
+          "shot_accuracy_pct": 40.1,
+          "goals_minus_xg": -1.021,
+          "npxg_per_shot": 0.0,
+          "raw_metrics": null,
+          "positions_played_count": 2
+        },
+        "archetype": "Creative Playmaker",
+        "archetype_description": "High chance creation combined with progressive passing",
+        "decision_signals": [],
+        "similar_players": []
+      },
+      "primary_role": "Creative Playmaker",
+      "elite_traits": [
+        {
+          "capability_name": "Ball Progression",
+          "score": 96.6,
+          "drivers": {
+            "progressive_passes_p90": "94th percentile",
+            "progressive_carries_p90": "98th percentile",
+            "carry_distance_p90": "99th percentile",
+            "switches_p90": "96th percentile"
+          }
+        },
+        {
+          "capability_name": "Chance Creation",
+          "score": 88.2,
+          "drivers": {
+            "shot_assists_p90": "95th percentile",
+            "goal_assists_p90": "76th percentile",
+            "through_balls_p90": "93th percentile",
+            "crosses_p90": "88th percentile"
+          }
+        }
+      ],
+      "weak_areas": [
+        {
+          "capability_name": "Defensive Activity",
+          "score": 26.6,
+          "drivers": {
+            "pressures_p90": "10th percentile",
+            "recoveries_p90": "51th percentile",
+            "clearances_p90": "35th percentile"
+          }
+        }
+      ],
+      "comparable_archetype": null
+    },
+    "Kane": {
+      "player": {
+        "player_id": 10955,
+        "player_name": "Harry Kane",
+        "position_group": "Forward",
+        "team_name": "Multiple",
+        "competition": "All Competitions",
+        "season": "Career",
+        "profile_type": "career",
+        "birth_date": null,
+        "minutes_played": 5878.0,
+        "capability_profile": {
+          "player_id": 10955,
+          "player_name": "Harry Kane",
+          "season": "Career",
+          "competition": "All Competitions",
+          "position_group": "Forward",
+          "minutes_played": 5878.0,
+          "profile_type": "competition",
+          "ball_progression": {
+            "capability": "ball_progression",
+            "score": 55.23125342090859,
+            "confidence": 1.0,
+            "evidence": {
+              "progressive_passes_p90": 62.75314723590586,
+              "progressive_carries_p90": 41.54351395730706,
+              "carry_distance_p90": 46.661193212917354,
+              "switches_p90": 78.18828680897646
+            }
+          },
+          "chance_creation": {
+            "capability": "chance_creation",
+            "score": 57.16201423097975,
+            "confidence": 1.0,
+            "evidence": {
+              "shot_assists_p90": 47.783251231527096,
+              "goal_assists_p90": 60.09852216748769,
+              "through_balls_p90": 78.02408319649699,
+              "crosses_p90": 44.14340448823207
+            }
+          },
+          "ball_security": {
+            "capability": "ball_security",
+            "score": 51.08921729611385,
+            "confidence": 1.0,
+            "evidence": {
+              "pass_accuracy_pct": 50.0,
+              "dribble_success_pct": 50.0,
+              "passes_p90": 41.18773946360153,
+              "avg_pass_length_m": 74.11056376573619
+            }
+          },
+          "press_resistance": {
+            "capability": "press_resistance",
+            "score": 61.56267104542967,
+            "confidence": 1.0,
+            "evidence": {
+              "pressure_pct": 70.49808429118774,
+              "events_under_pressure_p90": 52.62725779967159
+            }
+          },
+          "defensive_activity": {
+            "capability": "defensive_activity",
+            "score": 31.2807881773399,
+            "confidence": 1.0,
+            "evidence": {
+              "pressures_p90": 17.15927750410509,
+              "recoveries_p90": 44.90968801313629,
+              "clearances_p90": 61.24794745484401
+            }
+          },
+          "attacking_threat": {
+            "capability": "attacking_threat",
+            "score": 85.09578544061303,
+            "confidence": 1.0,
+            "evidence": {
+              "npxg_p90": 85.27640941434045,
+              "goals_p90": 91.16037219485496,
+              "xg_per_shot": 82.78598795840175,
+              "shot_accuracy_pct": 73.12534209085933,
+              "goals_minus_xg": 98.65900383141762
+            }
+          },
+          "physical_availability": {
+            "capability": "physical_availability",
+            "score": 100.0,
+            "confidence": 1.0,
+            "evidence": {
+              "coverage_rate_pct": 173.6842105263158,
+              "matches_played_pct": 98.46743295019157
+            }
+          },
+          "tactical_versatility": {
+            "capability": "tactical_versatility",
+            "score": 56.57400069599169,
+            "confidence": 1.0,
+            "evidence": {
+              "positional_breadth": 40.0,
+              "capability_breadth": 57.90028920832337,
+              "phase_balance": 66.8968143218924
+            }
+          },
+          "overall_rating": 67.1
+        },
+        "feature_vector": {
+          "player_id": 10955,
+          "player_name": "Harry Kane",
+          "season": "Career",
+          "competition": "All Competitions",
+          "position_group": "Forward",
+          "profile_type": "career",
+          "minutes_played": 5878.0,
+          "matches_played": 66,
+          "team_name": "Multiple",
+          "birth_date": null,
+          "progressive_passes_p90": 9.232,
+          "progressive_carries_p90": 2.679,
+          "carry_distance_p90": 154.884,
+          "switches_p90": 1.072,
+          "shot_assists_p90": 0.842,
+          "goal_assists_p90": 0.061,
+          "through_balls_p90": 0.321,
+          "crosses_p90": 0.903,
+          "pass_accuracy_pct": 70.0,
+          "dribble_success_pct": 0.0,
+          "passes_p90": 23.49,
+          "avg_pass_length_m": 17.8,
+          "pressure_pct": 30.6,
+          "events_under_pressure_p90": 40.591,
+          "pressures_p90": 12.813,
+          "recoveries_p90": 3.83,
+          "clearances_p90": 0.686,
+          "npxg_p90": 0.396,
+          "goals_p90": 0.659,
+          "xg_per_shot": 0.166,
+          "shot_accuracy_pct": 45.5,
+          "goals_minus_xg": 6.159,
+          "npxg_per_shot": 0.0,
+          "raw_metrics": null,
+          "positions_played_count": 2
+        },
+        "archetype": "Elite Goal Scorer",
+        "archetype_description": "Top 15% of position peers for direct goal threat",
+        "decision_signals": [],
+        "similar_players": []
+      },
+      "primary_role": "Elite Goal Scorer",
+      "elite_traits": [
+        {
+          "capability_name": "Physical Availability",
+          "score": 100.0,
+          "drivers": {
+            "coverage_rate_pct": "100th percentile",
+            "matches_played_pct": "98th percentile"
+          }
+        },
+        {
+          "capability_name": "Attacking Threat",
+          "score": 85.1,
+          "drivers": {
+            "npxg_p90": "85th percentile",
+            "goals_p90": "91th percentile",
+            "xg_per_shot": "83th percentile",
+            "shot_accuracy_pct": "73th percentile",
+            "goals_minus_xg": "99th percentile"
+          }
+        }
+      ],
+      "weak_areas": [
+        {
+          "capability_name": "Defensive Activity",
+          "score": 31.3,
+          "drivers": {
+            "pressures_p90": "17th percentile",
+            "recoveries_p90": "45th percentile",
+            "clearances_p90": "61th percentile"
+          }
+        }
+      ],
+      "comparable_archetype": null
+    },
+    "Lewandowski": {
+      "player": {
+        "player_id": 5668,
+        "player_name": "Robert Lewandowski",
+        "position_group": "Forward",
+        "team_name": "Multiple",
+        "competition": "All Competitions",
+        "season": "Career",
+        "profile_type": "career",
+        "birth_date": null,
+        "minutes_played": 1360.0,
+        "capability_profile": {
+          "player_id": 5668,
+          "player_name": "Robert Lewandowski",
+          "season": "Career",
+          "competition": "All Competitions",
+          "position_group": "Forward",
+          "minutes_played": 1360.0,
+          "profile_type": "competition",
+          "ball_progression": {
+            "capability": "ball_progression",
+            "score": 44.12287903667214,
+            "confidence": 1.0,
+            "evidence": {
+              "progressive_passes_p90": 46.22331691297209,
+              "progressive_carries_p90": 40.99616858237548,
+              "carry_distance_p90": 42.993979200875756,
+              "switches_p90": 47.646414887794194
+            }
+          },
+          "chance_creation": {
+            "capability": "chance_creation",
+            "score": 51.237000547345374,
+            "confidence": 1.0,
+            "evidence": {
+              "shot_assists_p90": 49.096880131362894,
+              "goal_assists_p90": 61.02900930487137,
+              "through_balls_p90": 48.8232074438971,
+              "crosses_p90": 35.24904214559387
+            }
+          },
+          "ball_security": {
+            "capability": "ball_security",
+            "score": 57.01970443349754,
+            "confidence": 1.0,
+            "evidence": {
+              "pass_accuracy_pct": 68.52764094143404,
+              "dribble_success_pct": 50.0,
+              "passes_p90": 29.802955665024633,
+              "avg_pass_length_m": 57.8544061302682
+            }
+          },
+          "press_resistance": {
+            "capability": "press_resistance",
+            "score": 78.94088669950739,
+            "confidence": 1.0,
+            "evidence": {
+              "pressure_pct": 92.20032840722496,
+              "events_under_pressure_p90": 65.68144499178982
+            }
+          },
+          "defensive_activity": {
+            "capability": "defensive_activity",
+            "score": 27.900930487137384,
+            "confidence": 1.0,
+            "evidence": {
+              "pressures_p90": 12.561576354679804,
+              "recoveries_p90": 34.83853311439518,
+              "clearances_p90": 87.98576902025178
+            }
+          },
+          "attacking_threat": {
+            "capability": "attacking_threat",
+            "score": 70.80596606458674,
+            "confidence": 1.0,
+            "evidence": {
+              "npxg_p90": 77.0935960591133,
+              "goals_p90": 77.36726874657909,
+              "xg_per_shot": 82.10180623973727,
+              "shot_accuracy_pct": 50.95785440613027,
+              "goals_minus_xg": 8.347016967706624
+            }
+          },
+          "physical_availability": {
+            "capability": "physical_availability",
+            "score": 48.33664621323423,
+            "confidence": 1.0,
+            "evidence": {
+              "coverage_rate_pct": 39.473684210526315,
+              "matches_played_pct": 61.63108921729611
+            }
+          },
+          "tactical_versatility": {
+            "capability": "tactical_versatility",
+            "score": 75.87837251129858,
+            "confidence": 1.0,
+            "evidence": {
+              "positional_breadth": 70.0,
+              "capability_breadth": 68.54014167467984,
+              "phase_balance": 88.46375954693329
+            }
+          },
+          "overall_rating": 58.9
+        },
+        "feature_vector": {
+          "player_id": 5668,
+          "player_name": "Robert Lewandowski",
+          "season": "Career",
+          "competition": "All Competitions",
+          "position_group": "Forward",
+          "profile_type": "career",
+          "minutes_played": 1360.0,
+          "matches_played": 15,
+          "team_name": "Multiple",
+          "birth_date": null,
+          "progressive_passes_p90": 7.609,
+          "progressive_carries_p90": 2.645,
+          "carry_distance_p90": 147.776,
+          "switches_p90": 0.397,
+          "shot_assists_p90": 0.86,
+          "goal_assists_p90": 0.066,
+          "through_balls_p90": 0.066,
+          "crosses_p90": 0.662,
+          "pass_accuracy_pct": 74.1,
+          "dribble_success_pct": 0.0,
+          "passes_p90": 21.242,
+          "avg_pass_length_m": 16.5,
+          "pressure_pct": 34.9,
+          "events_under_pressure_p90": 44.008,
+          "pressures_p90": 11.58,
+          "recoveries_p90": 3.376,
+          "clearances_p90": 1.324,
+          "npxg_p90": 0.325,
+          "goals_p90": 0.397,
+          "xg_per_shot": 0.164,
+          "shot_accuracy_pct": 35.5,
+          "goals_minus_xg": -1.38,
+          "npxg_per_shot": 0.0,
+          "raw_metrics": null,
+          "positions_played_count": 3
+        },
+        "archetype": "Developing Profile",
+        "archetype_description": "Developing statistical profile (often due to sample size)",
+        "decision_signals": [],
+        "similar_players": []
+      },
+      "primary_role": "Developing Profile",
+      "elite_traits": [],
+      "weak_areas": [
+        {
+          "capability_name": "Defensive Activity",
+          "score": 27.9,
+          "drivers": {
+            "pressures_p90": "13th percentile",
+            "recoveries_p90": "35th percentile",
+            "clearances_p90": "88th percentile"
+          }
+        }
+      ],
+      "comparable_archetype": null
+    },
+    "Messi_2011": {
+      "player": {
+        "player_id": 5503,
+        "player_name": "Lionel Andr\u00e9s Messi Cuccittini",
+        "position_group": "Forward",
+        "team_name": "Barcelona",
+        "competition": "La Liga",
+        "season": "2011/2012",
+        "profile_type": "competition",
+        "birth_date": null,
+        "minutes_played": 3363.0,
+        "capability_profile": {
+          "player_id": 5503,
+          "player_name": "Lionel Andr\u00e9s Messi Cuccittini",
+          "season": "2011/2012",
+          "competition": "La Liga",
+          "position_group": "Forward",
+          "minutes_played": 3363.0,
+          "profile_type": "competition",
+          "ball_progression": {
+            "capability": "ball_progression",
+            "score": 94.57793103448275,
+            "confidence": 1.0,
+            "evidence": {
+              "progressive_passes_p90": 98.9655172413793,
+              "progressive_carries_p90": 96.70344827586207,
+              "carry_distance_p90": 99.02068965517242,
+              "switches_p90": 74.93793103448276
+            }
+          },
+          "chance_creation": {
+            "capability": "chance_creation",
+            "score": 88.40827586206898,
+            "confidence": 1.0,
+            "evidence": {
+              "shot_assists_p90": 88.37241379310345,
+              "goal_assists_p90": 92.2344827586207,
+              "through_balls_p90": 99.2,
+              "crosses_p90": 55.48965517241379
+            }
+          },
+          "ball_security": {
+            "capability": "ball_security",
+            "score": 82.51379310344828,
+            "confidence": 1.0,
+            "evidence": {
+              "pass_accuracy_pct": 87.35172413793103,
+              "dribble_success_pct": 81.02068965517242,
+              "passes_p90": 99.26896551724138,
+              "avg_pass_length_m": 36.92413793103449
+            }
+          },
+          "press_resistance": {
+            "capability": "press_resistance",
+            "score": 82.08965517241379,
+            "confidence": 1.0,
+            "evidence": {
+              "pressure_pct": 65.32413793103449,
+              "events_under_pressure_p90": 98.8551724137931
+            }
+          },
+          "defensive_activity": {
+            "capability": "defensive_activity",
+            "score": 26.459310344827582,
+            "confidence": 1.0,
+            "evidence": {
+              "pressures_p90": 6.910344827586207,
+              "recoveries_p90": 54.717241379310344,
+              "clearances_p90": 35.07586206896552
+            }
+          },
+          "attacking_threat": {
+            "capability": "attacking_threat",
+            "score": 90.8896551724138,
+            "confidence": 1.0,
+            "evidence": {
+              "npxg_p90": 95.61379310344827,
+              "goals_p90": 98.1655172413793,
+              "xg_per_shot": 85.39310344827587,
+              "shot_accuracy_pct": 72.0551724137931,
+              "goals_minus_xg": 99.93103448275862
+            }
+          },
+          "physical_availability": {
+            "capability": "physical_availability",
+            "score": 98.22794918330308,
+            "confidence": 1.0,
+            "evidence": {
+              "coverage_rate_pct": 97.36842105263158,
+              "matches_played_pct": 99.51724137931033
+            }
+          },
+          "tactical_versatility": {
+            "capability": "tactical_versatility",
+            "score": 65.50387763959803,
+            "confidence": 1.0,
+            "evidence": {
+              "positional_breadth": 100.0,
+              "capability_breadth": 54.58183680778076,
+              "phase_balance": 53.34612261853062
+            }
+          },
+          "overall_rating": 85.9
+        },
+        "feature_vector": {
+          "player_id": 5503,
+          "player_name": "Lionel Andr\u00e9s Messi Cuccittini",
+          "season": "2011/2012",
+          "competition": "La Liga",
+          "position_group": "Forward",
+          "profile_type": "competition",
+          "minutes_played": 3363.0,
+          "matches_played": 37,
+          "team_name": "Barcelona",
+          "birth_date": null,
+          "progressive_passes_p90": 24.3,
+          "progressive_carries_p90": 9.29,
+          "carry_distance_p90": 491.6,
+          "switches_p90": 1.044,
+          "shot_assists_p90": 1.98,
+          "goal_assists_p90": 0.428,
+          "through_balls_p90": 2.409,
+          "crosses_p90": 1.231,
+          "pass_accuracy_pct": 81.5,
+          "dribble_success_pct": 67.6,
+          "passes_p90": 66.69,
+          "avg_pass_length_m": 15.3,
+          "pressure_pct": 29.6,
+          "events_under_pressure_p90": 78.79,
+          "pressures_p90": 8.8,
+          "recoveries_p90": 4.23,
+          "clearances_p90": 0.03,
+          "npxg_p90": 0.686,
+          "goals_p90": 1.338,
+          "xg_per_shot": 0.18,
+          "shot_accuracy_pct": 48.5,
+          "goals_minus_xg": 14.35,
+          "npxg_per_shot": 0.0,
+          "raw_metrics": null,
+          "positions_played_count": 4
+        },
+        "archetype": "Elite Goal Scorer",
+        "archetype_description": "Top 15% of position peers for direct goal threat",
+        "decision_signals": [],
+        "similar_players": []
+      },
+      "primary_role": "Elite Goal Scorer",
+      "elite_traits": [
+        {
+          "capability_name": "Physical Availability",
+          "score": 98.2,
+          "drivers": {
+            "coverage_rate_pct": "98th percentile",
+            "matches_played_pct": "100th percentile"
+          }
+        },
+        {
+          "capability_name": "Ball Progression",
+          "score": 94.6,
+          "drivers": {
+            "progressive_passes_p90": "99th percentile",
+            "progressive_carries_p90": "97th percentile",
+            "carry_distance_p90": "99th percentile",
+            "switches_p90": "75th percentile"
+          }
+        },
+        {
+          "capability_name": "Attacking Threat",
+          "score": 90.9,
+          "drivers": {
+            "npxg_p90": "96th percentile",
+            "goals_p90": "98th percentile",
+            "xg_per_shot": "85th percentile",
+            "shot_accuracy_pct": "72th percentile",
+            "goals_minus_xg": "100th percentile"
+          }
+        }
+      ],
+      "weak_areas": [
+        {
+          "capability_name": "Defensive Activity",
+          "score": 26.5,
+          "drivers": {
+            "pressures_p90": "7th percentile",
+            "recoveries_p90": "55th percentile",
+            "clearances_p90": "35th percentile"
+          }
+        }
+      ],
+      "comparable_archetype": null
+    },
+    "Suarez_2015": null
+  },
+  "Recruitment": {
+    "Replace_Rodri": [
+      {
+        "player": "Mounir Obbadi",
+        "fit": 95.52324381021157,
+        "restoration": {
+          "Ball Progression": "99%",
+          "Chance Creation": "112%",
+          "Ball Security": "96%",
+          "Press Resistance": "93%",
+          "Defensive Activity": "94%",
+          "Attacking Threat": "103%"
+        },
+        "positive_tradeoffs": [
+          "Enhanced Chance Creation"
+        ],
+        "negative_tradeoffs": [],
+        "impact": "Restores majority profile with 1 enhancements and 0 regressions."
+      },
+      {
+        "player": "Mounir Obbadi",
+        "fit": 94.92234650255094,
+        "restoration": {
+          "Ball Progression": "98%",
+          "Chance Creation": "111%",
+          "Ball Security": "101%",
+          "Press Resistance": "97%",
+          "Defensive Activity": "92%",
+          "Attacking Threat": "112%"
+        },
+        "positive_tradeoffs": [
+          "Enhanced Chance Creation",
+          "Enhanced Attacking Threat"
+        ],
+        "negative_tradeoffs": [],
+        "impact": "Restores majority profile with 2 enhancements and 0 regressions."
+      },
+      {
+        "player": "Mounir Obbadi",
+        "fit": 94.50147746097564,
+        "restoration": {
+          "Ball Progression": "98%",
+          "Chance Creation": "111%",
+          "Ball Security": "93%",
+          "Press Resistance": "96%",
+          "Defensive Activity": "92%",
+          "Attacking Threat": "112%"
+        },
+        "positive_tradeoffs": [
+          "Enhanced Chance Creation",
+          "Enhanced Attacking Threat"
+        ],
+        "negative_tradeoffs": [],
+        "impact": "Restores majority profile with 2 enhancements and 0 regressions."
+      }
+    ],
+    "Replace_Busquets": [
+      {
+        "player": "Mohamed Camara",
+        "fit": 95.75967550343624,
+        "restoration": {
+          "Ball Progression": "95%",
+          "Chance Creation": "89%",
+          "Ball Security": "104%",
+          "Press Resistance": "101%",
+          "Defensive Activity": "107%",
+          "Attacking Threat": "87%"
+        },
+        "positive_tradeoffs": [],
+        "negative_tradeoffs": [],
+        "impact": "Restores majority profile with 0 enhancements and 0 regressions."
+      },
+      {
+        "player": "Mateo Kova\u010di\u0107",
+        "fit": 95.47452962918518,
+        "restoration": {
+          "Ball Progression": "109%",
+          "Chance Creation": "101%",
+          "Ball Security": "102%",
+          "Press Resistance": "112%",
+          "Defensive Activity": "98%",
+          "Attacking Threat": "114%"
+        },
+        "positive_tradeoffs": [
+          "Enhanced Press Resistance",
+          "Enhanced Attacking Threat"
+        ],
+        "negative_tradeoffs": [],
+        "impact": "Restores majority profile with 2 enhancements and 0 regressions."
+      },
+      {
+        "player": "Nampalys Mendy",
+        "fit": 95.35684537357936,
+        "restoration": {
+          "Ball Progression": "103%",
+          "Chance Creation": "85%",
+          "Ball Security": "101%",
+          "Press Resistance": "86%",
+          "Defensive Activity": "104%",
+          "Attacking Threat": "92%"
+        },
+        "positive_tradeoffs": [],
+        "negative_tradeoffs": [],
+        "impact": "Restores majority profile with 0 enhancements and 0 regressions."
+      }
+    ]
+  },
+  "Team_City": {
+    "identity": "Balanced",
+    "dependencies": {
+      "Ball Progression": {
+        "contributions": {
+          "Kevin De Bruyne": 3.5,
+          "Jes\u00fas Navas Gonz\u00e1lez": 3.5,
+          "David Josu\u00e9 Jim\u00e9nez Silva": 3.5,
+          "Eyal Berkovic": 3.4,
+          "Ga\u00ebl Clichy": 3.3,
+          "Gn\u00e9gn\u00e9ri Yaya Tour\u00e9": 3.2,
+          "Fernando Luiz Roza": 3.2,
+          "Samir Nasri": 3.1,
+          "Aleksandar Kolarov": 3.1,
+          "Raheem Sterling": 3.0,
+          "Bersant Celina": 3.0,
+          "Nicol\u00e1s Hern\u00e1n Otamendi": 2.9,
+          "Fabian Delph": 2.9,
+          "Jihai Sun": 2.8,
+          "Fernando Luiz Rosa": 2.7,
+          "Vincent Kompany": 2.7,
+          "Mart\u00edn Gast\u00f3n Demichelis": 2.7,
+          "Danny Tiatto": 2.5,
+          "Sergio Leonel Ag\u00fcero del Castillo": 2.4,
+          "Michael Tarnat": 2.4,
+          "Shaun Wright-Phillips": 2.4,
+          "Manuel Garc\u00eda Alonso": 2.3,
+          "Steve McManaman": 2.2,
+          "Joe Hart": 2.2,
+          "Claudio Reyna": 2.2,
+          "Kelechi Promise Iheanacho": 2.1,
+          "David Seaman": 2.1,
+          "Nicolas Anelka": 2.0,
+          "Bacary Sagna": 2.0,
+          "Pablo Javier Zabaleta Girod": 2.0,
+          "Antoine Sibierski": 1.9,
+          "Sylvain Distin": 1.9,
+          "Fernando Francisco Reges": 1.8,
+          "David James": 1.8,
+          "Patrick Roberts": 1.7,
+          "Joey Barton": 1.6,
+          "Wilfredo Daniel Caballero": 1.5,
+          "Eliaquim Mangala": 1.2,
+          "Paul Bosvelt": 1.2,
+          "Wilfried Guemiand Bony": 1.0,
+          "Robbie Fowler": 1.0,
+          "David Sommeil": 1.0,
+          "Trevor Sinclair": 0.6,
+          "Richard Dunne": 0.4
+        },
+        "key_players": [
+          "Kevin De Bruyne",
+          "Jes\u00fas Navas Gonz\u00e1lez"
+        ]
+      },
+      "Chance Creation": {
+        "contributions": {
+          "Kevin De Bruyne": 3.8,
+          "David Josu\u00e9 Jim\u00e9nez Silva": 3.6,
+          "Aleksandar Kolarov": 3.6,
+          "Bacary Sagna": 3.5,
+          "Bersant Celina": 3.5,
+          "Jes\u00fas Navas Gonz\u00e1lez": 3.4,
+          "Ga\u00ebl Clichy": 3.3,
+          "Gn\u00e9gn\u00e9ri Yaya Tour\u00e9": 3.2,
+          "Raheem Sterling": 3.0,
+          "Samir Nasri": 3.0,
+          "Kelechi Promise Iheanacho": 2.7,
+          "Michael Tarnat": 2.7,
+          "Joe Hart": 2.7,
+          "Steve McManaman": 2.6,
+          "Fernando Luiz Rosa": 2.5,
+          "Robbie Fowler": 2.5,
+          "Joey Barton": 2.4,
+          "Sergio Leonel Ag\u00fcero del Castillo": 2.3,
+          "Wilfried Guemiand Bony": 2.3,
+          "Jihai Sun": 2.2,
+          "Eyal Berkovic": 2.1,
+          "Pablo Javier Zabaleta Girod": 2.0,
+          "Nicolas Anelka": 1.9,
+          "Vincent Kompany": 1.9,
+          "Mart\u00edn Gast\u00f3n Demichelis": 1.9,
+          "Paul Bosvelt": 1.9,
+          "Wilfredo Daniel Caballero": 1.9,
+          "Claudio Reyna": 1.9,
+          "David Seaman": 1.9,
+          "David James": 1.9,
+          "Antoine Sibierski": 1.8,
+          "Nicol\u00e1s Hern\u00e1n Otamendi": 1.7,
+          "Shaun Wright-Phillips": 1.7,
+          "Trevor Sinclair": 1.7,
+          "Manuel Garc\u00eda Alonso": 1.7,
+          "Danny Tiatto": 1.7,
+          "Patrick Roberts": 1.7,
+          "Fabian Delph": 1.6,
+          "Fernando Francisco Reges": 1.5,
+          "Fernando Luiz Roza": 1.5,
+          "Sylvain Distin": 1.4,
+          "Eliaquim Mangala": 1.3,
+          "Richard Dunne": 1.3,
+          "David Sommeil": 1.3
+        },
+        "key_players": [
+          "Kevin De Bruyne",
+          "David Josu\u00e9 Jim\u00e9nez Silva"
+        ]
+      },
+      "Ball Security": {
+        "contributions": {
+          "Fernando Luiz Roza": 3.8,
+          "Manuel Garc\u00eda Alonso": 3.4,
+          "Samir Nasri": 3.2,
+          "Fernando Luiz Rosa": 3.1,
+          "Gn\u00e9gn\u00e9ri Yaya Tour\u00e9": 3.0,
+          "Fernando Francisco Reges": 3.0,
+          "Patrick Roberts": 3.0,
+          "Raheem Sterling": 2.9,
+          "Jes\u00fas Navas Gonz\u00e1lez": 2.9,
+          "Nicol\u00e1s Hern\u00e1n Otamendi": 2.9,
+          "Eliaquim Mangala": 2.9,
+          "Bersant Celina": 2.9,
+          "Sergio Leonel Ag\u00fcero del Castillo": 2.8,
+          "Vincent Kompany": 2.8,
+          "Fabian Delph": 2.8,
+          "Mart\u00edn Gast\u00f3n Demichelis": 2.8,
+          "Wilfried Guemiand Bony": 2.7,
+          "Kelechi Promise Iheanacho": 2.7,
+          "David Josu\u00e9 Jim\u00e9nez Silva": 2.7,
+          "Kevin De Bruyne": 2.6,
+          "Pablo Javier Zabaleta Girod": 2.6,
+          "Bacary Sagna": 2.5,
+          "Richard Dunne": 2.4,
+          "Ga\u00ebl Clichy": 2.4,
+          "Aleksandar Kolarov": 2.1,
+          "David Seaman": 2.1,
+          "Eyal Berkovic": 2.1,
+          "Joey Barton": 1.8,
+          "Robbie Fowler": 1.7,
+          "Jihai Sun": 1.7,
+          "Joe Hart": 1.7,
+          "Danny Tiatto": 1.7,
+          "Nicolas Anelka": 1.6,
+          "Michael Tarnat": 1.6,
+          "Steve McManaman": 1.6,
+          "Wilfredo Daniel Caballero": 1.6,
+          "Paul Bosvelt": 1.5,
+          "Shaun Wright-Phillips": 1.3,
+          "David James": 1.3,
+          "David Sommeil": 1.3,
+          "Antoine Sibierski": 1.2,
+          "Trevor Sinclair": 1.2,
+          "Claudio Reyna": 1.2,
+          "Sylvain Distin": 1.1
+        },
+        "key_players": [
+          "Fernando Luiz Roza",
+          "Manuel Garc\u00eda Alonso"
+        ]
+      },
+      "Press Resistance": {
+        "contributions": {
+          "Patrick Roberts": 4.8,
+          "Wilfried Guemiand Bony": 4.3,
+          "Shaun Wright-Phillips": 4.3,
+          "Sergio Leonel Ag\u00fcero del Castillo": 4.1,
+          "Kelechi Promise Iheanacho": 4.0,
+          "Nicolas Anelka": 3.9,
+          "Raheem Sterling": 3.8,
+          "David Josu\u00e9 Jim\u00e9nez Silva": 3.8,
+          "Wilfredo Daniel Caballero": 3.5,
+          "Gn\u00e9gn\u00e9ri Yaya Tour\u00e9": 3.3,
+          "Mart\u00edn Gast\u00f3n Demichelis": 3.3,
+          "Eyal Berkovic": 3.3,
+          "Fabian Delph": 3.0,
+          "Ga\u00ebl Clichy": 3.0,
+          "Pablo Javier Zabaleta Girod": 2.9,
+          "Samir Nasri": 2.7,
+          "Nicol\u00e1s Hern\u00e1n Otamendi": 2.7,
+          "Danny Tiatto": 2.6,
+          "Bacary Sagna": 2.5,
+          "Vincent Kompany": 2.4,
+          "Aleksandar Kolarov": 2.3,
+          "Robbie Fowler": 2.3,
+          "Jes\u00fas Navas Gonz\u00e1lez": 2.2,
+          "Kevin De Bruyne": 2.1,
+          "Sylvain Distin": 2.1,
+          "Richard Dunne": 2.1,
+          "Joe Hart": 2.0,
+          "Eliaquim Mangala": 1.8,
+          "Trevor Sinclair": 1.8,
+          "David Sommeil": 1.7,
+          "Fernando Luiz Rosa": 1.6,
+          "Antoine Sibierski": 1.6,
+          "David James": 1.3,
+          "Fernando Francisco Reges": 1.1,
+          "Jihai Sun": 1.0,
+          "Claudio Reyna": 0.9,
+          "Manuel Garc\u00eda Alonso": 0.9,
+          "Fernando Luiz Roza": 0.7,
+          "Bersant Celina": 0.7,
+          "Joey Barton": 0.4,
+          "Steve McManaman": 0.4,
+          "Michael Tarnat": 0.2,
+          "David Seaman": 0.2,
+          "Paul Bosvelt": 0.1
+        },
+        "key_players": [
+          "Patrick Roberts",
+          "Wilfried Guemiand Bony"
+        ]
+      },
+      "Defensive Activity": {
+        "contributions": {
+          "Bersant Celina": 3.7,
+          "Nicol\u00e1s Hern\u00e1n Otamendi": 3.2,
+          "Claudio Reyna": 3.2,
+          "Kevin De Bruyne": 3.1,
+          "Fernando Luiz Roza": 3.1,
+          "Jihai Sun": 3.0,
+          "Fernando Luiz Rosa": 2.9,
+          "Fabian Delph": 2.9,
+          "Joe Hart": 2.9,
+          "Mart\u00edn Gast\u00f3n Demichelis": 2.8,
+          "Kelechi Promise Iheanacho": 2.7,
+          "Eliaquim Mangala": 2.7,
+          "Jes\u00fas Navas Gonz\u00e1lez": 2.6,
+          "Fernando Francisco Reges": 2.6,
+          "Aleksandar Kolarov": 2.6,
+          "Ga\u00ebl Clichy": 2.6,
+          "David James": 2.6,
+          "Danny Tiatto": 2.6,
+          "Vincent Kompany": 2.5,
+          "Pablo Javier Zabaleta Girod": 2.5,
+          "Sylvain Distin": 2.5,
+          "Joey Barton": 2.5,
+          "Steve McManaman": 2.5,
+          "David Sommeil": 2.5,
+          "Wilfredo Daniel Caballero": 2.4,
+          "Bacary Sagna": 2.3,
+          "Richard Dunne": 2.3,
+          "David Seaman": 2.3,
+          "Raheem Sterling": 2.2,
+          "David Josu\u00e9 Jim\u00e9nez Silva": 1.9,
+          "Paul Bosvelt": 1.9,
+          "Patrick Roberts": 1.9,
+          "Gn\u00e9gn\u00e9ri Yaya Tour\u00e9": 1.8,
+          "Robbie Fowler": 1.8,
+          "Manuel Garc\u00eda Alonso": 1.7,
+          "Shaun Wright-Phillips": 1.6,
+          "Trevor Sinclair": 1.6,
+          "Sergio Leonel Ag\u00fcero del Castillo": 1.5,
+          "Samir Nasri": 1.3,
+          "Michael Tarnat": 1.3,
+          "Nicolas Anelka": 1.2,
+          "Wilfried Guemiand Bony": 0.9,
+          "Eyal Berkovic": 0.7,
+          "Antoine Sibierski": 0.6
+        },
+        "key_players": [
+          "Bersant Celina",
+          "Nicol\u00e1s Hern\u00e1n Otamendi"
+        ]
+      },
+      "Attacking Threat": {
+        "contributions": {
+          "Samir Nasri": 3.7,
+          "Sergio Leonel Ag\u00fcero del Castillo": 3.5,
+          "Kelechi Promise Iheanacho": 3.5,
+          "Vincent Kompany": 3.4,
+          "Gn\u00e9gn\u00e9ri Yaya Tour\u00e9": 3.3,
+          "Nicolas Anelka": 3.3,
+          "Fernando Francisco Reges": 3.2,
+          "Aleksandar Kolarov": 3.1,
+          "David Josu\u00e9 Jim\u00e9nez Silva": 2.9,
+          "Nicol\u00e1s Hern\u00e1n Otamendi": 2.9,
+          "Robbie Fowler": 2.8,
+          "Wilfried Guemiand Bony": 2.7,
+          "Raheem Sterling": 2.7,
+          "Eliaquim Mangala": 2.7,
+          "Richard Dunne": 2.7,
+          "Kevin De Bruyne": 2.6,
+          "Antoine Sibierski": 2.6,
+          "Sylvain Distin": 2.6,
+          "Fernando Luiz Rosa": 2.5,
+          "Fabian Delph": 2.5,
+          "Jihai Sun": 2.4,
+          "Steve McManaman": 2.4,
+          "Bacary Sagna": 2.2,
+          "Mart\u00edn Gast\u00f3n Demichelis": 2.1,
+          "Pablo Javier Zabaleta Girod": 2.1,
+          "Michael Tarnat": 2.0,
+          "Joe Hart": 2.0,
+          "Wilfredo Daniel Caballero": 2.0,
+          "David Seaman": 2.0,
+          "David James": 2.0,
+          "Ga\u00ebl Clichy": 1.8,
+          "Manuel Garc\u00eda Alonso": 1.6,
+          "Eyal Berkovic": 1.6,
+          "Bersant Celina": 1.6,
+          "Danny Tiatto": 1.6,
+          "Patrick Roberts": 1.6,
+          "Joey Barton": 1.5,
+          "Fernando Luiz Roza": 1.5,
+          "Jes\u00fas Navas Gonz\u00e1lez": 1.4,
+          "Paul Bosvelt": 1.2,
+          "David Sommeil": 1.2,
+          "Shaun Wright-Phillips": 1.1,
+          "Trevor Sinclair": 0.9,
+          "Claudio Reyna": 0.9
+        },
+        "key_players": [
+          "Samir Nasri",
+          "Sergio Leonel Ag\u00fcero del Castillo"
+        ]
+      },
+      "Physical Availability": {
+        "contributions": {
+          "Joe Hart": 4.9,
+          "Jes\u00fas Navas Gonz\u00e1lez": 4.8,
+          "Fernando Luiz Rosa": 4.7,
+          "Gn\u00e9gn\u00e9ri Yaya Tour\u00e9": 4.6,
+          "Raheem Sterling": 4.5,
+          "Sergio Leonel Ag\u00fcero del Castillo": 4.4,
+          "Aleksandar Kolarov": 4.4,
+          "Nicol\u00e1s Hern\u00e1n Otamendi": 4.4,
+          "Bacary Sagna": 4.3,
+          "Wilfried Guemiand Bony": 4.0,
+          "Kelechi Promise Iheanacho": 4.0,
+          "Kevin De Bruyne": 3.9,
+          "David Josu\u00e9 Jim\u00e9nez Silva": 3.8,
+          "Fernando Francisco Reges": 3.8,
+          "Eliaquim Mangala": 3.8,
+          "Mart\u00edn Gast\u00f3n Demichelis": 3.4,
+          "Fabian Delph": 3.1,
+          "Vincent Kompany": 2.8,
+          "Ga\u00ebl Clichy": 2.8,
+          "Pablo Javier Zabaleta Girod": 2.7,
+          "Samir Nasri": 2.6,
+          "Robbie Fowler": 1.7,
+          "Wilfredo Daniel Caballero": 1.7,
+          "Sylvain Distin": 1.0,
+          "Jihai Sun": 1.0,
+          "Michael Tarnat": 1.0,
+          "Nicolas Anelka": 0.9,
+          "Joey Barton": 0.9,
+          "Paul Bosvelt": 0.9,
+          "Shaun Wright-Phillips": 0.9,
+          "Trevor Sinclair": 0.9,
+          "Steve McManaman": 0.8,
+          "Manuel Garc\u00eda Alonso": 0.8,
+          "Eyal Berkovic": 0.8,
+          "Bersant Celina": 0.8,
+          "Danny Tiatto": 0.8,
+          "Patrick Roberts": 0.8,
+          "Richard Dunne": 0.4,
+          "Fernando Luiz Roza": 0.4,
+          "Claudio Reyna": 0.4,
+          "David Seaman": 0.4,
+          "David James": 0.4,
+          "David Sommeil": 0.4,
+          "Antoine Sibierski": 0.3
+        },
+        "key_players": [
+          "Joe Hart",
+          "Jes\u00fas Navas Gonz\u00e1lez"
+        ]
+      }
+    },
+    "gaps": {
+      "Ball Progression": 8.9,
+      "Chance Creation": 4.8,
+      "Ball Security": 13.1,
+      "Press Resistance": -6.3,
+      "Defensive Activity": -5.9,
+      "Attacking Threat": 3.0,
+      "Physical Availability": 9.7
+    }
+  },
+  "Team_Arsenal": {
+    "identity": "Balanced",
+    "dependencies": {
+      "Ball Progression": {
+        "contributions": {
+          "Santiago Cazorla Gonz\u00e1lez": 3.1,
+          "Alex Oxlade-Chamberlain": 3.1,
+          "Thierry Henry": 3.0,
+          "Alexis Alejandro S\u00e1nchez S\u00e1nchez": 3.0,
+          "Robert Pir\u00e8s": 2.9,
+          "Alex Iwobi": 2.9,
+          "Aaron Ramsey": 2.8,
+          "Mesut \u00d6zil": 2.8,
+          "Jos\u00e9 Antonio Reyes Calder\u00f3n": 2.7,
+          "Jack Wilshere": 2.7,
+          "Patrick Vieira": 2.6,
+          "Mohamed Naser Elsayed Elneny": 2.6,
+          "Laurent Koscielny": 2.5,
+          "Laureano Bisan-Etame Mayer": 2.5,
+          "Dennis Bergkamp": 2.4,
+          "Fredrik Ljungberg": 2.3,
+          "Sylvain Wiltord": 2.3,
+          "Joel Nathaniel Campbell Samuels": 2.3,
+          "Ray Parlour": 2.3,
+          "H\u00e9ctor Beller\u00edn Moruno": 2.3,
+          "Jens Lehmann": 2.3,
+          "Eduardo C\u00e9sar Daude Gaspar": 2.2,
+          "Nwankwo Christian Kanu": 2.2,
+          "Kolo Habib Tour\u00e9": 2.1,
+          "Gilberto Aparecido da Silva": 2.1,
+          "Mikel Arteta Amatriain": 2.1,
+          "Gabriel Armando de Abreu": 2.0,
+          "Kieran Gibbs": 2.0,
+          "Ga\u00ebl Clichy": 2.0,
+          "Petr \u010cech": 2.0,
+          "Ashley Cole": 1.9,
+          "Francis Joseph Coquelin": 1.9,
+          "Calum Chambers": 1.9,
+          "Mathieu Debuchy": 1.9,
+          "David Ospina Ram\u00edrez": 1.9,
+          "Per Mertesacker": 1.8,
+          "Ignacio Monreal Eraso": 1.8,
+          "David Bentley": 1.8,
+          "Pascal Cygan": 1.8,
+          "Theo Walcott": 1.6,
+          "Mathieu Flamini": 1.6,
+          "Daniel Nii Tackie Mensah Welbeck": 1.5,
+          "J\u00e9r\u00e9mie Aliadi\u00e8re": 1.2,
+          "Olivier Giroud": 1.1,
+          "Sulzeer Jeremiah ''Sol' Campbell": 1.1,
+          "Martin Keown": 0.9
+        },
+        "key_players": [
+          "Santiago Cazorla Gonz\u00e1lez",
+          "Alex Oxlade-Chamberlain"
+        ]
+      },
+      "Chance Creation": {
+        "contributions": {
+          "Mesut \u00d6zil": 3.2,
+          "Santiago Cazorla Gonz\u00e1lez": 3.1,
+          "Thierry Henry": 2.9,
+          "Robert Pir\u00e8s": 2.9,
+          "Alexis Alejandro S\u00e1nchez S\u00e1nchez": 2.8,
+          "Dennis Bergkamp": 2.8,
+          "Ignacio Monreal Eraso": 2.8,
+          "H\u00e9ctor Beller\u00edn Moruno": 2.8,
+          "Alex Iwobi": 2.7,
+          "Ashley Cole": 2.7,
+          "Laureano Bisan-Etame Mayer": 2.7,
+          "Nwankwo Christian Kanu": 2.6,
+          "Jens Lehmann": 2.6,
+          "Petr \u010cech": 2.6,
+          "Aaron Ramsey": 2.5,
+          "Patrick Vieira": 2.4,
+          "Kolo Habib Tour\u00e9": 2.4,
+          "Joel Nathaniel Campbell Samuels": 2.4,
+          "Eduardo C\u00e9sar Daude Gaspar": 2.4,
+          "Jos\u00e9 Antonio Reyes Calder\u00f3n": 2.3,
+          "Mikel Arteta Amatriain": 2.3,
+          "Olivier Giroud": 2.2,
+          "Fredrik Ljungberg": 2.2,
+          "Alex Oxlade-Chamberlain": 2.2,
+          "Theo Walcott": 2.0,
+          "Daniel Nii Tackie Mensah Welbeck": 2.0,
+          "Sylvain Wiltord": 2.0,
+          "Ray Parlour": 2.0,
+          "Kieran Gibbs": 2.0,
+          "Mathieu Debuchy": 2.0,
+          "Laurent Koscielny": 1.9,
+          "Gilberto Aparecido da Silva": 1.9,
+          "David Bentley": 1.9,
+          "Sulzeer Jeremiah ''Sol' Campbell": 1.8,
+          "J\u00e9r\u00e9mie Aliadi\u00e8re": 1.8,
+          "Gabriel Armando de Abreu": 1.7,
+          "Mohamed Naser Elsayed Elneny": 1.7,
+          "Ga\u00ebl Clichy": 1.7,
+          "Per Mertesacker": 1.6,
+          "Pascal Cygan": 1.6,
+          "David Ospina Ram\u00edrez": 1.6,
+          "Calum Chambers": 1.5,
+          "Francis Joseph Coquelin": 1.4,
+          "Mathieu Flamini": 1.3,
+          "Jack Wilshere": 1.1,
+          "Martin Keown": 1.1
+        },
+        "key_players": [
+          "Mesut \u00d6zil",
+          "Santiago Cazorla Gonz\u00e1lez"
+        ]
+      },
+      "Ball Security": {
+        "contributions": {
+          "Alex Iwobi": 2.8,
+          "Mohamed Naser Elsayed Elneny": 2.8,
+          "Santiago Cazorla Gonz\u00e1lez": 2.7,
+          "Jack Wilshere": 2.7,
+          "Francis Joseph Coquelin": 2.7,
+          "Per Mertesacker": 2.6,
+          "Gabriel Armando de Abreu": 2.6,
+          "David Bentley": 2.6,
+          "Alexis Alejandro S\u00e1nchez S\u00e1nchez": 2.5,
+          "Aaron Ramsey": 2.5,
+          "Dennis Bergkamp": 2.5,
+          "Laurent Koscielny": 2.5,
+          "Alex Oxlade-Chamberlain": 2.5,
+          "Mikel Arteta Amatriain": 2.5,
+          "Calum Chambers": 2.5,
+          "Eduardo C\u00e9sar Daude Gaspar": 2.4,
+          "Nwankwo Christian Kanu": 2.4,
+          "Mathieu Flamini": 2.4,
+          "Patrick Vieira": 2.3,
+          "Ashley Cole": 2.3,
+          "Laureano Bisan-Etame Mayer": 2.3,
+          "Mesut \u00d6zil": 2.2,
+          "Daniel Nii Tackie Mensah Welbeck": 2.2,
+          "Gilberto Aparecido da Silva": 2.2,
+          "Joel Nathaniel Campbell Samuels": 2.2,
+          "Robert Pir\u00e8s": 2.1,
+          "Ignacio Monreal Eraso": 2.1,
+          "Ray Parlour": 2.1,
+          "H\u00e9ctor Beller\u00edn Moruno": 2.1,
+          "Ga\u00ebl Clichy": 2.1,
+          "Pascal Cygan": 2.1,
+          "Sylvain Wiltord": 2.0,
+          "Theo Walcott": 1.9,
+          "Fredrik Ljungberg": 1.9,
+          "Kolo Habib Tour\u00e9": 1.9,
+          "Petr \u010cech": 1.8,
+          "Jos\u00e9 Antonio Reyes Calder\u00f3n": 1.7,
+          "Sulzeer Jeremiah ''Sol' Campbell": 1.7,
+          "Thierry Henry": 1.6,
+          "Olivier Giroud": 1.6,
+          "J\u00e9r\u00e9mie Aliadi\u00e8re": 1.6,
+          "Jens Lehmann": 1.6,
+          "David Ospina Ram\u00edrez": 1.6,
+          "Mathieu Debuchy": 1.5,
+          "Kieran Gibbs": 1.4,
+          "Martin Keown": 1.2
+        },
+        "key_players": [
+          "Alex Iwobi",
+          "Mohamed Naser Elsayed Elneny"
+        ]
+      },
+      "Press Resistance": {
+        "contributions": {
+          "Nwankwo Christian Kanu": 3.8,
+          "Jack Wilshere": 3.5,
+          "David Bentley": 3.4,
+          "Kieran Gibbs": 3.3,
+          "Thierry Henry": 3.2,
+          "Ga\u00ebl Clichy": 3.2,
+          "Kolo Habib Tour\u00e9": 3.0,
+          "Patrick Vieira": 2.9,
+          "Alexis Alejandro S\u00e1nchez S\u00e1nchez": 2.8,
+          "Fredrik Ljungberg": 2.8,
+          "H\u00e9ctor Beller\u00edn Moruno": 2.8,
+          "Jos\u00e9 Antonio Reyes Calder\u00f3n": 2.7,
+          "Ashley Cole": 2.7,
+          "Olivier Giroud": 2.6,
+          "Robert Pir\u00e8s": 2.6,
+          "Calum Chambers": 2.5,
+          "Ray Parlour": 2.4,
+          "Laureano Bisan-Etame Mayer": 2.4,
+          "Aaron Ramsey": 2.3,
+          "Joel Nathaniel Campbell Samuels": 2.2,
+          "Francis Joseph Coquelin": 2.2,
+          "Mathieu Debuchy": 2.2,
+          "Daniel Nii Tackie Mensah Welbeck": 2.1,
+          "Mesut \u00d6zil": 2.0,
+          "Alex Oxlade-Chamberlain": 2.0,
+          "Sulzeer Jeremiah ''Sol' Campbell": 2.0,
+          "Martin Keown": 2.0,
+          "David Ospina Ram\u00edrez": 2.0,
+          "Dennis Bergkamp": 1.9,
+          "J\u00e9r\u00e9mie Aliadi\u00e8re": 1.9,
+          "Jens Lehmann": 1.9,
+          "Petr \u010cech": 1.8,
+          "Laurent Koscielny": 1.7,
+          "Santiago Cazorla Gonz\u00e1lez": 1.6,
+          "Eduardo C\u00e9sar Daude Gaspar": 1.6,
+          "Ignacio Monreal Eraso": 1.6,
+          "Theo Walcott": 1.5,
+          "Sylvain Wiltord": 1.5,
+          "Mikel Arteta Amatriain": 1.5,
+          "Pascal Cygan": 1.5,
+          "Alex Iwobi": 1.3,
+          "Gilberto Aparecido da Silva": 1.2,
+          "Gabriel Armando de Abreu": 1.2,
+          "Mohamed Naser Elsayed Elneny": 1.2,
+          "Per Mertesacker": 1.0,
+          "Mathieu Flamini": 0.5
+        },
+        "key_players": [
+          "Nwankwo Christian Kanu",
+          "Jack Wilshere"
+        ]
+      },
+      "Defensive Activity": {
+        "contributions": {
+          "Ga\u00ebl Clichy": 3.6,
+          "Patrick Vieira": 3.1,
+          "Mathieu Debuchy": 3.1,
+          "Jack Wilshere": 3.0,
+          "Aaron Ramsey": 2.9,
+          "Joel Nathaniel Campbell Samuels": 2.9,
+          "Kieran Gibbs": 2.9,
+          "Petr \u010cech": 2.9,
+          "Ashley Cole": 2.8,
+          "Francis Joseph Coquelin": 2.8,
+          "Jens Lehmann": 2.8,
+          "Kolo Habib Tour\u00e9": 2.7,
+          "J\u00e9r\u00e9mie Aliadi\u00e8re": 2.7,
+          "Laurent Koscielny": 2.6,
+          "Alex Oxlade-Chamberlain": 2.6,
+          "Gilberto Aparecido da Silva": 2.5,
+          "Ray Parlour": 2.5,
+          "Laureano Bisan-Etame Mayer": 2.5,
+          "Jos\u00e9 Antonio Reyes Calder\u00f3n": 2.4,
+          "Pascal Cygan": 2.3,
+          "Alexis Alejandro S\u00e1nchez S\u00e1nchez": 2.2,
+          "Eduardo C\u00e9sar Daude Gaspar": 2.2,
+          "Mohamed Naser Elsayed Elneny": 2.2,
+          "David Ospina Ram\u00edrez": 2.1,
+          "Santiago Cazorla Gonz\u00e1lez": 2.0,
+          "Ignacio Monreal Eraso": 2.0,
+          "Gabriel Armando de Abreu": 2.0,
+          "Mikel Arteta Amatriain": 2.0,
+          "Calum Chambers": 2.0,
+          "David Bentley": 1.9,
+          "Sulzeer Jeremiah ''Sol' Campbell": 1.8,
+          "H\u00e9ctor Beller\u00edn Moruno": 1.8,
+          "Robert Pir\u00e8s": 1.7,
+          "Daniel Nii Tackie Mensah Welbeck": 1.7,
+          "Nwankwo Christian Kanu": 1.7,
+          "Fredrik Ljungberg": 1.6,
+          "Dennis Bergkamp": 1.6,
+          "Martin Keown": 1.6,
+          "Alex Iwobi": 1.5,
+          "Olivier Giroud": 1.4,
+          "Per Mertesacker": 1.4,
+          "Mathieu Flamini": 1.4,
+          "Thierry Henry": 1.2,
+          "Theo Walcott": 1.1,
+          "Sylvain Wiltord": 1.1,
+          "Mesut \u00d6zil": 1.0
+        },
+        "key_players": [
+          "Ga\u00ebl Clichy",
+          "Patrick Vieira"
+        ]
+      },
+      "Attacking Threat": {
+        "contributions": {
+          "Laurent Koscielny": 3.2,
+          "Robert Pir\u00e8s": 3.1,
+          "Kieran Gibbs": 3.1,
+          "Mesut \u00d6zil": 2.9,
+          "Daniel Nii Tackie Mensah Welbeck": 2.9,
+          "Thierry Henry": 2.8,
+          "Fredrik Ljungberg": 2.8,
+          "Kolo Habib Tour\u00e9": 2.8,
+          "Olivier Giroud": 2.7,
+          "Aaron Ramsey": 2.7,
+          "Gabriel Armando de Abreu": 2.7,
+          "Patrick Vieira": 2.6,
+          "Sulzeer Jeremiah ''Sol' Campbell": 2.6,
+          "Alexis Alejandro S\u00e1nchez S\u00e1nchez": 2.5,
+          "Theo Walcott": 2.5,
+          "Gilberto Aparecido da Silva": 2.4,
+          "Jos\u00e9 Antonio Reyes Calder\u00f3n": 2.3,
+          "Per Mertesacker": 2.3,
+          "H\u00e9ctor Beller\u00edn Moruno": 2.3,
+          "Mikel Arteta Amatriain": 2.3,
+          "Sylvain Wiltord": 2.2,
+          "Alex Iwobi": 2.2,
+          "Eduardo C\u00e9sar Daude Gaspar": 2.2,
+          "Ignacio Monreal Eraso": 2.2,
+          "Ga\u00ebl Clichy": 2.1,
+          "Dennis Bergkamp": 2.0,
+          "Joel Nathaniel Campbell Samuels": 2.0,
+          "Mohamed Naser Elsayed Elneny": 2.0,
+          "Nwankwo Christian Kanu": 2.0,
+          "Mathieu Flamini": 2.0,
+          "Calum Chambers": 2.0,
+          "Laureano Bisan-Etame Mayer": 1.9,
+          "Santiago Cazorla Gonz\u00e1lez": 1.8,
+          "Ashley Cole": 1.8,
+          "Martin Keown": 1.8,
+          "Jack Wilshere": 1.7,
+          "Mathieu Debuchy": 1.7,
+          "Jens Lehmann": 1.7,
+          "Petr \u010cech": 1.7,
+          "David Ospina Ram\u00edrez": 1.7,
+          "Ray Parlour": 1.6,
+          "J\u00e9r\u00e9mie Aliadi\u00e8re": 1.6,
+          "Alex Oxlade-Chamberlain": 1.4,
+          "Francis Joseph Coquelin": 1.0,
+          "David Bentley": 1.0,
+          "Pascal Cygan": 1.0
+        },
+        "key_players": [
+          "Laurent Koscielny",
+          "Robert Pir\u00e8s"
+        ]
+      },
+      "Physical Availability": {
+        "contributions": {
+          "Thierry Henry": 3.1,
+          "Olivier Giroud": 3.1,
+          "Kolo Habib Tour\u00e9": 3.1,
+          "Ignacio Monreal Eraso": 3.1,
+          "Jens Lehmann": 3.1,
+          "Robert Pir\u00e8s": 3.0,
+          "Mesut \u00d6zil": 3.0,
+          "Sulzeer Jeremiah ''Sol' Campbell": 3.0,
+          "H\u00e9ctor Beller\u00edn Moruno": 3.0,
+          "Laurent Koscielny": 2.9,
+          "Petr \u010cech": 2.9,
+          "Gilberto Aparecido da Silva": 2.8,
+          "Ashley Cole": 2.8,
+          "Laureano Bisan-Etame Mayer": 2.8,
+          "Alexis Alejandro S\u00e1nchez S\u00e1nchez": 2.7,
+          "Aaron Ramsey": 2.7,
+          "Fredrik Ljungberg": 2.7,
+          "Theo Walcott": 2.6,
+          "Patrick Vieira": 2.6,
+          "Eduardo C\u00e9sar Daude Gaspar": 2.6,
+          "Dennis Bergkamp": 2.5,
+          "Francis Joseph Coquelin": 2.4,
+          "Per Mertesacker": 2.3,
+          "Ray Parlour": 2.3,
+          "Alex Oxlade-Chamberlain": 2.2,
+          "Gabriel Armando de Abreu": 2.2,
+          "Joel Nathaniel Campbell Samuels": 2.0,
+          "Pascal Cygan": 2.0,
+          "Mathieu Flamini": 1.8,
+          "Kieran Gibbs": 1.8,
+          "Santiago Cazorla Gonz\u00e1lez": 1.7,
+          "Mikel Arteta Amatriain": 1.7,
+          "Jos\u00e9 Antonio Reyes Calder\u00f3n": 1.6,
+          "Calum Chambers": 1.6,
+          "Ga\u00ebl Clichy": 1.6,
+          "Sylvain Wiltord": 1.5,
+          "Alex Iwobi": 1.5,
+          "Mohamed Naser Elsayed Elneny": 1.5,
+          "Martin Keown": 1.5,
+          "Daniel Nii Tackie Mensah Welbeck": 1.4,
+          "Nwankwo Christian Kanu": 1.4,
+          "J\u00e9r\u00e9mie Aliadi\u00e8re": 1.4,
+          "David Ospina Ram\u00edrez": 1.0,
+          "Jack Wilshere": 0.8,
+          "Mathieu Debuchy": 0.6,
+          "David Bentley": 0.2
+        },
+        "key_players": [
+          "Thierry Henry",
+          "Olivier Giroud"
+        ]
+      }
+    },
+    "gaps": {
+      "Ball Progression": 7.7,
+      "Chance Creation": 7.1,
+      "Ball Security": 8.6,
+      "Press Resistance": -4.0,
+      "Defensive Activity": -6.8,
+      "Attacking Threat": 4.1,
+      "Physical Availability": 12.4
+    }
+  },
+  "Team_Liverpool": {
+    "identity": "Balanced",
+    "dependencies": {
+      "Ball Progression": {
+        "contributions": {
+          "Salif Alassane Diao": 2.7,
+          "Jermaine Pennant": 2.6,
+          "Philippe Coutinho Correia": 2.5,
+          "Jordon Ibe": 2.4,
+          "Cameron Brannagan": 2.4,
+          "Steve Finnan": 2.4,
+          "Steven Gerrard": 2.2,
+          "Danny Murphy": 2.2,
+          "Nathaniel Edwin Clyne": 2.1,
+          "Jos\u00e9 Manuel Reina P\u00e1ez": 2.1,
+          "Alberto Moreno P\u00e9rez": 2.0,
+          "Trent Alexander-Arnold": 2.0,
+          "Mamadou Sakho": 1.9,
+          "John Arne Semundseth Riise": 1.9,
+          "Lucas Pezzini Leiva": 1.9,
+          "Kevin Linford Stewart": 1.9,
+          "Pedro Chirivella Burgos": 1.9,
+          "Joe Allen": 1.8,
+          "Djibril Ciss\u00e9": 1.8,
+          "Oluwaseyi Babajide Ojo": 1.8,
+          "Martin \u0160krtel": 1.7,
+          "El-Hadji Ousseynou Diouf": 1.7,
+          "Bradley Shaun Smith": 1.7,
+          "Divock Okoth Origi": 1.6,
+          "Anthony Le Tallec": 1.6,
+          "\u00c1lvaro Arbeloa Coca": 1.6,
+          "Daniel Andre Sturridge": 1.5,
+          "Kolo Habib Tour\u00e9": 1.5,
+          "Connor Steven Randall": 1.5,
+          "Andrew Robertson": 1.5,
+          "Jerzy Dudek": 1.5,
+          "Alisson Rams\u00e9s Becker": 1.5,
+          "Daniel William John Ings": 1.4,
+          "Xabier Alonso Olano": 1.4,
+          "Mohamed Salah": 1.4,
+          "Sadio Man\u00e9": 1.4,
+          "Simon Mignolet": 1.4,
+          "Jon Flanagan": 1.4,
+          "Milan Baro\u0161": 1.3,
+          "Peter Crouch": 1.3,
+          "John Welsh": 1.3,
+          "James Philip Milner": 1.2,
+          "Dirk Kuijt": 1.2,
+          "Joe Gomez": 1.2,
+          "Boudewijn Zenden": 1.2,
+          "Danny Ward": 1.1,
+          "Sergi Can\u00f3s Tenes": 1.1,
+          "Jordan Brian Henderson": 1.0,
+          "Emre Can": 1.0,
+          "Luis Javier Garc\u00eda Sanz": 1.0,
+          "Loris Karius": 1.0,
+          "Jo\u00ebl Andre Job Matip": 1.0,
+          "Christian Benteke Liolo": 0.9,
+          "Sami Hyypi\u00e4": 0.9,
+          "Djimi Traor\u00e9": 0.9,
+          "Jordan Rossiter": 0.9,
+          "Dietmar Hamann": 0.8,
+          "Steven Caulker": 0.8,
+          "Daniel Munthe Agger": 0.8,
+          "Javier Alejandro Mascherano": 0.8,
+          "Emile Heskey": 0.8,
+          "Adam David Lallana": 0.7,
+          "Dejan Lovren": 0.7,
+          "\u00c1d\u00e1m Bogd\u00e1n": 0.7,
+          "Vladimir Smicer": 0.6,
+          "F\u00e1bio Henrique Tavares": 0.6,
+          "Igor Bi\u0161\u0107an": 0.6,
+          "Jo\u00e3o Carlos Vila\u00e7a Teixeira": 0.6,
+          "Virgil van Dijk": 0.5,
+          "Georginio Wijnaldum": 0.4,
+          "Roberto Firmino Barbosa de Oliveira": 0.3,
+          "Michael Owen": 0.2,
+          "Harry Kewell": 0.2,
+          "Jamie Carragher": 0.2
+        },
+        "key_players": [
+          "Salif Alassane Diao",
+          "Jermaine Pennant"
+        ]
+      },
+      "Chance Creation": {
+        "contributions": {
+          "Alberto Moreno P\u00e9rez": 2.5,
+          "Philippe Coutinho Correia": 2.3,
+          "Joe Allen": 2.1,
+          "Oluwaseyi Babajide Ojo": 2.1,
+          "Dirk Kuijt": 2.0,
+          "Steven Gerrard": 2.0,
+          "Jon Flanagan": 2.0,
+          "Jo\u00ebl Andre Job Matip": 2.0,
+          "Nathaniel Edwin Clyne": 1.9,
+          "Jordon Ibe": 1.9,
+          "Steve Finnan": 1.9,
+          "Christian Benteke Liolo": 1.8,
+          "Lucas Pezzini Leiva": 1.8,
+          "Luis Javier Garc\u00eda Sanz": 1.8,
+          "Jermaine Pennant": 1.8,
+          "Georginio Wijnaldum": 1.8,
+          "Andrew Robertson": 1.8,
+          "Vladimir Smicer": 1.7,
+          "Mohamed Salah": 1.6,
+          "Trent Alexander-Arnold": 1.6,
+          "Bradley Shaun Smith": 1.6,
+          "Boudewijn Zenden": 1.6,
+          "Daniel Andre Sturridge": 1.5,
+          "Divock Okoth Origi": 1.5,
+          "Daniel William John Ings": 1.5,
+          "John Arne Semundseth Riise": 1.5,
+          "El-Hadji Ousseynou Diouf": 1.4,
+          "Roberto Firmino Barbosa de Oliveira": 1.3,
+          "Michael Owen": 1.3,
+          "Martin \u0160krtel": 1.3,
+          "Cameron Brannagan": 1.3,
+          "Anthony Le Tallec": 1.3,
+          "Simon Mignolet": 1.3,
+          "Jerzy Dudek": 1.3,
+          "Danny Ward": 1.3,
+          "\u00c1d\u00e1m Bogd\u00e1n": 1.3,
+          "Alisson Rams\u00e9s Becker": 1.3,
+          "Jos\u00e9 Manuel Reina P\u00e1ez": 1.3,
+          "Loris Karius": 1.3,
+          "James Philip Milner": 1.2,
+          "Adam David Lallana": 1.2,
+          "Emre Can": 1.2,
+          "Mamadou Sakho": 1.2,
+          "Dietmar Hamann": 1.2,
+          "Djibril Ciss\u00e9": 1.2,
+          "Kolo Habib Tour\u00e9": 1.2,
+          "Virgil van Dijk": 1.2,
+          "Milan Baro\u0161": 1.2,
+          "Peter Crouch": 1.2,
+          "Joe Gomez": 1.2,
+          "John Welsh": 1.2,
+          "Jordan Rossiter": 1.2,
+          "Sergi Can\u00f3s Tenes": 1.2,
+          "Danny Murphy": 1.2,
+          "Jo\u00e3o Carlos Vila\u00e7a Teixeira": 1.2,
+          "\u00c1lvaro Arbeloa Coca": 1.2,
+          "Kevin Linford Stewart": 1.1,
+          "Pedro Chirivella Burgos": 1.1,
+          "Xabier Alonso Olano": 1.0,
+          "Sadio Man\u00e9": 1.0,
+          "Connor Steven Randall": 1.0,
+          "F\u00e1bio Henrique Tavares": 1.0,
+          "Dejan Lovren": 0.9,
+          "Sami Hyypi\u00e4": 0.9,
+          "Steven Caulker": 0.9,
+          "Daniel Munthe Agger": 0.9,
+          "Jamie Carragher": 0.9,
+          "Djimi Traor\u00e9": 0.9,
+          "Igor Bi\u0161\u0107an": 0.9,
+          "Emile Heskey": 0.8,
+          "Jordan Brian Henderson": 0.7,
+          "Harry Kewell": 0.7,
+          "Salif Alassane Diao": 0.7,
+          "Javier Alejandro Mascherano": 0.7
+        },
+        "key_players": [
+          "Alberto Moreno P\u00e9rez",
+          "Philippe Coutinho Correia"
+        ]
+      },
+      "Ball Security": {
+        "contributions": {
+          "Cameron Brannagan": 2.2,
+          "Jordan Brian Henderson": 2.1,
+          "Mohamed Salah": 2.1,
+          "Kevin Linford Stewart": 2.0,
+          "Danny Murphy": 2.0,
+          "Philippe Coutinho Correia": 1.9,
+          "Emre Can": 1.9,
+          "Xabier Alonso Olano": 1.9,
+          "Jordon Ibe": 1.9,
+          "Mamadou Sakho": 1.9,
+          "Sami Hyypi\u00e4": 1.9,
+          "Dietmar Hamann": 1.9,
+          "Lucas Pezzini Leiva": 1.9,
+          "Martin \u0160krtel": 1.9,
+          "Steve Finnan": 1.9,
+          "Jo\u00e3o Carlos Vila\u00e7a Teixeira": 1.9,
+          "Daniel Andre Sturridge": 1.7,
+          "Joe Allen": 1.7,
+          "Georginio Wijnaldum": 1.7,
+          "Michael Owen": 1.6,
+          "Kolo Habib Tour\u00e9": 1.6,
+          "Jon Flanagan": 1.6,
+          "Alisson Rams\u00e9s Becker": 1.6,
+          "Javier Alejandro Mascherano": 1.6,
+          "Sadio Man\u00e9": 1.5,
+          "Salif Alassane Diao": 1.5,
+          "Jermaine Pennant": 1.5,
+          "Andrew Robertson": 1.5,
+          "Jamie Carragher": 1.5,
+          "Igor Bi\u0161\u0107an": 1.5,
+          "Jos\u00e9 Manuel Reina P\u00e1ez": 1.5,
+          "Pedro Chirivella Burgos": 1.5,
+          "Loris Karius": 1.5,
+          "Alberto Moreno P\u00e9rez": 1.4,
+          "Daniel William John Ings": 1.4,
+          "Nathaniel Edwin Clyne": 1.3,
+          "Dirk Kuijt": 1.3,
+          "Virgil van Dijk": 1.3,
+          "Bradley Shaun Smith": 1.3,
+          "Simon Mignolet": 1.3,
+          "Djimi Traor\u00e9": 1.3,
+          "Emile Heskey": 1.3,
+          "Boudewijn Zenden": 1.3,
+          "John Welsh": 1.3,
+          "Sergi Can\u00f3s Tenes": 1.3,
+          "Christian Benteke Liolo": 1.2,
+          "Dejan Lovren": 1.2,
+          "Oluwaseyi Babajide Ojo": 1.2,
+          "Steven Gerrard": 1.2,
+          "Roberto Firmino Barbosa de Oliveira": 1.1,
+          "John Arne Semundseth Riise": 1.1,
+          "El-Hadji Ousseynou Diouf": 1.1,
+          "Connor Steven Randall": 1.1,
+          "Milan Baro\u0161": 1.1,
+          "Danny Ward": 1.1,
+          "Jordan Rossiter": 1.1,
+          "James Philip Milner": 1.0,
+          "Adam David Lallana": 1.0,
+          "Daniel Munthe Agger": 1.0,
+          "Jerzy Dudek": 1.0,
+          "Anthony Le Tallec": 0.9,
+          "\u00c1d\u00e1m Bogd\u00e1n": 0.9,
+          "Divock Okoth Origi": 0.8,
+          "Djibril Ciss\u00e9": 0.8,
+          "Trent Alexander-Arnold": 0.8,
+          "Peter Crouch": 0.8,
+          "Jo\u00ebl Andre Job Matip": 0.8,
+          "\u00c1lvaro Arbeloa Coca": 0.8,
+          "Vladimir Smicer": 0.7,
+          "Harry Kewell": 0.7,
+          "F\u00e1bio Henrique Tavares": 0.7,
+          "Joe Gomez": 0.7,
+          "Luis Javier Garc\u00eda Sanz": 0.5,
+          "Steven Caulker": 0.3
+        },
+        "key_players": [
+          "Cameron Brannagan",
+          "Jordan Brian Henderson"
+        ]
+      },
+      "Press Resistance": {
+        "contributions": {
+          "Danny Murphy": 3.0,
+          "El-Hadji Ousseynou Diouf": 2.9,
+          "Harry Kewell": 2.9,
+          "Mohamed Salah": 2.8,
+          "Djibril Ciss\u00e9": 2.8,
+          "Steven Caulker": 2.8,
+          "Peter Crouch": 2.8,
+          "Connor Steven Randall": 2.5,
+          "Salif Alassane Diao": 2.5,
+          "Oluwaseyi Babajide Ojo": 2.4,
+          "Sergi Can\u00f3s Tenes": 2.4,
+          "Luis Javier Garc\u00eda Sanz": 2.3,
+          "Emile Heskey": 2.3,
+          "Joe Allen": 2.2,
+          "Milan Baro\u0161": 2.2,
+          "Jon Flanagan": 2.2,
+          "Pedro Chirivella Burgos": 2.2,
+          "Jo\u00e3o Carlos Vila\u00e7a Teixeira": 2.2,
+          "Bradley Shaun Smith": 2.1,
+          "Jo\u00ebl Andre Job Matip": 2.1,
+          "Christian Benteke Liolo": 2.0,
+          "Xabier Alonso Olano": 1.9,
+          "Jordon Ibe": 1.9,
+          "Vladimir Smicer": 1.9,
+          "Jamie Carragher": 1.9,
+          "Jos\u00e9 Manuel Reina P\u00e1ez": 1.9,
+          "Adam David Lallana": 1.6,
+          "Steve Finnan": 1.6,
+          "Daniel Andre Sturridge": 1.5,
+          "Nathaniel Edwin Clyne": 1.5,
+          "Cameron Brannagan": 1.5,
+          "Jermaine Pennant": 1.5,
+          "Anthony Le Tallec": 1.5,
+          "Alisson Rams\u00e9s Becker": 1.5,
+          "Kolo Habib Tour\u00e9": 1.4,
+          "Simon Mignolet": 1.4,
+          "Mamadou Sakho": 1.3,
+          "John Arne Semundseth Riise": 1.3,
+          "Steven Gerrard": 1.3,
+          "Philippe Coutinho Correia": 1.2,
+          "Virgil van Dijk": 1.2,
+          "Kevin Linford Stewart": 1.2,
+          "Alberto Moreno P\u00e9rez": 1.1,
+          "Michael Owen": 1.0,
+          "Sami Hyypi\u00e4": 1.0,
+          "Andrew Robertson": 1.0,
+          "John Welsh": 0.9,
+          "Sadio Man\u00e9": 0.8,
+          "Martin \u0160krtel": 0.8,
+          "Dirk Kuijt": 0.8,
+          "Dietmar Hamann": 0.7,
+          "Jerzy Dudek": 0.7,
+          "Jordan Rossiter": 0.7,
+          "James Philip Milner": 0.6,
+          "Lucas Pezzini Leiva": 0.6,
+          "\u00c1d\u00e1m Bogd\u00e1n": 0.6,
+          "Javier Alejandro Mascherano": 0.6,
+          "Divock Okoth Origi": 0.5,
+          "Daniel William John Ings": 0.5,
+          "Daniel Munthe Agger": 0.5,
+          "Igor Bi\u0161\u0107an": 0.5,
+          "Boudewijn Zenden": 0.5,
+          "Emre Can": 0.4,
+          "F\u00e1bio Henrique Tavares": 0.4,
+          "Danny Ward": 0.4,
+          "Trent Alexander-Arnold": 0.2,
+          "Djimi Traor\u00e9": 0.2,
+          "Roberto Firmino Barbosa de Oliveira": 0.1,
+          "Dejan Lovren": 0.1,
+          "Joe Gomez": 0.1,
+          "Loris Karius": 0.1,
+          "\u00c1lvaro Arbeloa Coca": 0.1,
+          "Jordan Brian Henderson": 0.0,
+          "Georginio Wijnaldum": 0.0
+        },
+        "key_players": [
+          "Danny Murphy",
+          "El-Hadji Ousseynou Diouf"
+        ]
+      },
+      "Defensive Activity": {
+        "contributions": {
+          "Salif Alassane Diao": 2.6,
+          "Pedro Chirivella Burgos": 2.5,
+          "Jordan Rossiter": 2.3,
+          "Cameron Brannagan": 2.2,
+          "Jos\u00e9 Manuel Reina P\u00e1ez": 2.2,
+          "Jo\u00e3o Carlos Vila\u00e7a Teixeira": 2.2,
+          "Roberto Firmino Barbosa de Oliveira": 2.1,
+          "Joe Gomez": 2.1,
+          "Jo\u00ebl Andre Job Matip": 2.0,
+          "Joe Allen": 1.9,
+          "Xabier Alonso Olano": 1.9,
+          "Jon Flanagan": 1.9,
+          "James Philip Milner": 1.8,
+          "John Arne Semundseth Riise": 1.8,
+          "Lucas Pezzini Leiva": 1.8,
+          "Kevin Linford Stewart": 1.8,
+          "Bradley Shaun Smith": 1.8,
+          "Trent Alexander-Arnold": 1.7,
+          "Georginio Wijnaldum": 1.7,
+          "Simon Mignolet": 1.7,
+          "Mamadou Sakho": 1.6,
+          "Harry Kewell": 1.6,
+          "Steven Caulker": 1.6,
+          "Javier Alejandro Mascherano": 1.6,
+          "Philippe Coutinho Correia": 1.5,
+          "Adam David Lallana": 1.5,
+          "Divock Okoth Origi": 1.5,
+          "Alberto Moreno P\u00e9rez": 1.5,
+          "El-Hadji Ousseynou Diouf": 1.5,
+          "Kolo Habib Tour\u00e9": 1.5,
+          "F\u00e1bio Henrique Tavares": 1.5,
+          "Danny Murphy": 1.5,
+          "Nathaniel Edwin Clyne": 1.4,
+          "Jordon Ibe": 1.4,
+          "Mohamed Salah": 1.4,
+          "Sami Hyypi\u00e4": 1.4,
+          "Sadio Man\u00e9": 1.4,
+          "Martin \u0160krtel": 1.4,
+          "Milan Baro\u0161": 1.4,
+          "Andrew Robertson": 1.4,
+          "Djibril Ciss\u00e9": 1.3,
+          "Connor Steven Randall": 1.3,
+          "Anthony Le Tallec": 1.3,
+          "Peter Crouch": 1.3,
+          "Jamie Carragher": 1.3,
+          "\u00c1lvaro Arbeloa Coca": 1.3,
+          "Oluwaseyi Babajide Ojo": 1.2,
+          "Luis Javier Garc\u00eda Sanz": 1.2,
+          "Jermaine Pennant": 1.2,
+          "Jerzy Dudek": 1.2,
+          "John Welsh": 1.2,
+          "Steve Finnan": 1.1,
+          "Alisson Rams\u00e9s Becker": 1.1,
+          "Dirk Kuijt": 1.0,
+          "Dietmar Hamann": 0.9,
+          "Steven Gerrard": 0.9,
+          "\u00c1d\u00e1m Bogd\u00e1n": 0.9,
+          "Loris Karius": 0.9,
+          "Boudewijn Zenden": 0.9,
+          "Sergi Can\u00f3s Tenes": 0.9,
+          "Daniel William John Ings": 0.7,
+          "Virgil van Dijk": 0.7,
+          "Daniel Munthe Agger": 0.7,
+          "Danny Ward": 0.7,
+          "Emre Can": 0.6,
+          "Vladimir Smicer": 0.6,
+          "Djimi Traor\u00e9": 0.6,
+          "Emile Heskey": 0.6,
+          "Christian Benteke Liolo": 0.5,
+          "Igor Bi\u0161\u0107an": 0.5,
+          "Daniel Andre Sturridge": 0.4,
+          "Jordan Brian Henderson": 0.4,
+          "Dejan Lovren": 0.4,
+          "Michael Owen": 0.3
+        },
+        "key_players": [
+          "Salif Alassane Diao",
+          "Pedro Chirivella Burgos"
+        ]
+      },
+      "Attacking Threat": {
+        "contributions": {
+          "Divock Okoth Origi": 2.5,
+          "Dirk Kuijt": 2.5,
+          "Djibril Ciss\u00e9": 2.4,
+          "Joe Allen": 2.3,
+          "Michael Owen": 2.3,
+          "Daniel Andre Sturridge": 2.2,
+          "Mamadou Sakho": 2.2,
+          "Kolo Habib Tour\u00e9": 2.2,
+          "Christian Benteke Liolo": 2.1,
+          "Nathaniel Edwin Clyne": 2.1,
+          "Daniel William John Ings": 2.1,
+          "Alberto Moreno P\u00e9rez": 2.0,
+          "Martin \u0160krtel": 2.0,
+          "Peter Crouch": 2.0,
+          "Connor Steven Randall": 1.9,
+          "Steven Caulker": 1.9,
+          "El-Hadji Ousseynou Diouf": 1.8,
+          "Salif Alassane Diao": 1.8,
+          "Philippe Coutinho Correia": 1.7,
+          "James Philip Milner": 1.7,
+          "Adam David Lallana": 1.7,
+          "Sami Hyypi\u00e4": 1.7,
+          "Virgil van Dijk": 1.7,
+          "Cameron Brannagan": 1.7,
+          "Anthony Le Tallec": 1.7,
+          "Dejan Lovren": 1.6,
+          "Daniel Munthe Agger": 1.6,
+          "Oluwaseyi Babajide Ojo": 1.5,
+          "Vladimir Smicer": 1.4,
+          "Luis Javier Garc\u00eda Sanz": 1.4,
+          "Simon Mignolet": 1.4,
+          "Jerzy Dudek": 1.4,
+          "Danny Ward": 1.4,
+          "\u00c1d\u00e1m Bogd\u00e1n": 1.4,
+          "Alisson Rams\u00e9s Becker": 1.4,
+          "Jos\u00e9 Manuel Reina P\u00e1ez": 1.4,
+          "Loris Karius": 1.4,
+          "John Arne Semundseth Riise": 1.3,
+          "Lucas Pezzini Leiva": 1.2,
+          "Trent Alexander-Arnold": 1.2,
+          "Bradley Shaun Smith": 1.2,
+          "Emre Can": 1.1,
+          "Mohamed Salah": 1.1,
+          "Kevin Linford Stewart": 1.1,
+          "Milan Baro\u0161": 1.1,
+          "Joe Gomez": 1.1,
+          "John Welsh": 1.1,
+          "Jordan Rossiter": 1.1,
+          "Sergi Can\u00f3s Tenes": 1.1,
+          "Danny Murphy": 1.1,
+          "Jo\u00e3o Carlos Vila\u00e7a Teixeira": 1.1,
+          "\u00c1lvaro Arbeloa Coca": 1.1,
+          "Xabier Alonso Olano": 1.0,
+          "Jordon Ibe": 1.0,
+          "Jermaine Pennant": 1.0,
+          "Steven Gerrard": 0.9,
+          "F\u00e1bio Henrique Tavares": 0.9,
+          "Andrew Robertson": 0.8,
+          "Jon Flanagan": 0.8,
+          "Steve Finnan": 0.8,
+          "Jamie Carragher": 0.8,
+          "Djimi Traor\u00e9": 0.8,
+          "Igor Bi\u0161\u0107an": 0.8,
+          "Jo\u00ebl Andre Job Matip": 0.8,
+          "Jordan Brian Henderson": 0.6,
+          "Dietmar Hamann": 0.6,
+          "Harry Kewell": 0.6,
+          "Georginio Wijnaldum": 0.6,
+          "Pedro Chirivella Burgos": 0.6,
+          "Javier Alejandro Mascherano": 0.6,
+          "Roberto Firmino Barbosa de Oliveira": 0.4,
+          "Sadio Man\u00e9": 0.4,
+          "Emile Heskey": 0.4,
+          "Boudewijn Zenden": 0.4
+        },
+        "key_players": [
+          "Divock Okoth Origi",
+          "Dirk Kuijt"
+        ]
+      },
+      "Physical Availability": {
+        "contributions": {
+          "Nathaniel Edwin Clyne": 5.2,
+          "Simon Mignolet": 5.2,
+          "Alberto Moreno P\u00e9rez": 5.1,
+          "Christian Benteke Liolo": 4.7,
+          "Jordon Ibe": 4.5,
+          "Lucas Pezzini Leiva": 4.5,
+          "Philippe Coutinho Correia": 4.4,
+          "Mamadou Sakho": 4.0,
+          "Martin \u0160krtel": 4.0,
+          "Joe Allen": 3.6,
+          "Kolo Habib Tour\u00e9": 3.1,
+          "Daniel Andre Sturridge": 3.0,
+          "Oluwaseyi Babajide Ojo": 2.4,
+          "Kevin Linford Stewart": 2.3,
+          "Daniel William John Ings": 2.0,
+          "Jon Flanagan": 2.0,
+          "Bradley Shaun Smith": 1.8,
+          "Connor Steven Randall": 1.5,
+          "Cameron Brannagan": 1.5,
+          "Steven Caulker": 1.5,
+          "John Arne Semundseth Riise": 1.1,
+          "Igor Bi\u0161\u0107an": 1.1,
+          "Danny Ward": 1.1,
+          "\u00c1d\u00e1m Bogd\u00e1n": 1.1,
+          "El-Hadji Ousseynou Diouf": 1.0,
+          "Steven Gerrard": 1.0,
+          "Michael Owen": 0.9,
+          "Emile Heskey": 0.9,
+          "\u00c1lvaro Arbeloa Coca": 0.9,
+          "James Philip Milner": 0.8,
+          "Adam David Lallana": 0.8,
+          "Divock Okoth Origi": 0.8,
+          "Emre Can": 0.8,
+          "Djibril Ciss\u00e9": 0.8,
+          "Milan Baro\u0161": 0.8,
+          "Anthony Le Tallec": 0.8,
+          "Peter Crouch": 0.8,
+          "Joe Gomez": 0.8,
+          "John Welsh": 0.8,
+          "Jordan Rossiter": 0.8,
+          "Sergi Can\u00f3s Tenes": 0.8,
+          "Danny Murphy": 0.8,
+          "Jo\u00e3o Carlos Vila\u00e7a Teixeira": 0.8,
+          "Roberto Firmino Barbosa de Oliveira": 0.4,
+          "Jordan Brian Henderson": 0.4,
+          "Dejan Lovren": 0.4,
+          "Xabier Alonso Olano": 0.4,
+          "Mohamed Salah": 0.4,
+          "Sami Hyypi\u00e4": 0.4,
+          "Vladimir Smicer": 0.4,
+          "Dietmar Hamann": 0.4,
+          "Sadio Man\u00e9": 0.4,
+          "Dirk Kuijt": 0.4,
+          "Harry Kewell": 0.4,
+          "Virgil van Dijk": 0.4,
+          "Luis Javier Garc\u00eda Sanz": 0.4,
+          "Salif Alassane Diao": 0.4,
+          "Daniel Munthe Agger": 0.4,
+          "Jermaine Pennant": 0.4,
+          "Trent Alexander-Arnold": 0.4,
+          "Georginio Wijnaldum": 0.4,
+          "F\u00e1bio Henrique Tavares": 0.4,
+          "Andrew Robertson": 0.4,
+          "Steve Finnan": 0.4,
+          "Jerzy Dudek": 0.4,
+          "Jamie Carragher": 0.4,
+          "Djimi Traor\u00e9": 0.4,
+          "Alisson Rams\u00e9s Becker": 0.4,
+          "Jos\u00e9 Manuel Reina P\u00e1ez": 0.4,
+          "Pedro Chirivella Burgos": 0.4,
+          "Javier Alejandro Mascherano": 0.4,
+          "Loris Karius": 0.4,
+          "Jo\u00ebl Andre Job Matip": 0.4,
+          "Boudewijn Zenden": 0.4
+        },
+        "key_players": [
+          "Nathaniel Edwin Clyne",
+          "Simon Mignolet"
+        ]
+      }
+    },
+    "gaps": {
+      "Ball Progression": 7.5,
+      "Chance Creation": 6.2,
+      "Ball Security": 5.9,
+      "Press Resistance": -8.2,
+      "Defensive Activity": -2.4,
+      "Attacking Threat": 5.4,
+      "Physical Availability": 6.9
+    }
+  }
+}

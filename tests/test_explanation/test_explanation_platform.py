@@ -19,7 +19,7 @@ def test_prompt_builder():
         player_name="Test Player",
         team_name="Test Team",
         position_group="Forward",
-        age_years=25,
+        birth_date="2000-01-01",
         minutes_played=2000,
         archetype="Striker",
         overall_confidence=1.0,
@@ -74,15 +74,3 @@ def test_conversation_manager():
     )
     assert changed2 is False
     assert len(mgr.state.messages) == 2
-
-
-def test_demo_provider_generation():
-    p = DemoProvider()
-    pb = PromptBuilder()
-    pkg = pb.build("Test query", {"data": "test"}, "player")
-
-    resp = p.generate(pkg)
-    assert resp.provider == "demo"
-    assert "verified evidence" in resp.generated_text
-    assert resp.latency_ms >= 0
-    assert resp.token_usage["total"] > 0

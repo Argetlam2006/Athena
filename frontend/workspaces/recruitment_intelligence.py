@@ -5,13 +5,28 @@ frontend/pages/recruitment_intelligence.py — Recruitment Intelligence Workspac
 import streamlit as st
 
 from frontend.data.recruitment import search_candidates
-from frontend.layout import render_page_header, render_section_header
+from frontend.layout import render_section_header
 from shared.schemas import RecruitmentCriteria
 
 
 def render() -> None:
-    render_page_header("Recruitment Intelligence", "Who should we sign?", "◎")
+    st.markdown(
+        """
+    <div style="padding-top: 1rem; margin-bottom: 1rem;">
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 700; color: #f9fafb;">
+            <span style="color:#6366f1; margin-right:10px;">◎</span>Recruitment Intelligence
+        </h1>
+    </div>
+    """,
+        unsafe_allow_html=True,
+    )
 
+    st.text_input(
+        "Scouting Query (Natural Language)",
+        placeholder="e.g. 'Find me a possession-dominant progressive midfielder'",
+        help="Natural language scouting is under development. Please use the structured filters below."
+    )
+    st.markdown("<div style='margin-bottom: 1rem;'></div>", unsafe_allow_html=True)
     col_filters, col_results = st.columns([1, 2])
 
     with col_filters:
@@ -76,9 +91,18 @@ def render() -> None:
                     f"#{c.rank} • {c.player.player_name} • Fit: {c.fit_score:.1f}"
                 ):
                     # Expanded View
-                    st.markdown(
-                        f"**{c.player.team_name}** • {c.player.age_years} yrs • {c.player.minutes_played} mins"
-                    )
+
+                    meta_parts = []
+                    if c.player.team_name and c.player.team_name != "Unknown":
+                        meta_parts.append(f"**{c.player.team_name}**")
+                    if c.player.age_years is not None:
+                        meta_parts.append(f"{c.player.age_years} yrs")
+                    if c.player.minutes_played is not None:
+                        meta_parts.append(f"{int(c.player.minutes_played)} mins")
+
+                    meta_str = " • ".join(meta_parts)
+
+                    st.markdown(meta_str)
 
                     c1, c2 = st.columns(2)
                     with c1:
@@ -118,3 +142,7 @@ def render() -> None:
                         key=f"comp_{c.player.player_id}",
                         help="Add to comparison pool (Feature pending)",
                     )
+
+    st.markdown("<div style='margin-bottom: 2rem;'></div>", unsafe_allow_html=True)
+    from frontend.components.ask_athena import render_ask_athena_section
+    render_ask_athena_section()

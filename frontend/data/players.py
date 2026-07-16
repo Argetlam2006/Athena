@@ -34,30 +34,18 @@ def get_player_profile(player_id: int) -> PlayerProfile | None:
     return store.get_player(player_id)
 
 @st.cache_data
+def get_player_career(player_id: int) -> list[PlayerProfile]:
+    """Retrieve all available profiles for a player."""
+    store = IntelligenceStore()
+    return store.get_player_career(player_id)
+
+@st.cache_data
 def get_players_by_position(position: str) -> list[PlayerProfile]:
     """
     Load profiles dynamically based on position to avoid full 22k memory loads.
     """
-    import duckdb
-
-    from backend.intelligence.store import PLAYER_PROFILES_PATH, _player_adapter
-
-    if not PLAYER_PROFILES_PATH.exists():
-        return []
-
-    con = duckdb.connect(":memory:")
-    try:
-        query = f"SELECT * FROM read_parquet('{PLAYER_PROFILES_PATH}') WHERE position_group = ?"
-        df = con.execute(query, [position]).fetchdf()
-        if df.empty:
-            return []
-        dicts = df.to_dict(orient="records")
-        return [_player_adapter.validate_python(d) for d in dicts]
-    except Exception as e:
-        logger.error(f"Failed to retrieve players for position {position}: {e}")
-        return []
-    finally:
-        con.close()
+    store = IntelligenceStore()
+    return store.get_players_by_position(position)
 
 @st.cache_data
 def get_all_players() -> list[PlayerProfile]:
@@ -65,25 +53,5 @@ def get_all_players() -> list[PlayerProfile]:
     [DEVELOPER ONLY / DEBUGGING]
     Load all PlayerProfiles. Do not use in production UI.
     """
-    import duckdb
-
-    from backend.intelligence.store import PLAYER_PROFILES_PATH, _player_adapter
-
-    if not PLAYER_PROFILES_PATH.exists():
-        logger.warning("Intelligence Store not found.")
-        st.warning("Data Warehouse not found. Please run scripts/bootstrap.py.")
-        return []
-
-    con = duckdb.connect(":memory:")
-    try:
-        df = con.execute(f"SELECT * FROM read_parquet('{PLAYER_PROFILES_PATH}')").fetchdf()
-        if df.empty:
-            return []
-        dicts = df.to_dict(orient="records")
-        return [_player_adapter.validate_python(d) for d in dicts]
-    except Exception as e:
-        logger.error(f"Failed to retrieve players: {e}", exc_info=True)
-        st.error("Failed to load player intelligence profiles.")
-        return []
-    finally:
-        con.close()
+    store = IntelligenceStore()
+    return store.get_all_players()

@@ -31,18 +31,5 @@ def get_team_profile(team_id: int) -> TeamProfile | None:
 
 @st.cache_data
 def get_all_teams() -> list[TeamProfile]:
-    import json
-
-    from backend.intelligence.store import TEAM_PROFILES_PATH, _team_adapter
-
-    json_path = TEAM_PROFILES_PATH.with_suffix(".json")
-    if not json_path.exists():
-        return []
-
-    try:
-        with open(json_path) as f:
-            teams = json.load(f)
-        return [_team_adapter.validate_python(t) for t in teams]
-    except Exception as e:
-        logger.error(f"Failed to load teams: {e}")
-        return []
+    store = IntelligenceStore()
+    return store.get_all_teams()

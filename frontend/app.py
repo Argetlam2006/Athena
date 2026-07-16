@@ -25,11 +25,10 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 # Workspace imports
-import frontend.pages.dashboard as dashboard  # noqa: E402
-import frontend.pages.player_intelligence as player_intelligence  # noqa: E402
-import frontend.pages.recruitment_intelligence as recruitment_intelligence  # noqa: E402
-import frontend.pages.team_intelligence as team_intelligence  # noqa: E402
-from frontend.components.ask_athena import render_ask_athena_drawer  # noqa: E402
+import frontend.workspaces.dashboard as dashboard  # noqa: E402
+import frontend.workspaces.player_intelligence as player_intelligence  # noqa: E402
+import frontend.workspaces.recruitment_intelligence as recruitment_intelligence  # noqa: E402
+import frontend.workspaces.team_intelligence as team_intelligence  # noqa: E402
 from frontend.components.states import render_empty_state  # noqa: E402
 from frontend.layout import render_page_header  # noqa: E402
 from frontend.session import get_state, init_session  # noqa: E402
@@ -63,47 +62,32 @@ render_global_sidebar()
 # Main Layout & Routing
 # ─────────────────────────────────────────────────────────────────────────────
 
-# Create a master layout: 3/4 Main Content, 1/4 Ask Athena Drawer
-main_col, athena_col = st.columns([3, 1], gap="large")
+active_ws = get_workspace_by_id(state.active_workspace_id)
 
-with main_col:
-    active_ws = get_workspace_by_id(state.active_workspace_id)
-
-    if not active_ws:
-        render_page_header("Error", "Invalid Workspace")
-        render_empty_state(
-            "⚠",
-            "Workspace Not Found",
-            "The requested workspace does not exist in the configuration.",
-        )
-    elif state.active_workspace_id == "dashboard":
-        dashboard.render()
-    elif state.active_workspace_id == "player_intelligence":
-        player_intelligence.render()
-    elif state.active_workspace_id == "team_intelligence":
-        team_intelligence.render()
-    elif state.active_workspace_id == "recruitment":
-        recruitment_intelligence.render()
-    elif state.active_workspace_id == "ask_athena":
-        # The user clicked Ask Athena in the navigation.
-        # Since Ask Athena is a persistent drawer, we can show a placeholder or
-        # default to dashboard for the main view and highlight the drawer.
-        render_empty_state(
-            icon="◇",
-            title="Ask Athena",
-            description="Athena is integrated directly into your workflow. Use the contextual drawer on the right to interact with her at any time.",
-            suggestion="Select another workspace to continue your analysis.",
-        )
-    else:
-        # Fallback for future workspaces
-        render_page_header(active_ws.name, active_ws.question, active_ws.icon)
-        render_empty_state(
-            icon=active_ws.icon,
-            title=f"{active_ws.name} Workspace",
-            description="This workspace is currently under construction.",
-            suggestion="Use the sidebar to navigate to a different workspace.",
-        )
-
-# Render Contextual Drawer
-with athena_col:
-    render_ask_athena_drawer()
+if not active_ws:
+    render_page_header("Error", "Invalid Workspace")
+    render_empty_state(
+        "⚠",
+        "Workspace Not Found",
+        "The requested workspace does not exist in the configuration.",
+    )
+elif state.active_workspace_id == "dashboard":
+    dashboard.render()
+elif state.active_workspace_id == "player_intelligence":
+    player_intelligence.render()
+elif state.active_workspace_id == "team_intelligence":
+    team_intelligence.render()
+elif state.active_workspace_id == "recruitment":
+    recruitment_intelligence.render()
+elif state.active_workspace_id == "ask_athena":
+    from frontend.components.ask_athena import render_ask_athena_section
+    render_ask_athena_section()
+else:
+    # Fallback for future workspaces
+    render_page_header(active_ws.name, active_ws.question, active_ws.icon)
+    render_empty_state(
+        icon=active_ws.icon,
+        title=f"{active_ws.name} Workspace",
+        description="This workspace is currently under construction.",
+        suggestion="Use the sidebar to navigate to a different workspace.",
+    )

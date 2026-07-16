@@ -48,7 +48,7 @@ def valid_player_profile() -> PlayerProfile:
         team_name="PSG",
         competition="Ligue 1",
         season="2023",
-        age_years=25,
+        birth_date="2000-01-01",
         minutes_played=2000,
         capability_profile=cap,
         decision_signals=["elite_goal_scorer"],

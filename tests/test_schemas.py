@@ -125,7 +125,7 @@ class TestPlayerProfile:
             team_name="Team A",
             competition="La Liga",
             season="2020/2021",
-            age_years=24.0,
+            birth_date="2000-01-01",
             minutes_played=900.0,  # above MIN_MINUTES_THRESHOLD (450)
         )
         assert player.is_analytically_sufficient() is True
@@ -138,7 +138,7 @@ class TestPlayerProfile:
             team_name="Team B",
             competition="La Liga",
             season="2020/2021",
-            age_years=22.0,
+            birth_date="2000-01-01",
             minutes_played=100.0,  # below threshold
         )
         assert player.is_analytically_sufficient() is False
@@ -151,7 +151,7 @@ class TestPlayerProfile:
             team_name="T",
             competition="C",
             season="S",
-            age_years=20.0,
+            birth_date="2000-01-01",
             minutes_played=500.0,
         )
         assert player.similar_players == []

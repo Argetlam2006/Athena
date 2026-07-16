@@ -1,12 +1,9 @@
 """
 shared/models.py — Pydantic API models for FastAPI request/response contracts
 
-These are separate from schemas.py (dataclasses) because they are used
-exclusively at the API boundary. Internal modules use dataclasses.
-
-Separation rationale:
-  - Dataclasses (schemas.py) → fast, lightweight, used internally
-  - Pydantic models (models.py) → validation + serialization at API boundary
+Both schemas.py and models.py utilize Pydantic (BaseModel), but their responsibilities differ:
+  - schemas.py → Core domain entities (PlayerProfile, CapabilityScore, etc.)
+  - models.py → External API / transport models (HTTP request/response contracts)
 """
 
 from __future__ import annotations

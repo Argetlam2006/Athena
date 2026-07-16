@@ -5,16 +5,11 @@ Renders navigation, context selectors, system status, and the Ask Athena placeho
 Directly reads from and writes to the centralized session state.
 """
 
-import pandas as pd
 import streamlit as st
 
-from frontend.data.players import get_player_index
-from frontend.data.teams import get_team_index
 from frontend.session import (
     get_state,
     set_active_workspace,
-    set_selected_player,
-    set_selected_team,
 )
 from shared.config.navigation import WORKSPACES
 
@@ -47,55 +42,9 @@ def render_workspace_navigation() -> None:
 
 def render_context_selectors() -> None:
     """Renders global player and team selectors."""
-    st.markdown(
-        "<div style='margin-top: 2rem; margin-bottom: 1rem; color: #4b5563; font-size: 0.75rem; text-transform: uppercase; font-weight: 600; letter-spacing: 0.1em;'>Global Context</div>",
-        unsafe_allow_html=True,
-    )
-
-    # 1. Player Search & Selection (Metadata Index)
-    df_players = get_player_index()
-    if not df_players.empty:
-        search_term = st.text_input("Search Player", placeholder="e.g. Rodri")
-
-        # Filter metadata dynamically using multi-term matching
-        if search_term:
-            terms = search_term.lower().split()
-            mask = pd.Series(True, index=df_players.index)
-            for term in terms:
-                mask &= df_players["normalized_name"].str.contains(term, na=False)
-            matches = df_players[mask].head(50)
-        else:
-            matches = df_players.nlargest(20, "minutes_played")
-
-        player_options = {"None": None}
-        for _, row in matches.iterrows():
-            player_options[f"{row['player_name']} ({row['team_name']})"] = row['player_id']
-
-        selected_player_name = st.selectbox(
-            "Select Focus Player",
-            options=list(player_options.keys()),
-            index=0,
-            help="Select a player to focus all workspaces on."
-        )
-        set_selected_player(player_options[selected_player_name])
-    else:
-        st.selectbox("Focus Player", ["Data not loaded"])
-
-    # 2. Team Selection (Metadata Index)
-    df_teams = get_team_index()
-    team_options = {"None": None}
-    if not df_teams.empty:
-        df_teams = df_teams.sort_values("team_name")
-        for _, row in df_teams.iterrows():
-            team_options[row["team_name"]] = row["team_id"]
-
-    selected_team_name = st.selectbox(
-        "Focus Team",
-        options=list(team_options.keys()),
-        index=0,
-        help="Select a team to focus all workspaces on."
-    )
-    set_selected_team(team_options[selected_team_name])
+    # Global Context removed as per Phase 11A.1
+    # Search now happens inside the relevant workspace
+    st.markdown("<div style='margin-bottom: 2rem;'></div>", unsafe_allow_html=True)
 
 
 def render_system_status() -> None:

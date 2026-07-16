@@ -18,7 +18,17 @@ Always communicate through these schemas.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from enum import Enum
 from typing import Any
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Layer 0: Core Enums
+# ─────────────────────────────────────────────────────────────────────────────
+
+class ProfileType(str, Enum):
+    COMPETITION = "competition"
+    SEASON = "season"
+    CAREER = "career"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Layer 1–2: Raw and Statistical Data
@@ -83,10 +93,26 @@ class PlayerFeatureVector:
     season: str
     competition: str
     position_group: str
-    minutes_played: float
-    matches_played: int
+    profile_type: ProfileType = ProfileType.COMPETITION
+    minutes_played: float | None = None
+    matches_played: int | None = None
     team_name: str = ""
-    age_years: float = 0.0
+    birth_date: str | None = None
+
+    @property
+    def age_years(self) -> float | None:
+        """
+        Dynamically calculate age in years from birth_date.
+        """
+        if not self.birth_date:
+            return None
+        try:
+            from datetime import datetime
+            bd = datetime.strptime(str(self.birth_date).split(" ")[0], "%Y-%m-%d")
+            today = datetime.now()
+            return round((today - bd).days / 365.25, 1)
+        except Exception:
+            return None
 
     # Ball Progression (4)
     progressive_passes_p90: float = 0.0
@@ -121,6 +147,12 @@ class PlayerFeatureVector:
     xg_per_shot: float = 0.0
     shot_accuracy_pct: float = 0.0
     goals_minus_xg: float = 0.0
+
+    # Derived Attacking Threat
+    npxg_per_shot: float = 0.0
+
+    # Extensibility for Future-Proofing
+    raw_metrics: dict | None = None
 
     # Tactical Versatility (1)
     positions_played_count: int = 1
@@ -205,7 +237,8 @@ class CapabilityProfile:
     season: str
     competition: str
     position_group: str
-    minutes_played: float
+    minutes_played: float | None = None
+    profile_type: ProfileType = ProfileType.COMPETITION
 
     # The 8 capabilities
     ball_progression: CapabilityScore | None = None
@@ -216,6 +249,8 @@ class CapabilityProfile:
     attacking_threat: CapabilityScore | None = None
     physical_availability: CapabilityScore | None = None
     tactical_versatility: CapabilityScore | None = None
+
+    overall_rating: float | None = None
 
     def as_radar_dict(self) -> dict[str, float]:
         """Return capability scores suitable for radar chart rendering."""
@@ -288,11 +323,25 @@ class PlayerProfile:
     team_name: str
     competition: str
     season: str
-    age_years: float
-    minutes_played: float
+    profile_type: ProfileType = ProfileType.COMPETITION
+    birth_date: str | None = None
+    minutes_played: float | None = None
 
     capability_profile: CapabilityProfile | None = None
     feature_vector: PlayerFeatureVector | None = None
+
+    @property
+    def age_years(self) -> float | None:
+        if not self.birth_date:
+            return None
+        try:
+            from datetime import datetime
+            # StatsBomb dates are usually YYYY-MM-DD
+            bd = datetime.strptime(str(self.birth_date).split(" ")[0], "%Y-%m-%d")
+            today = datetime.now()
+            return round((today - bd).days / 365.25, 1)
+        except Exception:
+            return None
 
     # Computed by rule-based archetype engine
     archetype: str | None = None
@@ -384,31 +433,95 @@ class RecruitmentCriteria:
 
 
 @dataclass
+class CapabilityExplanation:
+    """
+    Explains a capability using layered contributing factors.
+    e.g. Ball Progression -> Progressive Passing (98th percentile), etc.
+    """
+    capability_name: str
+    score: float
+    drivers: dict[str, str] = field(default_factory=dict) # e.g. {"Progressive Passes": "98th percentile"}
+
+
+@dataclass
+class PlayerDecisionCard:
+    """
+    Deterministic football reasoning for a player.
+    """
+    player: PlayerProfile
+    primary_role: str
+    elite_traits: list[CapabilityExplanation] = field(default_factory=list)
+    weak_areas: list[CapabilityExplanation] = field(default_factory=list)
+    comparable_archetype: str | None = None
+
+
+@dataclass
+class DependencyAnalysis:
+    """
+    Exact percentage contribution per player for a capability.
+    """
+    capability_name: str
+    contributions: dict[str, float] = field(default_factory=dict) # e.g., {"Rodri": 32.5}
+    key_players: list[str] = field(default_factory=list)
+
+
+@dataclass
+class CounterfactualResult:
+    """
+    Measures capability delta when removing/adding a player.
+    """
+    capability_name: str
+    original_score: float
+    new_score: float
+    
+    @property
+    def delta(self) -> float:
+        return round(self.new_score - self.original_score, 1)
+        
+    @property
+    def retained_pct(self) -> float:
+        if self.original_score == 0:
+            return 100.0
+        return round((self.new_score / self.original_score) * 100, 1)
+
+
+@dataclass
+class TeamDecisionCard:
+    """
+    Deterministic football reasoning for a team.
+    """
+    team: TeamProfile
+    tactical_identity: str
+    biggest_strengths: list[CapabilityExplanation] = field(default_factory=list)
+    biggest_weaknesses: list[CapabilityExplanation] = field(default_factory=list)
+    dependency_analysis: dict[str, DependencyAnalysis] = field(default_factory=dict)
+    gap_analysis: dict[str, float] = field(default_factory=dict) # Capability vs Elite Benchmark gap
+
+
+@dataclass
 class RecruitmentCandidate:
     """
-    A ranked recruitment candidate produced by the Decision Engine.
-
-    Self-contained for the AI Explanation Layer.
+    A ranked recruitment candidate explaining WHY they are recommended (Capability Restoration).
     """
 
     player: PlayerProfile
     fit_score: float = 0.0
     rank: int = 0
 
-    # Explicit inclusions for explanation
-    decision_signals: list[str] = field(default_factory=list)
-    strengths: list[str] = field(default_factory=list)
-    trade_offs: list[str] = field(default_factory=list)
+    # Capability Restoration (Counterfactual impact)
+    restoration: dict[str, str] = field(default_factory=dict) # e.g. {"Ball Progression": "83%"}
+    trade_offs_positive: list[str] = field(default_factory=list)
+    trade_offs_negative: list[str] = field(default_factory=list)
+    
+    overall_team_impact: str = ""
     confidence: str = "medium"
-
-    # Traceability context
     explanation_context: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
 class ComparisonResult:
     """
-    Side-by-side comparison of two or more players.
+    Side-by-side comparison of two or more players explaining WHY they differ.
     """
 
     players: list[PlayerProfile]

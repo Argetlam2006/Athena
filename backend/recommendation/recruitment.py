@@ -87,9 +87,10 @@ def rank_candidates(
         candidate = RecruitmentCandidate(
             player=player,
             fit_score=fit_score,
-            decision_signals=player.decision_signals,
-            strengths=strengths,
-            trade_offs=trade_offs,
+            restoration={},
+            trade_offs_positive=strengths,
+            trade_offs_negative=trade_offs,
+            overall_team_impact="Aligns with requested recruitment criteria.",
             confidence=confidence,
             explanation_context=explanation_context,
         )
@@ -112,7 +113,7 @@ def recommend_replacement(
     max_results: int = 5,
 ) -> list[RecruitmentCandidate]:
     """
-    Recommend a replacement combining Similarity, Tactical Fit, and Availability.
+    Recommend a replacement using Capability Restoration rather than simple similarity.
     """
     candidates = []
 
@@ -127,14 +128,17 @@ def recommend_replacement(
         _get_capability_score(target, "defensive_activity"),
         _get_capability_score(target, "attacking_threat"),
     ]
+    
+    cap_names = [
+        "Ball Progression", "Chance Creation", "Ball Security", 
+        "Press Resistance", "Defensive Activity", "Attacking Threat"
+    ]
 
     for player in pool:
         if player.player_id == target.player_id:
             continue
-
         if player.position_group != target.position_group:
             continue
-
         if not player.capability_profile:
             continue
 
@@ -147,55 +151,41 @@ def recommend_replacement(
             _get_capability_score(player, "attacking_threat"),
         ]
 
-        # 1. Similarity (Euclidean Distance normalized to 0-100)
-        max_dist = 245.0  # roughly sqrt(6 * 100^2)
+        # 1. Base Fit (Euclidean Distance normalized to 0-100)
+        max_dist = 245.0
         dist = euclidean_distance(target_vector, player_vector)
-        similarity_score = 100.0 * (1.0 - (dist / max_dist))
-        similarity_score = max(0.0, min(100.0, similarity_score))
+        fit_score = max(0.0, min(100.0, 100.0 * (1.0 - (dist / max_dist))))
 
-        # 2. Tactical Fit (if specified, otherwise default to similarity)
-        if tactical_style:
-            tactical_score = evaluate_tactical_fit(player, tactical_style)
-        else:
-            tactical_score = similarity_score
-
-        # 3. Physical Availability (important for replacements)
-        availability = _get_capability_score(player, "physical_availability")
-
-        # Combine: 50% Similarity, 30% Tactical, 20% Availability
-        fit_score = (
-            (similarity_score * 0.50) + (tactical_score * 0.30) + (availability * 0.20)
-        )
-
-        # Build explanation context
-        explanation_context = {
-            "similarity_to_target": similarity_score,
-            "tactical_fit": tactical_score,
-            "availability": availability,
-        }
-
-        strengths = []
-        trade_offs = []
-        if similarity_score >= 85:
-            strengths.append(f"Statistically very similar to {target.player_name}")
-        elif similarity_score < 70:
-            trade_offs.append(f"Stylistically divergent from {target.player_name}")
-
-        if availability >= 80:
-            strengths.append("High physical availability and reliability")
-        elif availability < 60:
-            trade_offs.append("Availability concerns")
+        # 2. Capability Restoration & Trade-offs
+        restoration = {}
+        trade_offs_positive = []
+        trade_offs_negative = []
+        
+        for i, cap in enumerate(cap_names):
+            t_val = target_vector[i]
+            p_val = player_vector[i]
+            
+            if t_val > 0:
+                pct = (p_val / t_val) * 100
+                restoration[cap] = f"{round(pct)}%"
+                
+                # Trade-offs
+                if pct > 110:
+                    trade_offs_positive.append(f"Enhanced {cap}")
+                elif pct < 85:
+                    trade_offs_negative.append(f"Reduced {cap}")
 
         confidence = "high" if player.minutes_played > 1800 else "medium"
 
         candidate = RecruitmentCandidate(
             player=player,
             fit_score=fit_score,
-            decision_signals=player.decision_signals,
-            strengths=strengths,
-            trade_offs=trade_offs,
+            restoration=restoration,
+            trade_offs_positive=trade_offs_positive,
+            trade_offs_negative=trade_offs_negative,
+            overall_team_impact=f"Restores majority profile with {len(trade_offs_positive)} enhancements and {len(trade_offs_negative)} regressions.",
             confidence=confidence,
-            explanation_context=explanation_context,
+            explanation_context={},
         )
         candidates.append(candidate)
 

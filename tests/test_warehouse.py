@@ -704,16 +704,17 @@ class TestPlayerSummaryView:
         messi = df[df["player_id"] == 5503].iloc[0]
         assert int(messi["matches_played"]) == 2
 
-    def test_minutes_played_is_matches_times_90(self, q) -> None:
+    def test_minutes_played_is_reconstructed(self, q) -> None:
         df = q.get_player_summary()
         messi = df[df["player_id"] == 5503].iloc[0]
-        assert int(messi["minutes_played"]) == 180  # 2 matches × 90
+        # Reconstructed from MAX(minute) in mock events, which is 10 per match (2 matches)
+        assert int(messi["minutes_played"]) == 20
 
     def test_goals_p90_is_calculated(self, q) -> None:
         df = q.get_player_summary()
         messi = df[df["player_id"] == 5503].iloc[0]
-        # 3 goals / 180 minutes × 90 = 1.5
-        assert abs(float(messi["goals_p90"]) - 1.5) < 0.01
+        # 3 goals / 20 minutes × 90 = 13.5
+        assert abs(float(messi["goals_p90"]) - 13.5) < 0.01
 
     def test_pass_accuracy_pct_within_0_100(self, q) -> None:
         df = q.get_player_summary()

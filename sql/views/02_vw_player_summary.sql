@@ -136,7 +136,25 @@ pressure_stats AS (
     GROUP  BY match_id, player_id
 ),
 
--- ─── CTE 6: player appearances — join lineups with match context ──────────────
+-- ─── CTE 6: event-derived minutes logic ──────────────────────────────────────────
+match_durations AS (
+    SELECT match_id, MAX(minute) AS max_minute
+    FROM events
+    GROUP BY match_id
+),
+substitution_off AS (
+    SELECT match_id, player_id, MIN(minute) AS sub_off_minute
+    FROM events
+    WHERE type_name IN ('Substitution', 'Player Off')
+    GROUP BY match_id, player_id
+),
+substitution_on_proxy AS (
+    SELECT match_id, player_id, MIN(minute) AS first_event_minute
+    FROM events
+    GROUP BY match_id, player_id
+),
+
+-- ─── CTE 7: player appearances — join lineups with match context ──────────────
 player_appearances AS (
     SELECT
         l.player_id,
@@ -153,12 +171,21 @@ player_appearances AS (
         m.competition_id,
         m.competition_name,
         m.season_id,
-        m.season_name
+        m.season_name,
+        CASE 
+            WHEN l.starting_position IS NOT NULL THEN COALESCE(so.sub_off_minute, md.max_minute)
+            ELSE CASE WHEN sp.first_event_minute IS NOT NULL THEN md.max_minute - sp.first_event_minute ELSE 0 END
+        END AS minutes_played
     FROM   lineups l
     JOIN   matches m ON l.match_id = m.match_id
+    LEFT JOIN match_durations md ON l.match_id = md.match_id
+    LEFT JOIN substitution_off so ON l.match_id = so.match_id AND l.player_id = so.player_id
+    LEFT JOIN substitution_on_proxy sp ON l.match_id = sp.match_id AND l.player_id = sp.player_id
+    WHERE  l.starting_position IS NOT NULL
+       OR  sp.first_event_minute IS NOT NULL
 ),
 
--- ─── CTE 7: primary position — the most common starting position for each
+-- ─── CTE 8: primary position — the most common starting position for each
 --           player in each competition-season (uses DuckDB's QUALIFY clause)
 primary_positions AS (
     SELECT
@@ -166,7 +193,8 @@ primary_positions AS (
         competition_id,
         season_id,
         starting_position     AS position_name,
-        COUNT(*)              AS pos_count
+        COUNT(*)              AS pos_count,
+        COUNT(*) OVER (PARTITION BY player_id, competition_id, season_id) AS positions_played_count
     FROM   player_appearances
     WHERE  starting_position IS NOT NULL
     GROUP  BY player_id, competition_id, season_id, starting_position
@@ -193,11 +221,13 @@ aggregated AS (
         pa.country_name,
         pa.birth_date,
         pp.position_name,
+        COALESCE(pp.positions_played_count, 1)                               AS positions_played_count,
 
         -- Appearance volume
         COUNT(DISTINCT pa.match_id)                                          AS matches_played,
-        -- Approximation: assume 90 minutes per appearance
-        COUNT(DISTINCT pa.match_id) * 90                                     AS minutes_played,
+        
+        -- Deterministically reconstructed minutes
+        SUM(pa.minutes_played)                                               AS minutes_played,
 
         -- ── Pass aggregations ────────────────────────────────────────────────
         COALESCE(SUM(ps.total_passes),           0)                          AS total_passes,
@@ -258,7 +288,7 @@ aggregated AS (
         pa.competition_id, pa.competition_name,
         pa.season_id, pa.season_name,
         pa.height_cm, pa.weight_kg, pa.country_name, pa.birth_date,
-        pp.position_name
+        pp.position_name, pp.positions_played_count
 )
 
 SELECT
@@ -276,6 +306,7 @@ SELECT
     height_cm,
     weight_kg,
     birth_date,
+    positions_played_count,
 
     matches_played,
     minutes_played,
