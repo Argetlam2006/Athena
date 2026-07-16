@@ -128,9 +128,9 @@ def recommend_replacement(
         _get_capability_score(target, "defensive_activity"),
         _get_capability_score(target, "attacking_threat"),
     ]
-    
+
     cap_names = [
-        "Ball Progression", "Chance Creation", "Ball Security", 
+        "Ball Progression", "Chance Creation", "Ball Security",
         "Press Resistance", "Defensive Activity", "Attacking Threat"
     ]
 
@@ -160,15 +160,15 @@ def recommend_replacement(
         restoration = {}
         trade_offs_positive = []
         trade_offs_negative = []
-        
+
         for i, cap in enumerate(cap_names):
             t_val = target_vector[i]
             p_val = player_vector[i]
-            
+
             if t_val > 0:
                 pct = (p_val / t_val) * 100
                 restoration[cap] = f"{round(pct)}%"
-                
+
                 # Trade-offs
                 if pct > 110:
                     trade_offs_positive.append(f"Enhanced {cap}")

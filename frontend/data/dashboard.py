@@ -27,7 +27,7 @@ def get_dashboard_summary() -> dict:
         featured_team = get_team_profile(tid)
 
     from shared.schemas import ProfileType
-    
+
     unique_players = player_idx['player_id'].nunique() if not player_idx.empty else 0
     career_profiles = len(player_idx[player_idx['profile_type'] == ProfileType.CAREER]) if not player_idx.empty else 0
     season_profiles = len(player_idx[player_idx['profile_type'] == ProfileType.SEASON]) if not player_idx.empty else 0

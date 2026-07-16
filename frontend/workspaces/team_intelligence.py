@@ -75,13 +75,13 @@ def render() -> None:
         from backend.intelligence.decision import DecisionEngine
         from frontend.data.players import get_all_players
         from frontend.data.teams import get_all_teams
-        
+
         all_players = get_all_players()
         squad = [p for p in all_players if p.team_name == team_profile.team_name]
         cohort_teams = get_all_teams()
-        
+
         card = DecisionEngine.build_team_decision_card(team_profile, squad, cohort_teams)
-        
+
         def render_dependency(dep):
             top_players_html = "".join([f"<li><strong>{player}:</strong> {pct}% contribution</li>" for player, pct in list(dep.contributions.items())[:3]])
             return f"""
@@ -92,9 +92,9 @@ def render() -> None:
                 </ul>
             </div>
             """
-            
+
         dependencies_html = "".join([render_dependency(d) for d in list(card.dependency_analysis.values())[:3]])
-        
+
         gaps_html = "".join([
             f"<li><strong>{cap}:</strong> {gap} vs Elite Benchmark</li>"
             for cap, gap in sorted(card.gap_analysis.items(), key=lambda x: x[1])[:3]
@@ -106,7 +106,7 @@ def render() -> None:
             <p style="color: #d1d5db; line-height: 1.6;">
                 <strong>{team_profile.team_name}</strong> operates with a <strong>{card.tactical_identity}</strong> identity.
             </p>
-            
+
             <div style="display: flex; gap: 2rem; margin-top: 1rem;">
                 <div style="flex: 1;">
                     <h4 style="color: #10b981; margin-bottom: 0.5rem;">Key Dependencies</h4>
@@ -122,13 +122,14 @@ def render() -> None:
         </div>
         """
         st.markdown(summary, unsafe_allow_html=True)
-        
+
     render_team_decision_card(team)
 
-    render_divider()    col_style, col_depth = st.columns([2, 1])
+    render_divider()
+    col_style, col_depth = st.columns([2, 1])
     with col_style:
         render_section_header("Team Capability Radar")
-        
+
         # Display team capability bars instead of radar chart
         cap_data = {
             "Ball Progression": team.avg_ball_progression,
@@ -140,7 +141,7 @@ def render() -> None:
             "Physical Availability": team.avg_physical_availability,
             "Tactical Versatility": team.avg_tactical_versatility,
         }
-        
+
         import pandas as pd
         cap_df = pd.DataFrame(list(cap_data.items()), columns=["Capability", "Score"])
         cap_df.set_index("Capability", inplace=True)
@@ -155,12 +156,12 @@ def render() -> None:
             <p style="color: #9ca3af; font-size: 0.9rem; line-height: 1.5;">
                 This team exhibits strong tendencies aligned with this tactical identity based on the aggregated capability profile of their core starters.
             </p>
-            
+
             <h5 style="color: #10b981; margin-bottom: 0.2rem; margin-top: 1rem;">Primary Strengths</h5>
             <ul style="color: #d1d5db; font-size: 0.85rem; margin-top: 0;">
                 {"".join(f"<li>{s}</li>" for s in team.strengths) if team.strengths else "<li>Balanced across capabilities</li>"}
             </ul>
-            
+
             <h5 style="color: #ef4444; margin-bottom: 0.2rem; margin-top: 1rem;">Primary Weaknesses</h5>
             <ul style="color: #d1d5db; font-size: 0.85rem; margin-top: 0;">
                 {"".join(f"<li>{w}</li>" for w in team.weaknesses) if team.weaknesses else "<li>No prominent weaknesses identified</li>"}

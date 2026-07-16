@@ -473,11 +473,11 @@ class CounterfactualResult:
     capability_name: str
     original_score: float
     new_score: float
-    
+
     @property
     def delta(self) -> float:
         return round(self.new_score - self.original_score, 1)
-        
+
     @property
     def retained_pct(self) -> float:
         if self.original_score == 0:
@@ -512,7 +512,7 @@ class RecruitmentCandidate:
     restoration: dict[str, str] = field(default_factory=dict) # e.g. {"Ball Progression": "83%"}
     trade_offs_positive: list[str] = field(default_factory=list)
     trade_offs_negative: list[str] = field(default_factory=list)
-    
+
     overall_team_impact: str = ""
     confidence: str = "medium"
     explanation_context: dict[str, Any] = field(default_factory=dict)

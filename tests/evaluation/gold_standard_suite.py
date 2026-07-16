@@ -10,8 +10,10 @@ Every benchmark defines:
 """
 
 import sys
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import List, Callable, Any
+from typing import Any
+
 
 @dataclass
 class BenchmarkResult:
@@ -25,8 +27,8 @@ class BenchmarkResult:
 
 class GoldStandardSuite:
     def __init__(self):
-        self.results: List[BenchmarkResult] = []
-        
+        self.results: list[BenchmarkResult] = []
+
     def run_all(self):
         self.test_similar_players()
         self.test_different_archetypes()
@@ -36,7 +38,7 @@ class GoldStandardSuite:
         self.test_edge_cases()
         self.test_failure_cases()
         self.generate_report()
-        
+
     def _evaluate(self, category: str, question: str, func: Callable) -> None:
         try:
             passed, output, warning, rec = func()
@@ -48,7 +50,7 @@ class GoldStandardSuite:
         def _rodri_vs_busquets():
             return True, "Identified progressive passing vs carry distance diff", "", ""
         self._evaluate("B) Similar Players", "Rodri vs Busquets", _rodri_vs_busquets)
-        
+
         def _salah_vs_robben():
             return True, "Identified shot volume and crossing differences", "", ""
         self._evaluate("B) Similar Players", "Salah vs Robben", _salah_vs_robben)
@@ -86,20 +88,20 @@ class GoldStandardSuite:
     def generate_report(self):
         report = ["# Decision Intelligence Calibration Report\\n\\n"]
         report.append("## Gold Standard Benchmark Results\\n\\n")
-        
+
         passed = sum(1 for r in self.results if r.passed)
         total = len(self.results)
         report.append(f"**Score:** {passed} / {total} Passed\\n\\n")
-        
+
         report.append("| Category | Question | Status | Output | Recommendation |\\n")
         report.append("|---|---|---|---|---|\\n")
         for r in self.results:
             status = "✅ PASS" if r.passed else "❌ FAIL"
             report.append(f"| {r.category} | {r.question} | {status} | {r.actual_output} | {r.recommendation} |\\n")
-            
+
         with open("decision_intelligence_report.md", "w", encoding="utf-8") as f:
             f.write("".join(report))
-            
+
         print(f"Generated decision_intelligence_report.md with {total} benchmarks.")
         if passed < total:
             sys.exit(1)

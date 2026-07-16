@@ -5,11 +5,10 @@ Queries the IntelligenceStore and DecisionEngine to dump raw decision objects fo
 """
 
 import json
-from backend.intelligence.store import IntelligenceStore
+
 from backend.intelligence.decision import DecisionEngine
-from backend.intelligence.counterfactual import CounterfactualEngine
+from backend.intelligence.store import IntelligenceStore
 from backend.recommendation.recruitment import recommend_replacement
-from shared.schemas import ProfileType
 
 store = IntelligenceStore()
 all_players = store.get_all_players()
@@ -38,7 +37,8 @@ rodri = find_player("Rodri", "Career")
 average_dm = next((p for p in all_players if p.position_group == "Midfielder" and p.capability_profile and p.capability_profile.overall_rating and 60 < p.capability_profile.overall_rating < 70), None)
 
 def get_card(player):
-    if not player: return None
+    if not player:
+        return None
     cohort = [p for p in all_players if p.position_group == player.position_group]
     return DecisionEngine.build_player_decision_card(player, cohort).__dict__
 
@@ -81,7 +81,8 @@ results["Closely_Matched"] = {
 
 # 3. Recruitment & Counterfactual Scenarios
 def run_recruitment(target, max_results=3):
-    if not target: return None
+    if not target:
+        return None
     replacements = recommend_replacement(target, all_players, max_results=max_results)
     return [
         {
@@ -116,7 +117,8 @@ for team, name in [(city, "City"), (arsenal, "Arsenal"), (liverpool, "Liverpool"
         }
 
 def safe_serialize(obj):
-    if hasattr(obj, '__dict__'): return obj.__dict__
+    if hasattr(obj, '__dict__'):
+        return obj.__dict__
     return str(obj)
 
 with open("audit_results.json", "w") as f:

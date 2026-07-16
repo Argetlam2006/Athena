@@ -8,11 +8,11 @@ incorrectly, these tests catch it before the change breaks downstream modules.
 from __future__ import annotations
 
 from shared.config.capabilities import (
-    CORE_CAPABILITIES,
     CAPABILITY_DESCRIPTIONS,
     CAPABILITY_DISPLAY_NAMES,
     CAPABILITY_METRIC_MAP,
     CAPABILITY_METRIC_WEIGHTS,
+    CORE_CAPABILITIES,
 )
 from shared.config.navigation import WORKSPACES
 

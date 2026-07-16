@@ -124,20 +124,20 @@ def build_team_profile(
     """Aggregate a squad of PlayerProfiles into a TeamProfile."""
     agg = aggregate_capabilities(players)
     style = determine_playing_style(agg)
-    
+
     # Deterministic Strengths & Weaknesses
     # Sort capabilities by score
     sorted_caps = sorted([(k, v) for k, v in agg.items() if v > 0], key=lambda x: x[1], reverse=True)
-    
+
     strengths = []
     weaknesses = []
-    
+
     if sorted_caps:
         # Top 2 are strengths if they are above 60
         for cap, score in sorted_caps[:2]:
             if score >= 60.0:
                 strengths.append(cap.replace("_", " ").title())
-                
+
         # Bottom 2 are weaknesses if they are below 50
         for cap, score in sorted_caps[-2:]:
             if score < 50.0:

@@ -2,10 +2,10 @@ import logging
 from collections import defaultdict
 
 from backend.intelligence.adapter import map_player_summary_to_vectors
-from backend.intelligence.engine import FootballIntelligenceEngine
-from backend.intelligence.store import IntelligenceStore
-from backend.intelligence.season import SeasonBuilder
 from backend.intelligence.career import CareerBuilder
+from backend.intelligence.engine import FootballIntelligenceEngine
+from backend.intelligence.season import SeasonBuilder
+from backend.intelligence.store import IntelligenceStore
 from backend.warehouse.connection import connect
 
 logging.basicConfig(level=logging.INFO)
@@ -58,7 +58,7 @@ def main():
 
     # Teams are built from competition profiles (or season, they are basically the same for team aggregation, but let's use competition to capture all matches precisely, wait, previously it used season_profiles (which were competition profiles)).
     team_profiles = engine.process_all_teams(competition_profiles)
-    
+
     store = IntelligenceStore()
     store.save(all_profiles, team_profiles)
 

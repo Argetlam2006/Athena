@@ -40,15 +40,15 @@ def _get_context_for_prompt(query: str = ""):
             # Simple heuristic intent parser
             is_compare = "compare" in q_lower
             is_career_summary = any(w in q_lower for w in ["career", "summarise", "summarize", "overview"]) and "season" not in q_lower
-            is_competition_specific = any(c.lower() in q_lower for c in set([p.competition for p in career if p.profile_type == ProfileType.COMPETITION]))
+            is_competition_specific = any(c.lower() in q_lower for c in {p.competition for p in career if p.profile_type == ProfileType.COMPETITION})
 
             filtered_profiles = []
 
             if is_competition_specific:
                 # E.g. "How did Messi perform in La Liga?"
-                mentioned_comps = [c for c in set([p.competition for p in career if p.profile_type == ProfileType.COMPETITION]) if c.lower() in q_lower]
+                mentioned_comps = [c for c in {p.competition for p in career if p.profile_type == ProfileType.COMPETITION} if c.lower() in q_lower]
                 filtered_profiles = [p for p in career if p.competition in mentioned_comps and p.profile_type == ProfileType.COMPETITION]
-            
+
             elif is_compare:
                 # E.g. "compare 2011 and 2015"
                 # Check if season string exists in query

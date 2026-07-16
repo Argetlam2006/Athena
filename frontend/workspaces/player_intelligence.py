@@ -16,7 +16,7 @@ def render_decision_card(player) -> None:
 
     from backend.intelligence.decision import DecisionEngine
     from frontend.data.players import get_players_by_position
-    
+
     # Use positional peers as the dynamic cohort
     cohort = get_players_by_position(player.position_group)
     card = DecisionEngine.build_player_decision_card(player, cohort)
@@ -41,7 +41,7 @@ def render_decision_card(player) -> None:
         <p style="color: #d1d5db; line-height: 1.6;">
             <strong>{player.player_name}</strong> operates as a <strong>{card.primary_role}</strong>.
         </p>
-        
+
         <div style="display: flex; gap: 2rem; margin-top: 1rem;">
             <div style="flex: 1;">
                 <h4 style="color: #10b981; margin-bottom: 0.5rem;">Elite Traits</h4>
@@ -209,7 +209,7 @@ def render() -> None:
                 """,
                 unsafe_allow_html=True
             )
-            for k, v in top_scores:
+            for k, _v in top_scores:
                 st.markdown(f"<div style='color: #10b981; font-weight: 500; margin-bottom: 0.25rem;'>+ {k}</div>", unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
 
@@ -221,7 +221,7 @@ def render() -> None:
                 """,
                 unsafe_allow_html=True
             )
-            for k, v in bottom_scores:
+            for k, _v in bottom_scores:
                 st.markdown(f"<div style='color: #ef4444; font-weight: 500; margin-bottom: 0.25rem;'>− {k}</div>", unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
 
@@ -381,14 +381,14 @@ def render() -> None:
         with st.expander(f"▼ {season_name}", expanded=True):
             profiles = seasons_dict[season_name]
             profiles_sorted = sorted(profiles, key=lambda x: 0 if getattr(x[1], "profile_type", None) == ProfileType.SEASON else 1)
-            
+
             for (idx, profile) in profiles_sorted:
                 is_selected = (st.session_state[segment_key] == idx)
                 if getattr(profile, "profile_type", None) == ProfileType.SEASON:
                     btn_label = "⭐ All Competitions"
                 else:
                     btn_label = f"   {profile.competition}"
-                    
+
                 if is_selected:
                     btn_label = "✅ " + btn_label
 

@@ -49,8 +49,8 @@ def render() -> None:
         f"""
         <div style="background: #111827; padding: 1.5rem; border-radius: 8px; border: 1px solid #374151;">
             <p style="color: #e5e7eb; line-height: 1.6; margin-top: 0;">
-                Athena is built on the philosophy of <strong>Evidence Before AI</strong>. 
-                Rather than relying on Large Language Models to hallucinate football knowledge, 
+                Athena is built on the philosophy of <strong>Evidence Before AI</strong>.
+                Rather than relying on Large Language Models to hallucinate football knowledge,
                 Athena grounds all intelligence entirely in a deterministic dataset.
             </p>
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 1rem; margin-top: 1.5rem; text-align: center;">
