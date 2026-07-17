@@ -1,5 +1,5 @@
 """
-backend/ingestion/load_data.py — StatsBomb Open Data acquisition
+backend/ingestion/load_data.py - StatsBomb Open Data acquisition
 
 Responsibility: Download StatsBomb Open Data as raw JSON into data/raw/.
 
@@ -16,8 +16,8 @@ Design decisions:
   - statsbombpy is NOT imported here. It is used in the ETL layer (Sprint 1.3)
     to read from local files with its built-in parsers.
 
-StatsBomb Open Data: CC BY-SA 4.0 — https://github.com/statsbomb/open-data
-Attribution required: StatsBomb — https://statsbomb.com
+StatsBomb Open Data: CC BY-SA 4.0 - https://github.com/statsbomb/open-data
+Attribution required: StatsBomb - https://statsbomb.com
 
 Usage:
     python -m backend.ingestion.load_data --sample
@@ -42,9 +42,9 @@ from backend.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Constants
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 RAW_DIR = ROOT_DIR / "data" / "raw"
@@ -59,9 +59,9 @@ DEFAULT_DELAY_S: float = 0.4
 MAX_RETRIES: int = 3
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Download summary
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 
 @dataclass
@@ -115,23 +115,23 @@ class DownloadSummary:
             f"  Downloaded     : {self.total_downloaded} files",
             f"  Skipped        : {self.total_skipped} files (already present)",
             f"  Failed         : {self.total_failed} files",
-            f"  ├ competitions : {self.downloaded_competitions} downloaded, {self.skipped_competitions} skipped",
-            f"  ├ matches      : {self.downloaded_matches} downloaded, {self.skipped_matches} skipped, {self.failed_matches} failed",
-            f"  ├ events       : {self.downloaded_events} downloaded, {self.skipped_events} skipped, {self.failed_events} failed",
-            f"  └ lineups      : {self.downloaded_lineups} downloaded, {self.skipped_lineups} skipped, {self.failed_lineups} failed",
+            f"  | competitions : {self.downloaded_competitions} downloaded, {self.skipped_competitions} skipped",
+            f"  | matches      : {self.downloaded_matches} downloaded, {self.skipped_matches} skipped, {self.failed_matches} failed",
+            f"  | events       : {self.downloaded_events} downloaded, {self.skipped_events} skipped, {self.failed_events} failed",
+            f"  + lineups      : {self.downloaded_lineups} downloaded, {self.skipped_lineups} skipped, {self.failed_lineups} failed",
         ]
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Core downloader
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 
 class StatsBombDownloader:
     """
     Downloads StatsBomb Open Data JSON files from GitHub.
 
-    Every public method is idempotent — running twice produces the same result.
+    Every public method is idempotent - running twice produces the same result.
     Existing files are never overwritten unless `force=True`.
     """
 
@@ -147,14 +147,14 @@ class StatsBombDownloader:
         self.raw_dir.mkdir(parents=True, exist_ok=True)
         self._manifest_manager = ManifestManager(raw_dir)
 
-    # ── Low-level HTTP ────────────────────────────────────────────────────────
+    # -- Low-level HTTP --------------------------------------------------------
 
     def _fetch_json(self, url: str) -> list | dict:
         """
         Fetch JSON from a URL with exponential-backoff retry.
 
         Raises:
-            urllib.error.HTTPError: on 404 (file not in StatsBomb) — not retried
+            urllib.error.HTTPError: on 404 (file not in StatsBomb) - not retried
             urllib.error.URLError:  on persistent network failure
         """
         last_exc: Exception | None = None
@@ -170,7 +170,7 @@ class StatsBombDownloader:
                     return json.loads(resp.read().decode("utf-8"))
             except urllib.error.HTTPError as exc:
                 if exc.code == 404:
-                    raise  # not retried — file simply does not exist
+                    raise  # not retried - file simply does not exist
                 last_exc = exc
             except urllib.error.URLError as exc:
                 last_exc = exc
@@ -193,7 +193,7 @@ class StatsBombDownloader:
         with open(dest, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
 
-    # ── File-level downloads ──────────────────────────────────────────────────
+    # -- File-level downloads --------------------------------------------------
 
     def download_competitions(self) -> tuple[list[dict], bool]:
         """
@@ -289,7 +289,7 @@ class StatsBombDownloader:
         time.sleep(self.delay_s)
         return True
 
-    # ── Match-level pipeline ──────────────────────────────────────────────────
+    # -- Match-level pipeline --------------------------------------------------
 
     def _process_matches(
         self,
@@ -366,7 +366,7 @@ class StatsBombDownloader:
 
         return processed
 
-    # ── Run modes ─────────────────────────────────────────────────────────────
+    # -- Run modes -------------------------------------------------------------
 
     def run_sample(
         self,
@@ -394,7 +394,7 @@ class StatsBombDownloader:
             n_matches=n_matches,
         )
 
-        # Step 1 — competitions
+        # Step 1 - competitions
         try:
             competitions, was_new = self.download_competitions()
             summary.downloaded_competitions += int(was_new)
@@ -403,7 +403,7 @@ class StatsBombDownloader:
             logger.error("pipeline.competitions.fail", reason=str(exc))
             return summary
 
-        # Step 2 — find a season for this competition
+        # Step 2 - find a season for this competition
         seasons = [c for c in competitions if c.get("competition_id") == competition_id]
         if not seasons:
             logger.error(
@@ -428,7 +428,7 @@ class StatsBombDownloader:
             season=season_name,
         )
 
-        # Step 3 — matches
+        # Step 3 - matches
         try:
             match_list, was_new = self.download_matches(
                 competition_id, season_id, manifest
@@ -439,12 +439,12 @@ class StatsBombDownloader:
             logger.error("pipeline.matches.fail", reason=str(exc))
             return summary
 
-        # Step 4 — events and lineups for first n_matches
+        # Step 4 - events and lineups for first n_matches
         match_ids = self._process_matches(
             match_list, manifest, summary, n_limit=n_matches
         )
 
-        # Step 5 — update manifest
+        # Step 5 - update manifest
         manifest.record_competition(
             competition_id=competition_id,
             competition_name=comp_name,
@@ -633,10 +633,10 @@ class StatsBombDownloader:
             return
 
         print()
-        print("  StatsBomb Open Data — Available Competitions")
-        print("  ─" * 30)
+        print("  StatsBomb Open Data - Available Competitions")
+        print("  -" * 30)
         print(f"  {'ID':>5}  {'Season ID':>9}  {'Competition':<30}  {'Season'}")
-        print(f"  {'─' * 5}  {'─' * 9}  {'─' * 30}  {'─' * 15}")
+        print(f"  {'-' * 5}  {'-' * 9}  {'-' * 30}  {'-' * 15}")
         for c in sorted(
             competitions,
             key=lambda x: (x.get("competition_name", ""), x.get("season_name", "")),
@@ -652,9 +652,9 @@ class StatsBombDownloader:
         print()
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Formatting helpers
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 
 def _summary_dict(s: DownloadSummary) -> dict:
@@ -667,23 +667,23 @@ def _summary_dict(s: DownloadSummary) -> dict:
 
 def _print_summary(summary: DownloadSummary) -> None:
     print()
-    print("  ══════════════════════════════════════════════")
-    print("    Athena — Download Complete")
-    print("  ══════════════════════════════════════════════")
+    print("  ==============================================")
+    print("    Athena - Download Complete")
+    print("  ==============================================")
     for line in summary.report_lines():
         print(line)
-    print("  ══════════════════════════════════════════════")
+    print("  ==============================================")
     print()
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # CLI entry point
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Athena — StatsBomb Open Data acquisition",
+        description="Athena - StatsBomb Open Data acquisition",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

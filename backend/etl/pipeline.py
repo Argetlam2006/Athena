@@ -1,14 +1,14 @@
 """
-backend/etl/pipeline.py — ETL pipeline orchestrator
+backend/etl/pipeline.py - ETL pipeline orchestrator
 
 Reads raw StatsBomb JSON from data/raw/, normalizes into typed DataFrames,
 and writes analytical Parquet files to data/processed/.
 
 Output files:
-    data/processed/competitions.parquet  — all competition-season rows
-    data/processed/matches.parquet       — all matches (flattened)
-    data/processed/events.parquet        — all events (wide format)
-    data/processed/lineups.parquet       — all player appearances
+    data/processed/competitions.parquet  - all competition-season rows
+    data/processed/matches.parquet       - all matches (flattened)
+    data/processed/events.parquet        - all events (wide format)
+    data/processed/lineups.parquet       - all player appearances
 
 The pipeline is driven by data/raw/manifest.json, which records exactly
 what was downloaded in Sprint 1.1. Only files recorded in the manifest
@@ -39,17 +39,17 @@ from backend.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Paths
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 RAW_DIR = ROOT_DIR / "data" / "raw"
 PROCESSED_DIR = ROOT_DIR / "data" / "processed"
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Result summary
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 
 @dataclass
@@ -78,9 +78,9 @@ class ETLSummary:
         ]
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # I/O helpers
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 
 def _load_json(path: Path) -> list | dict | None:
@@ -105,12 +105,12 @@ def _save_parquet(df: pd.DataFrame, path: Path, label: str) -> None:
         rows=len(df),
         size_kb=round(path.stat().st_size / 1024, 1),
     )
-    print(f"  ✓ {label:<28} {len(df):>8,} rows  →  {path.name}")
+    print(f"  OK {label:<28} {len(df):>8,} rows  →  {path.name}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Pipeline steps
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 
 def _run_competitions(raw_dir: Path, processed_dir: Path) -> pd.DataFrame:
@@ -250,9 +250,9 @@ def _run_lineups(
     return combined
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Public entry point
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 
 def run_etl(
@@ -282,9 +282,9 @@ def run_etl(
 
     logger.info("etl.start", raw_dir=str(raw_dir), processed_dir=str(processed_dir))
     print()
-    print("  ══════════════════════════════════════════════════════")
-    print("    Athena ETL Pipeline — Phase 2.1")
-    print("  ══════════════════════════════════════════════════════")
+    print("  ======================================================")
+    print("    Athena ETL Pipeline - Phase 2.1")
+    print("  ======================================================")
 
     # Determine which match IDs to process from manifest
     manager = ManifestManager(raw_dir)
@@ -315,7 +315,7 @@ def run_etl(
         competition_count=len(manifest.competitions),
     )
 
-    # Step 1 — Competitions
+    # Step 1 - Competitions
     if force or not (processed_dir / "competitions.parquet").exists():
         comp_df = _run_competitions(raw_dir, processed_dir)
         summary.competitions_rows = len(comp_df)
@@ -323,10 +323,10 @@ def run_etl(
         existing = pd.read_parquet(processed_dir / "competitions.parquet")
         summary.competitions_rows = len(existing)
         print(
-            f"  ↷ competitions.parquet        {summary.competitions_rows:>8,} rows  (skipped, exists)"
+            f"  -> competitions.parquet        {summary.competitions_rows:>8,} rows  (skipped, exists)"
         )
 
-    # Step 2 — Matches
+    # Step 2 - Matches
     if force or not (processed_dir / "matches.parquet").exists():
         matches_df = _run_matches(raw_dir, processed_dir)
         summary.matches_rows = len(matches_df)
@@ -334,10 +334,10 @@ def run_etl(
         existing = pd.read_parquet(processed_dir / "matches.parquet")
         summary.matches_rows = len(existing)
         print(
-            f"  ↷ matches.parquet             {summary.matches_rows:>8,} rows  (skipped, exists)"
+            f"  -> matches.parquet             {summary.matches_rows:>8,} rows  (skipped, exists)"
         )
 
-    # Step 3 — Events
+    # Step 3 - Events
     if force or not (processed_dir / "events.parquet").exists():
         events_df, processed_count, failed_count = _run_events(
             raw_dir, processed_dir, match_ids
@@ -349,10 +349,10 @@ def run_etl(
         existing = pd.read_parquet(processed_dir / "events.parquet")
         summary.events_rows = len(existing)
         print(
-            f"  ↷ events.parquet              {summary.events_rows:>8,} rows  (skipped, exists)"
+            f"  -> events.parquet              {summary.events_rows:>8,} rows  (skipped, exists)"
         )
 
-    # Step 4 — Lineups
+    # Step 4 - Lineups
     if force or not (processed_dir / "lineups.parquet").exists():
         lineups_df = _run_lineups(raw_dir, processed_dir, match_ids)
         summary.lineups_rows = len(lineups_df)
@@ -360,16 +360,16 @@ def run_etl(
         existing = pd.read_parquet(processed_dir / "lineups.parquet")
         summary.lineups_rows = len(existing)
         print(
-            f"  ↷ lineups.parquet             {summary.lineups_rows:>8,} rows  (skipped, exists)"
+            f"  -> lineups.parquet             {summary.lineups_rows:>8,} rows  (skipped, exists)"
         )
 
     # Final summary
     print()
-    print("  ──────────────────────────────────────────────────────")
+    print("  ------------------------------------------------------")
     print("  ETL complete.")
     for line in summary.report_lines():
         print(line)
-    print("  ══════════════════════════════════════════════════════")
+    print("  ======================================================")
     print()
 
     logger.info(
@@ -382,14 +382,14 @@ def run_etl(
     return summary
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # CLI entry point
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Athena ETL Pipeline — normalize StatsBomb JSON to Parquet",
+        description="Athena ETL Pipeline - normalize StatsBomb JSON to Parquet",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

@@ -1,5 +1,5 @@
 """
-backend/intelligence/archetypes.py — Deterministic Playing Style Engine.
+backend/intelligence/archetypes.py - Deterministic Playing Style Engine.
 
 Derives Playing Style (Archetypes) using Cosine Similarity and Euclidean Distance
 against predefined ideal capability vectors.

@@ -1,5 +1,5 @@
 """
-backend/warehouse/queries.py — Typed Python interface over analytical SQL views
+backend/warehouse/queries.py - Typed Python interface over analytical SQL views
 
 WarehouseQueries encapsulates every SQL SELECT that downstream code needs.
 No module outside this file should ever construct a raw SQL string.
@@ -34,7 +34,7 @@ class WarehouseQueries:
     Query interface for the Athena Analytics Warehouse.
 
     All methods take an open DuckDB connection and return DataFrames.
-    Accepts optional filter parameters — omit to query all available data.
+    Accepts optional filter parameters - omit to query all available data.
 
     Filters use DuckDB parameterized queries (? placeholders) to avoid
     string injection even in internal analytical code.
@@ -42,9 +42,9 @@ class WarehouseQueries:
 
     conn: duckdb.DuckDBPyConnection
 
-    # ─────────────────────────────────────────────────────────────────────────
+    # -------------------------------------------------------------------------
     # Match queries
-    # ─────────────────────────────────────────────────────────────────────────
+    # -------------------------------------------------------------------------
 
     def get_match_summary(
         self,
@@ -80,9 +80,9 @@ class WarehouseQueries:
         """
         return self.conn.execute(sql, params).df()
 
-    # ─────────────────────────────────────────────────────────────────────────
+    # -------------------------------------------------------------------------
     # Player queries
-    # ─────────────────────────────────────────────────────────────────────────
+    # -------------------------------------------------------------------------
 
     def get_player_summary(
         self,
@@ -177,9 +177,9 @@ class WarehouseQueries:
         """
         return self.conn.execute(sql, params).df()
 
-    # ─────────────────────────────────────────────────────────────────────────
+    # -------------------------------------------------------------------------
     # Team queries
-    # ─────────────────────────────────────────────────────────────────────────
+    # -------------------------------------------------------------------------
 
     def get_team_summary(
         self,
@@ -216,9 +216,9 @@ class WarehouseQueries:
         """
         return self.conn.execute(sql, params).df()
 
-    # ─────────────────────────────────────────────────────────────────────────
+    # -------------------------------------------------------------------------
     # Recruitment queries
-    # ─────────────────────────────────────────────────────────────────────────
+    # -------------------------------------------------------------------------
 
     def get_recruitment_candidates(
         self,
@@ -269,9 +269,9 @@ class WarehouseQueries:
         """
         return self.conn.execute(sql, params).df()
 
-    # ─────────────────────────────────────────────────────────────────────────
+    # -------------------------------------------------------------------------
     # Utility
-    # ─────────────────────────────────────────────────────────────────────────
+    # -------------------------------------------------------------------------
 
     def list_views(self) -> list[str]:
         """Return the names of all views in the current DuckDB connection."""
@@ -291,7 +291,7 @@ class WarehouseQueries:
         """
         Escape hatch for ad-hoc queries during development.
 
-        Not intended for production use — prefer specific query methods above.
+        Not intended for production use - prefer specific query methods above.
         Exists here rather than in calling code so SQL stays centralized.
         """
         return self.conn.execute(sql, params or []).df()

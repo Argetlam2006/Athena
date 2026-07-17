@@ -1,5 +1,5 @@
 """
-backend/intelligence/roles.py — Role Family Abstraction
+backend/intelligence/roles.py - Role Family Abstraction
 
 Maps archetypes to broad Role Families to ensure sufficient statistical
 cohort sizes for rating normalization. Defines capability importance vectors.

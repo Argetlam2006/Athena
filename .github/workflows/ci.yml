@@ -35,6 +35,10 @@ jobs:
       run: |
         mypy . --ignore-missing-imports || true
         
+    - name: Build Intelligence Store (Canonical)
+      run: |
+        python scripts/maintenance/bootstrap.py
+        
     - name: Test with pytest
       run: |
         # Set PYTHONPATH to root so modules resolve

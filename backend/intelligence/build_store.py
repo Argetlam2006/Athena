@@ -1,5 +1,5 @@
 """
-backend/intelligence/build_store.py — Intelligence Store Builder CLI.
+backend/intelligence/build_store.py - Intelligence Store Builder CLI.
 
 Generates the Intelligence Store (player_profiles.parquet, team_profiles.parquet)
 by running the Football Intelligence Engine over the entire DuckDB warehouse.

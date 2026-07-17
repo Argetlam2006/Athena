@@ -1,5 +1,5 @@
 """
-backend/intelligence/capabilities.py — Capability score computation.
+backend/intelligence/capabilities.py - Capability score computation.
 
 This module computes the 0-100 scores for each capability using normalized
 percentile metrics and configured weights.

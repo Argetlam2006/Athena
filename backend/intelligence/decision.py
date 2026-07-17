@@ -1,5 +1,5 @@
 """
-backend/intelligence/decision.py — Decision Intelligence Engine
+backend/intelligence/decision.py - Decision Intelligence Engine
 
 The canonical Single Source of Truth for football reasoning.
 Generates deterministic explanations, dependency maps, and counterfactuals.

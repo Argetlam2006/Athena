@@ -1,5 +1,5 @@
 """
-backend/explanation/engine.py — Explanation Context Engine Facade.
+backend/explanation/engine.py - Explanation Context Engine Facade.
 
 The public API for the Explanation Context layer. Converts internal intelligence
 models into structured, verified evidence payloads for the LLM.

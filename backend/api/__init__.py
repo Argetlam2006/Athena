@@ -1,1 +1,1 @@
-"""backend/api — FastAPI application and route handlers."""
+"""backend/api - FastAPI application and route handlers."""

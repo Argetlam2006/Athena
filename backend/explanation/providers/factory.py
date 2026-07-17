@@ -1,5 +1,5 @@
 """
-backend/explanation/providers/factory.py — Provider Selection Factory.
+backend/explanation/providers/factory.py - Provider Selection Factory.
 """
 
 from backend.explanation.providers.base import ExplanationProvider

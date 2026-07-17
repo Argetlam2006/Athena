@@ -1,1 +1,1 @@
-"""backend/ingestion — Data acquisition and validation."""
+"""backend/ingestion - Data acquisition and validation."""

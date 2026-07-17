@@ -1,5 +1,5 @@
 """
-backend/warehouse — Athena Analytics Warehouse
+backend/warehouse - Athena Analytics Warehouse
 
 Single entry point for all analytical data access.
 

@@ -1,5 +1,5 @@
 """
-backend/intelligence/adapter.py — DataFrame to Feature Vector Mapper
+backend/intelligence/adapter.py - DataFrame to Feature Vector Mapper
 
 Adapts the raw DuckDB DataFrame from the Warehouse into strictly typed
 PlayerFeatureVector objects for the Football Intelligence Engine.

@@ -1,5 +1,5 @@
 """
-backend/warehouse/connection.py — DuckDB connection management
+backend/warehouse/connection.py - DuckDB connection management
 
 Provides a context manager for DuckDB connections so every caller
 opens and closes connections safely without boilerplate.
@@ -23,17 +23,17 @@ from pathlib import Path
 
 import duckdb
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Paths
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 DB_PATH = ROOT_DIR / "data" / "warehouse" / "athena.duckdb"
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Connection factory
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 
 @contextmanager

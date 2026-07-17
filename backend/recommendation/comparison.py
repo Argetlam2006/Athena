@@ -1,5 +1,5 @@
 """
-backend/recommendation/comparison.py — Player Comparison Engine.
+backend/recommendation/comparison.py - Player Comparison Engine.
 
 Compares two or more PlayerProfiles quantitatively across all 8 capabilities,
 producing structured insights about similarities and differences.

@@ -1,5 +1,5 @@
 """
-backend/explanation/builder.py — Context Construction for the Explanation Layer.
+backend/explanation/builder.py - Context Construction for the Explanation Layer.
 
 Transforms domain profiles (PlayerProfile, TeamProfile, etc.) into
 strongly typed, validated ExplanationContexts.

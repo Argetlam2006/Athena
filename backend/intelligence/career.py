@@ -1,5 +1,5 @@
 """
-backend/intelligence/career.py — Deterministic Career Aggregation.
+backend/intelligence/career.py - Deterministic Career Aggregation.
 
 Aggregates single-season PlayerFeatureVectors into a CareerFeatureVector
 by accurately reverse-engineering raw counts from per-90 metrics and percentages,

@@ -1,5 +1,5 @@
 """
-backend/explanation/telemetry.py — Telemetry for the Explanation Layer.
+backend/explanation/telemetry.py - Telemetry for the Explanation Layer.
 """
 
 import logging

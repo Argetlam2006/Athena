@@ -1,5 +1,5 @@
 """
-backend/etl — ETL pipeline: normalize StatsBomb JSON → analytical Parquet.
+backend/etl - ETL pipeline: normalize StatsBomb JSON → analytical Parquet.
 
 Public API:
     # Normalization functions (pure transform, no I/O):

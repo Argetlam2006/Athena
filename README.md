@@ -15,6 +15,38 @@ Athena forces AI to act strictly as an *explanation layer* on top of a rigorousl
 
 ---
 
+## Quick Start
+
+Athena requires exactly one command to build its entire intelligence store from scratch.
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Argetlam2006/Athena.git
+   cd Athena
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Bootstrap the data pipeline:**
+   ```bash
+   python scripts/maintenance/bootstrap.py
+   ```
+   *Note: This command downloads the StatsBomb Open Data, runs the ETL pipeline, builds the analytics warehouse, and generates the canonical Intelligence Store. The first run will take several minutes. You only need to run this once, or whenever the underlying dataset changes.*
+
+4. **Launch Athena:**
+   ```bash
+   streamlit run frontend/app.py
+   ```
+
+5. **Run the test suite:**
+   ```bash
+   pytest
+   ```
+
+---
 ## Core Capabilities
 
 - **Football Intelligence Engine (FIE)**: Synthesizes raw event data into canonical capability scores and percentiles.

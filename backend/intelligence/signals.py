@@ -1,5 +1,5 @@
 """
-backend/intelligence/signals.py — Decision signal generation.
+backend/intelligence/signals.py - Decision signal generation.
 
 Computes binary decision signals based on capability scores and raw metrics.
 Signals are used by the Decision Engine to filter and match players.

@@ -1,5 +1,5 @@
 """
-backend/explanation/prompt_builder.py — Prompt Pipeline for the Explanation Layer.
+backend/explanation/prompt_builder.py - Prompt Pipeline for the Explanation Layer.
 
 Transforms ExplanationContexts and User Queries into standard PromptPackages
 for consumption by Provider models.

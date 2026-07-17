@@ -1,5 +1,5 @@
 """
-backend/intelligence/normalization.py — Mathematical utilities for the Intelligence Engine.
+backend/intelligence/normalization.py - Mathematical utilities for the Intelligence Engine.
 
 Contains pure functions for percentile normalization, scaling, confidence adjustment,
 and basic statistics.

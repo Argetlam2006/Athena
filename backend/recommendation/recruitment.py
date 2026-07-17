@@ -1,5 +1,5 @@
 """
-backend/recommendation/recruitment.py — Recruitment Ranking Engine.
+backend/recommendation/recruitment.py - Recruitment Ranking Engine.
 
 Executes search queries, ranks players based on fit criteria, and provides
 replacement recommendations.

@@ -1,5 +1,5 @@
 """
-backend/ingestion/manifest.py — Download manifest manager
+backend/ingestion/manifest.py - Download manifest manager
 
 Tracks exactly what has been downloaded to data/raw/, enabling:
   - Idempotent re-runs (skip already-downloaded files)
@@ -41,9 +41,9 @@ MANIFEST_FILE = "manifest.json"
 MANIFEST_VERSION = "1.0"
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Data structures
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 
 @dataclass
@@ -85,7 +85,7 @@ class DownloadManifest:
     events_downloaded: list[int] = field(default_factory=list)
     lineups_downloaded: list[int] = field(default_factory=list)
 
-    # ── Convenience properties ────────────────────────────────────────────────
+    # -- Convenience properties ------------------------------------------------
 
     @property
     def total_matches(self) -> int:
@@ -110,7 +110,7 @@ class DownloadManifest:
             ids.extend(comp.match_ids)
         return ids
 
-    # ── Idempotency helpers ───────────────────────────────────────────────────
+    # -- Idempotency helpers ---------------------------------------------------
 
     def has_matches(self, competition_id: int, season_id: int) -> bool:
         """True if this competition+season's matches have been downloaded."""
@@ -127,7 +127,7 @@ class DownloadManifest:
         """True if lineups for this match have been downloaded."""
         return match_id in self.lineups_downloaded
 
-    # ── Mutation ──────────────────────────────────────────────────────────────
+    # -- Mutation --------------------------------------------------------------
 
     def record_competition(
         self,
@@ -166,7 +166,7 @@ class DownloadManifest:
             self.lineups_downloaded.append(match_id)
         self.updated_at = _now()
 
-    # ── Serialisation ─────────────────────────────────────────────────────────
+    # -- Serialisation ---------------------------------------------------------
 
     def to_dict(self) -> dict:
         return {
@@ -204,9 +204,9 @@ class DownloadManifest:
         )
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Manifest manager — load / save
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
+# Manifest manager - load / save
+# -----------------------------------------------------------------------------
 
 
 class ManifestManager:
@@ -240,7 +240,7 @@ class ManifestManager:
                 data = json.load(f)
             return DownloadManifest.from_dict(data)
         except (json.JSONDecodeError, KeyError):
-            # Manifest is corrupted — start fresh rather than abort
+            # Manifest is corrupted - start fresh rather than abort
             return DownloadManifest()
 
     def save(self, manifest: DownloadManifest) -> None:
@@ -257,9 +257,9 @@ class ManifestManager:
         tmp.replace(self.manifest_path)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Helpers
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 
 def _now() -> str:

@@ -1,5 +1,5 @@
 """
-backend/explanation/intent.py — Deterministic Intent Routing.
+backend/explanation/intent.py - Deterministic Intent Routing.
 
 Replaces heuristic string parsing with an explicit Intent classifier
 that dictates what data context to retrieve.

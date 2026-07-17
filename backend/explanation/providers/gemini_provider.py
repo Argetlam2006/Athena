@@ -1,5 +1,5 @@
 """
-backend/explanation/providers/gemini_provider.py — Google Gemini Provider.
+backend/explanation/providers/gemini_provider.py - Google Gemini Provider.
 """
 
 from collections.abc import Generator

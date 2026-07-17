@@ -1,5 +1,5 @@
 """
-backend/intelligence/season.py — Deterministic Season Aggregation.
+backend/intelligence/season.py - Deterministic Season Aggregation.
 
 Aggregates multiple competition PlayerFeatureVectors into a single SeasonFeatureVector.
 """

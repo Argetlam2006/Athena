@@ -1,5 +1,5 @@
 """
-backend/recommendation/matching.py — Tactical Fit Evaluation.
+backend/recommendation/matching.py - Tactical Fit Evaluation.
 
 Evaluates how well a PlayerProfile fits a given CollectiveProfile or a tactical style,
 decomposed into a highly structured SystemCompatibilityContext.

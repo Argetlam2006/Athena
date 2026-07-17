@@ -1,5 +1,5 @@
 """
-backend/explanation/providers/claude_provider.py — Anthropic Claude Provider.
+backend/explanation/providers/claude_provider.py - Anthropic Claude Provider.
 """
 
 import os

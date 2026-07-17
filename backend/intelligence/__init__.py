@@ -1,1 +1,1 @@
-"""backend/intelligence — Athena Intelligence Framework: capability generation."""
+"""backend/intelligence - Athena Intelligence Framework: capability generation."""

@@ -1,5 +1,5 @@
 """
-backend/explanation/response.py — Response Models for the Explanation Layer.
+backend/explanation/response.py - Response Models for the Explanation Layer.
 """
 
 from dataclasses import dataclass, field

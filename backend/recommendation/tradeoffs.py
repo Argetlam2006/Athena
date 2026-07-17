@@ -1,5 +1,5 @@
 """
-backend/recommendation/tradeoffs.py — Trade-off and Evidence Generator.
+backend/recommendation/tradeoffs.py - Trade-off and Evidence Generator.
 
 Generates structured evidence, identifying strengths and weaknesses based on
 required criteria and capability profiles.

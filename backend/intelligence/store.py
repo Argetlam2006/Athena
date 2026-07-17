@@ -1,5 +1,5 @@
 """
-backend/intelligence/store.py — The Intelligence Store.
+backend/intelligence/store.py - The Intelligence Store.
 
 This module serializes the deterministic output of the Football Intelligence
 Engine into highly optimized Parquet files.

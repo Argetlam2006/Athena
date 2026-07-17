@@ -1,5 +1,5 @@
 """
-backend/explanation/parsers.py — Natural Language Parsers
+backend/explanation/parsers.py - Natural Language Parsers
 
 Uses the LLM to deterministically extract structured constraints from natural language.
 """

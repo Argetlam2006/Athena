@@ -1,5 +1,5 @@
 """
-backend/explanation/conversation.py — Conversation Manager.
+backend/explanation/conversation.py - Conversation Manager.
 
 Maintains session history and detects context changes to inject system memory
 while preserving continuity.

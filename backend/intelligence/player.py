@@ -1,5 +1,5 @@
 """
-backend/intelligence/player.py — Player Profile Generation.
+backend/intelligence/player.py - Player Profile Generation.
 
 Transforms normalized metrics and feature vectors into complete PlayerProfiles.
 """

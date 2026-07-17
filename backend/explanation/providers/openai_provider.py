@@ -1,5 +1,5 @@
 """
-backend/explanation/providers/openai_provider.py — OpenAI Provider.
+backend/explanation/providers/openai_provider.py - OpenAI Provider.
 """
 
 from collections.abc import Generator

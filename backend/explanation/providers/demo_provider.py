@@ -1,5 +1,5 @@
 """
-backend/explanation/providers/demo_provider.py — Demo Provider.
+backend/explanation/providers/demo_provider.py - Demo Provider.
 
 Streams deterministic template responses when API keys are not available.
 Guarantees Athena remains fully runnable in a sandbox environment.

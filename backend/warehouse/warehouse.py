@@ -1,12 +1,12 @@
 """
-backend/warehouse/warehouse.py — Athena Analytics Warehouse
+backend/warehouse/warehouse.py - Athena Analytics Warehouse
 
 The Warehouse class is the single entry point for all analytical data access.
 It manages the DuckDB lifecycle: registering Parquet files as base views,
 creating analytical SQL views, and exposing a clean query interface.
 
 Architecture
-────────────
+------------
   Parquet (data/processed/)
       ↓  registered as DuckDB base views
   DuckDB (data/warehouse/athena.duckdb)
@@ -16,15 +16,15 @@ Architecture
   Analytics Engine / Streamlit UI
 
 Why DuckDB
-──────────
-  • Column-oriented — extremely fast aggregations on event-level data.
-  • Zero-copy Parquet scanning — reads directly from .parquet files with
+----------
+  • Column-oriented - extremely fast aggregations on event-level data.
+  • Zero-copy Parquet scanning - reads directly from .parquet files with
     no data loading overhead.
-  • Analytical SQL — QUALIFY, FILTER, PERCENT_RANK, NTILE out of the box.
-  • Embedded — no server to run; one file, zero infrastructure.
+  • Analytical SQL - QUALIFY, FILTER, PERCENT_RANK, NTILE out of the box.
+  • Embedded - no server to run; one file, zero infrastructure.
 
 Usage
-─────
+-----
     from backend.warehouse.warehouse import Warehouse
 
     wh = Warehouse()
@@ -49,9 +49,9 @@ from backend.warehouse.queries import WarehouseQueries
 
 logger = get_logger(__name__)
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Paths
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 PROCESSED_DIR = ROOT_DIR / "data" / "processed"
@@ -61,9 +61,9 @@ SQL_VIEWS_DIR = ROOT_DIR / "sql" / "views"
 BASE_TABLES = ["competitions", "matches", "events", "lineups"]
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Warehouse
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 
 class Warehouse:
@@ -94,14 +94,14 @@ class Warehouse:
         self.processed_dir = Path(processed_dir)
         self._test_conn = _conn  # injected for unit tests (in-memory DuckDB)
 
-    # ─────────────────────────────────────────────────────────────────────────
+    # -------------------------------------------------------------------------
     # Lifecycle
-    # ─────────────────────────────────────────────────────────────────────────
+    # -------------------------------------------------------------------------
 
     def build(self) -> Warehouse:
         """
         Initialize the warehouse: register Parquet files and create all
-        analytical views. Idempotent — safe to call repeatedly.
+        analytical views. Idempotent - safe to call repeatedly.
 
         Returns self for convenient chaining:
             wh = Warehouse().build()
@@ -152,7 +152,7 @@ class Warehouse:
                 logger.warning("warehouse.parquet.missing", table=table, path=str(path))
                 continue
 
-            # Use POSIX paths in SQL — DuckDB handles forward slashes on Windows
+            # Use POSIX paths in SQL - DuckDB handles forward slashes on Windows
             conn.execute(f"""
                 CREATE OR REPLACE VIEW {table} AS
                 SELECT * FROM read_parquet('{path.as_posix()}')
@@ -194,9 +194,9 @@ class Warehouse:
 
         return executed
 
-    # ─────────────────────────────────────────────────────────────────────────
+    # -------------------------------------------------------------------------
     # Query interface
-    # ─────────────────────────────────────────────────────────────────────────
+    # -------------------------------------------------------------------------
 
     def _open_query_conn(self) -> duckdb.DuckDBPyConnection:
         """Open a fresh connection to the warehouse file."""
@@ -218,9 +218,9 @@ class Warehouse:
         """
         return WarehouseQueries(self._open_query_conn())
 
-    # ─────────────────────────────────────────────────────────────────────────
+    # -------------------------------------------------------------------------
     # Convenience pass-throughs (avoids one layer of indirection for callers)
-    # ─────────────────────────────────────────────────────────────────────────
+    # -------------------------------------------------------------------------
 
     def player_summary(self, **kwargs) -> pd.DataFrame:
         """Shorthand for wh.query.get_player_summary(**kwargs)."""
@@ -247,9 +247,9 @@ class Warehouse:
         conn = self._open_query_conn()
         return WarehouseQueries(conn).get_recruitment_candidates(**kwargs)
 
-    # ─────────────────────────────────────────────────────────────────────────
+    # -------------------------------------------------------------------------
     # Introspection
-    # ─────────────────────────────────────────────────────────────────────────
+    # -------------------------------------------------------------------------
 
     def info(self) -> dict:
         """Return basic warehouse metadata for diagnostics."""
@@ -266,16 +266,16 @@ class Warehouse:
             return {"error": str(exc)}
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # CLI entry point
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 
 def main() -> None:
     import argparse
 
     parser = argparse.ArgumentParser(
-        description="Athena Analytics Warehouse — initialize DuckDB",
+        description="Athena Analytics Warehouse - initialize DuckDB",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -295,7 +295,7 @@ Examples:
         meta = wh.info()
         print()
         print("  Athena Warehouse Info")
-        print("  ─────────────────────")
+        print("  ---------------------")
         for k, v in meta.items():
             if isinstance(v, list):
                 print(f"  {k}: {', '.join(v) if v else 'none'}")
@@ -305,14 +305,14 @@ Examples:
         return
 
     print()
-    print("  ══════════════════════════════════════════════════════")
-    print("    Athena Analytics Warehouse — Phase 2.2")
-    print("  ══════════════════════════════════════════════════════")
+    print("  ======================================================")
+    print("    Athena Analytics Warehouse - Phase 2.2")
+    print("  ======================================================")
     wh.build()
     meta = wh.info()
-    print(f"  ✓ DuckDB: {meta['db_path']}")
-    print(f"  ✓ Views:  {', '.join(meta.get('views', []))}")
-    print("  ══════════════════════════════════════════════════════")
+    print(f"  OK DuckDB: {meta['db_path']}")
+    print(f"  OK Views:  {', '.join(meta.get('views', []))}")
+    print("  ======================================================")
     print()
     sys.exit(0)
 

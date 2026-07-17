@@ -1,5 +1,5 @@
 """
-backend/explanation/context.py — Explicit Context Definitions for the Explanation Layer.
+backend/explanation/context.py - Explicit Context Definitions for the Explanation Layer.
 
 These dataclasses represent the validated evidence payloads that will be sent to the AI.
 They are internal view models for the explanation subsystem and should never be used

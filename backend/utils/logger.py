@@ -1,5 +1,5 @@
 """
-backend/utils/logger.py — Centralized structured logging for Athena
+backend/utils/logger.py - Centralized structured logging for Athena
 
 All modules use this logger. Never use print() statements in production code.
 
@@ -17,17 +17,17 @@ from pathlib import Path
 
 import structlog
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Log directory
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 LOGS_DIR = Path(__file__).resolve().parents[2] / "logs"
 LOGS_DIR.mkdir(exist_ok=True)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Configure stdlib logging (structlog delegates to this)
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 
 def _configure_stdlib_logging(level: int = logging.INFO) -> None:
@@ -41,13 +41,13 @@ def _configure_stdlib_logging(level: int = logging.INFO) -> None:
 
     fmt = "%(message)s"
 
-    # Console handler — human-readable
+    # Console handler - human-readable
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(level)
     console_handler.setFormatter(logging.Formatter(fmt))
     root_logger.addHandler(console_handler)
 
-    # File handler — machine-readable JSON
+    # File handler - machine-readable JSON
     log_file = LOGS_DIR / "athena.log"
     file_handler = logging.FileHandler(log_file, encoding="utf-8")
     file_handler.setLevel(level)
@@ -55,9 +55,9 @@ def _configure_stdlib_logging(level: int = logging.INFO) -> None:
     root_logger.addHandler(file_handler)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Configure structlog
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 
 def _configure_structlog() -> None:
@@ -83,9 +83,9 @@ _configure_stdlib_logging()
 _configure_structlog()
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Public interface
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 
 def get_logger(name: str) -> structlog.stdlib.BoundLogger:

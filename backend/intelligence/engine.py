@@ -1,5 +1,5 @@
 """
-backend/intelligence/engine.py — Football Intelligence Engine Facade.
+backend/intelligence/engine.py - Football Intelligence Engine Facade.
 
 The primary entry point for transforming statistical feature vectors into
 intelligence profiles (PlayerProfile, TeamProfile).

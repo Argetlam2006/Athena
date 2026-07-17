@@ -1,1 +1,1 @@
-"""backend/recommendation — Decision engine: recruitment and comparison."""
+"""backend/recommendation - Decision engine: recruitment and comparison."""

@@ -1,5 +1,5 @@
 """
-backend/explanation/validator.py — Context Validation for the Explanation Layer.
+backend/explanation/validator.py - Context Validation for the Explanation Layer.
 
 Ensures that incomplete or semantically invalid evidence never reaches the LLM.
 """

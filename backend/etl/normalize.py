@@ -1,5 +1,5 @@
 """
-backend/etl/normalize.py — StatsBomb JSON → typed pandas DataFrames
+backend/etl/normalize.py - StatsBomb JSON → typed pandas DataFrames
 
 This module is the analytical core of the ETL pipeline.
 
@@ -17,16 +17,16 @@ Design decisions:
     attributes (pass, shot, carry, dribble) in named columns.
     Null where the event type does not apply.
 
-StatsBomb Open Data: CC BY-SA 4.0 — https://github.com/statsbomb/open-data
+StatsBomb Open Data: CC BY-SA 4.0 - https://github.com/statsbomb/open-data
 """
 
 from __future__ import annotations
 
 import pandas as pd
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Internal helpers
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 
 def _get(obj: dict | None, *keys: str, default=None):
@@ -65,11 +65,11 @@ def _loc_y(location: list | None) -> float | None:
     )
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Event sub-type extractors
 # Each returns a flat dict of columns for one event dict.
 # Returns Nones for all columns when the event type doesn't match.
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 
 def _extract_pass(event: dict) -> dict:
@@ -175,9 +175,9 @@ def _null_interception() -> dict:
     return dict.fromkeys(_extract_interception({}))
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Public API
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 
 def normalize_competitions(data: list[dict]) -> pd.DataFrame:
@@ -320,7 +320,7 @@ def normalize_events(data: list[dict], match_id: int) -> pd.DataFrame:
         type_name = _get(e, "type", "name") or ""
         location = e.get("location")
 
-        # Core event fields — present in every event
+        # Core event fields - present in every event
         row: dict = {
             "event_id": e["id"],
             "match_id": match_id,

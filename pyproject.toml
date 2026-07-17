@@ -88,6 +88,10 @@ markers = [
     "unit: fast, isolated unit tests",
     "integration: tests that require data files",
     "slow: tests that take >5 seconds",
+    "performance: tests measuring performance budget/latency",
+]
+filterwarnings = [
+    "ignore:.*google.generativeai.*:FutureWarning",
 ]
 
 # ─────────────────────────────────────────────────────────────────────────────

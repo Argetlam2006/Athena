@@ -1,15 +1,15 @@
 """
-backend/ingestion/validator.py — Data quality validation
+backend/ingestion/validator.py - Data quality validation
 
 Two validation layers:
 
-  Layer A — File validation (Sprint 1.1, run_validation)
+  Layer A - File validation (Sprint 1.1, run_validation)
     Validates the raw JSON files in data/raw/.
     Called after load_data.py completes.
     Checks: file integrity, JSON parsability, StatsBomb schema fields,
             manifest cross-references, referential integrity.
 
-  Layer B — DataFrame validation (Sprint 1.3 ETL, validate_competitions etc.)
+  Layer B - DataFrame validation (Sprint 1.3 ETL, validate_competitions etc.)
     Validates pandas DataFrames produced by the ETL pipeline.
     Kept intact for downstream use.
 
@@ -32,16 +32,16 @@ from shared.schemas import ValidationResult
 logger = get_logger(__name__)
 validation_logger = get_validation_logger()
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Paths
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 RAW_DIR = ROOT_DIR / "data" / "raw"
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Layer A — StatsBomb JSON field requirements
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
+# Layer A - StatsBomb JSON field requirements
+# -----------------------------------------------------------------------------
 
 #: Required top-level keys in every competitions.json entry
 REQUIRED_COMPETITION_KEYS: set[str] = {
@@ -78,9 +78,9 @@ REQUIRED_LINEUP_KEYS: set[str] = {
 }
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Layer A helpers — read and check individual JSON files
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
+# Layer A helpers - read and check individual JSON files
+# -----------------------------------------------------------------------------
 
 
 def _load_json(path: Path) -> tuple[list | dict | None, str | None]:
@@ -88,8 +88,8 @@ def _load_json(path: Path) -> tuple[list | dict | None, str | None]:
     Parse a JSON file.
 
     Returns:
-        (data, None)        — success
-        (None, error_msg)   — parse failure
+        (data, None)        - success
+        (None, error_msg)   - parse failure
     """
     try:
         with open(path, encoding="utf-8") as f:
@@ -108,9 +108,9 @@ def _check_required_keys(record: dict, required: set[str], label: str) -> list[s
     return []
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Layer A — File-level validators
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
+# Layer A - File-level validators
+# -----------------------------------------------------------------------------
 
 
 def validate_competitions_file(raw_dir: Path = RAW_DIR) -> ValidationResult:
@@ -383,9 +383,9 @@ def validate_lineups_file(path: Path, match_id: int) -> ValidationResult:
     return result
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Layer A — Cross-reference and manifest checks
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
+# Layer A - Cross-reference and manifest checks
+# -----------------------------------------------------------------------------
 
 
 def validate_manifest_consistency(raw_dir: Path = RAW_DIR) -> ValidationResult:
@@ -411,13 +411,13 @@ def validate_manifest_consistency(raw_dir: Path = RAW_DIR) -> ValidationResult:
     manager = ManifestManager(raw_dir)
     if not manager.exists():
         result.warnings.append(
-            "manifest.json not found — download hasn't run yet or was not recorded"
+            "manifest.json not found - download hasn't run yet or was not recorded"
         )
         return result
 
     manifest = manager.load()
 
-    # Check competitions — match files
+    # Check competitions - match files
     for comp in manifest.competitions:
         match_path = (
             raw_dir / "matches" / str(comp.competition_id) / f"{comp.season_id}.json"
@@ -458,9 +458,9 @@ def validate_manifest_consistency(raw_dir: Path = RAW_DIR) -> ValidationResult:
     return result
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Layer A — Full directory validation
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
+# Layer A - Full directory validation
+# -----------------------------------------------------------------------------
 
 
 def validate_raw_directory(raw_dir: Path = RAW_DIR) -> list[ValidationResult]:
@@ -475,7 +475,7 @@ def validate_raw_directory(raw_dir: Path = RAW_DIR) -> list[ValidationResult]:
       5. Cross-check manifest
 
     This function is safe to call even when no data has been downloaded yet
-    — it returns a graceful result rather than raising.
+    - it returns a graceful result rather than raising.
 
     Returns list of ValidationResult objects.
     """
@@ -484,7 +484,7 @@ def validate_raw_directory(raw_dir: Path = RAW_DIR) -> list[ValidationResult]:
 
     results: list[ValidationResult] = []
 
-    # 1 — competitions.json
+    # 1 - competitions.json
     comp_result = validate_competitions_file(raw_dir)
     results.append(comp_result)
     logger.info(
@@ -495,7 +495,7 @@ def validate_raw_directory(raw_dir: Path = RAW_DIR) -> list[ValidationResult]:
         errors=len(comp_result.errors),
     )
 
-    # 2 — matches files
+    # 2 - matches files
     matches_dir = raw_dir / "matches"
     if matches_dir.exists():
         match_files = sorted(matches_dir.rglob("*.json"))
@@ -517,11 +517,11 @@ def validate_raw_directory(raw_dir: Path = RAW_DIR) -> list[ValidationResult]:
                 total_rows=0,
                 valid_rows=0,
                 invalid_rows=0,
-                warnings=["matches/ directory not found — run `make data` first"],
+                warnings=["matches/ directory not found - run `make data` first"],
             )
         )
 
-    # 3 — events (sample)
+    # 3 - events (sample)
     events_dir = raw_dir / "events"
     if events_dir.exists():
         event_files = sorted(events_dir.glob("*.json"))
@@ -558,11 +558,11 @@ def validate_raw_directory(raw_dir: Path = RAW_DIR) -> list[ValidationResult]:
                 total_rows=0,
                 valid_rows=0,
                 invalid_rows=0,
-                warnings=["events/ directory not found — run `make data` first"],
+                warnings=["events/ directory not found - run `make data` first"],
             )
         )
 
-    # 4 — lineups (sample)
+    # 4 - lineups (sample)
     lineups_dir = raw_dir / "lineups"
     if lineups_dir.exists():
         lineup_files = sorted(lineups_dir.glob("*.json"))
@@ -586,20 +586,20 @@ def validate_raw_directory(raw_dir: Path = RAW_DIR) -> list[ValidationResult]:
                 total_rows=0,
                 valid_rows=0,
                 invalid_rows=0,
-                warnings=["lineups/ directory not found — run `make data` first"],
+                warnings=["lineups/ directory not found - run `make data` first"],
             )
         )
 
-    # 5 — manifest cross-check
+    # 5 - manifest cross-check
     manifest_result = validate_manifest_consistency(raw_dir)
     results.append(manifest_result)
 
     return results
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Report generator (shared by Layer A and Layer B)
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 
 def generate_validation_report(results: list[ValidationResult]) -> str:
@@ -609,9 +609,9 @@ def generate_validation_report(results: list[ValidationResult]) -> str:
     Returns the report as a multi-line string.
     """
     lines: list[str] = [
-        "═" * 64,
-        "  Athena — Data Validation Report",
-        "═" * 64,
+        "=" * 64,
+        "  Athena - Data Validation Report",
+        "=" * 64,
         "",
     ]
 
@@ -633,9 +633,9 @@ def generate_validation_report(results: list[ValidationResult]) -> str:
     ]
 
     for result in results:
-        status = "✓ PASS" if result.is_valid else "✗ FAIL"
+        status = "OK PASS" if result.is_valid else "✗ FAIL"
         lines += [
-            "─" * 64,
+            "-" * 64,
             f"  {status}  {result.dataset}",
             f"  Total   : {result.total_rows:,}",
             f"  Valid   : {result.valid_rows:,} ({result.validity_pct}%)",
@@ -655,13 +655,13 @@ def generate_validation_report(results: list[ValidationResult]) -> str:
                 lines.append(f"    … and {len(result.warnings) - 5} more warnings")
         lines.append("")
 
-    lines += ["═" * 64]
+    lines += ["=" * 64]
     return "\n".join(lines)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Layer B — DataFrame validators (used by ETL pipeline in Sprint 1.3)
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
+# Layer B - DataFrame validators (used by ETL pipeline in Sprint 1.3)
+# -----------------------------------------------------------------------------
 
 REQUIRED_COMPETITION_COLS: list[str] = [
     "competition_id",
@@ -802,9 +802,9 @@ def validate_events(df: pd.DataFrame, match_id: int) -> ValidationResult:
     return result
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Run validation entry point
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 
 def run_validation(raw_dir: Path = RAW_DIR) -> list[ValidationResult]:

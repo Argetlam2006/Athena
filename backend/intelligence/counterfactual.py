@@ -1,5 +1,5 @@
 """
-backend/intelligence/counterfactual.py — Counterfactual Analysis Engine
+backend/intelligence/counterfactual.py - Counterfactual Analysis Engine
 
 Simulates team capability shifts by adding or removing players.
 The backbone of Recruitment, Squad Planning, and Dependency Analysis.

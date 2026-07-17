@@ -1,5 +1,5 @@
 """
-backend/explanation/providers/base.py — Abstract Provider Interface.
+backend/explanation/providers/base.py - Abstract Provider Interface.
 """
 
 from abc import ABC, abstractmethod
