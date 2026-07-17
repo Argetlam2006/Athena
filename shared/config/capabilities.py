@@ -11,7 +11,6 @@ CORE_CAPABILITIES: list[str] = [
     "press_resistance",
     "defensive_activity",
     "attacking_threat",
-    "physical_availability",
 ]
 
 CAPABILITY_DISPLAY_NAMES: dict[str, str] = {
@@ -21,7 +20,6 @@ CAPABILITY_DISPLAY_NAMES: dict[str, str] = {
     "press_resistance": "Press Resistance",
     "defensive_activity": "Defensive Activity",
     "attacking_threat": "Attacking Threat",
-    "physical_availability": "Physical Availability",
 }
 
 CAPABILITY_DESCRIPTIONS: dict[str, str] = {
@@ -31,7 +29,6 @@ CAPABILITY_DESCRIPTIONS: dict[str, str] = {
     "press_resistance": "Ability to remain effective under defensive pressure.",
     "defensive_activity": "Ability to disrupt opposition possession and win the ball back.",
     "attacking_threat": "Ability to generate dangerous attacking outcomes and score.",
-    "physical_availability": "Ability to contribute consistently across a full season.",
 }
 
 # The metric map maps capability name to the attributes in PlayerFeatureVector.
@@ -62,6 +59,9 @@ CAPABILITY_METRIC_MAP: dict[str, list[str]] = {
         "pressures_p90",
         "recoveries_p90",
         "clearances_p90",
+        "tackles_p90",
+        "interceptions_p90",
+        "tackles_won_p90",
     ],
     "attacking_threat": [
         "npxg_p90",
@@ -70,61 +70,55 @@ CAPABILITY_METRIC_MAP: dict[str, list[str]] = {
         "shot_accuracy_pct",
         "goals_minus_xg",
     ],
-    "physical_availability": [
-        "matches_played",
-        "minutes_played",
-    ],
 }
 
-# Nested dictionary: capability -> metric -> weight
-# For positions requiring overrides, we use a dictionary structure for weights.
-CAPABILITY_METRIC_WEIGHTS: dict[str, Any] = {
+# The weights determining how heavily each primitive metric contributes to its parent Capability.
+# Some capabilities change weight depending on the player's position.
+CAPABILITY_METRIC_WEIGHTS: dict[str, dict[str, dict[str, float]] | dict[str, float]] = {
     "ball_progression": {
-        "progressive_passes_p90": 0.35,
+        "progressive_passes_p90": 0.40,
         "progressive_carries_p90": 0.35,
         "carry_distance_p90": 0.15,
-        "switches_p90": 0.15,
+        "switches_p90": 0.10,
     },
     "chance_creation": {
-        "default": {
-            "shot_assists_p90": 0.40,
-            "goal_assists_p90": 0.30,
-            "through_balls_p90": 0.20,
-            "crosses_p90": 0.10,
-        },
-        "wide": {
-            "shot_assists_p90": 0.35,
-            "goal_assists_p90": 0.25,
-            "through_balls_p90": 0.15,
-            "crosses_p90": 0.25,
-        },
+        "shot_assists_p90": 0.45,
+        "goal_assists_p90": 0.25,
+        "through_balls_p90": 0.20,
+        "crosses_p90": 0.10,
     },
     "ball_security": {
-        "pass_accuracy_pct": 0.50,
-        "dribble_success_pct": 0.25,
-        "passes_p90": 0.15,
-        "avg_pass_length_m": 0.10,
+        "default": {
+            "pass_accuracy_pct": 0.35,
+            "dribble_success_pct": 0.15,
+            "passes_p90": 0.40,
+            "avg_pass_length_m": 0.10,
+        },
+        "Defender": {
+            "pass_accuracy_pct": 0.40,
+            "dribble_success_pct": 0.05,
+            "passes_p90": 0.45,
+            "avg_pass_length_m": 0.10,
+        },
     },
     "press_resistance": {
         "pressure_pct": 0.50,
         "events_under_pressure_p90": 0.50,  # Simplified proxy for V1 since pass accuracy proxy was rejected
     },
     "defensive_activity": {
-        "default": {
-            "pressures_p90": 0.45,
-            "recoveries_p90": 0.35,
+        "active": {
+            "pressures_p90": 0.25,
+            "recoveries_p90": 0.25,
+            "tackles_p90": 0.25,
+            "interceptions_p90": 0.25,
+        },
+        "controlling": {
             "clearances_p90": 0.20,
-        },
-        "Defender": {
-            "pressures_p90": 0.35,
-            "recoveries_p90": 0.35,
-            "clearances_p90": 0.30,
-        },
-        "Forward": {
-            "pressures_p90": 0.55,
-            "recoveries_p90": 0.35,
-            "clearances_p90": 0.10,
-        },
+            "tackles_won_p90": 0.20,
+            "aerials_won_p90": 0.30,
+            "dribbled_past_p90": 0.15,
+            "errors_leading_to_shot_p90": 0.15,
+        }
     },
     "attacking_threat": {
         "npxg_p90": 0.35,
@@ -133,40 +127,32 @@ CAPABILITY_METRIC_WEIGHTS: dict[str, Any] = {
         "shot_accuracy_pct": 0.15,
         "goals_minus_xg": 0.05,
     },
-    # These are handled specifically in the Intelligence Engine rather than naive weighted sums
-    "physical_availability": {
-        "matches_played": 0.40,
-        "coverage_rate": 0.60,
-    },
 }
 
 # The weights to combine capabilities into the Overall Profile.
 POSITION_GROUP_WEIGHTS: dict[str, dict[str, float]] = {
     "Forward": {
-        "ball_progression": 0.10,
-        "chance_creation": 0.20,
-        "ball_security": 0.08,
-        "press_resistance": 0.10,
-        "defensive_activity": 0.07,
-        "attacking_threat": 0.28,
-        "physical_availability": 0.10,
+        "ball_progression": 0.12,
+        "chance_creation": 0.24,
+        "ball_security": 0.10,
+        "press_resistance": 0.12,
+        "defensive_activity": 0.08,
+        "attacking_threat": 0.34,
     },
     "Midfielder": {
-        "ball_progression": 0.18,
-        "chance_creation": 0.15,
-        "ball_security": 0.15,
-        "press_resistance": 0.15,
-        "defensive_activity": 0.13,
-        "attacking_threat": 0.08,
-        "physical_availability": 0.10,
+        "ball_progression": 0.21,
+        "chance_creation": 0.18,
+        "ball_security": 0.18,
+        "press_resistance": 0.18,
+        "defensive_activity": 0.15,
+        "attacking_threat": 0.10,
     },
     "Defender": {
-        "ball_progression": 0.12,
-        "chance_creation": 0.07,
-        "ball_security": 0.18,
-        "press_resistance": 0.12,
-        "defensive_activity": 0.25,
-        "attacking_threat": 0.05,
-        "physical_availability": 0.13,
+        "ball_progression": 0.15,
+        "chance_creation": 0.09,
+        "ball_security": 0.23,
+        "press_resistance": 0.15,
+        "defensive_activity": 0.32,
+        "attacking_threat": 0.06,
     },
 }

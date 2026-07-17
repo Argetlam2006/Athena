@@ -12,7 +12,7 @@ from backend.recommendation.recruitment import recommend_replacement
 
 store = IntelligenceStore()
 all_players = store.get_all_players()
-all_teams = store.get_all_teams()
+all_teams = store.get_all_collectives()
 
 def find_player(name_substring, season=None):
     matches = [p for p in all_players if name_substring.lower() in p.player_name.lower()]

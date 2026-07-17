@@ -26,11 +26,11 @@ from backend.explanation.validator import (
     validate_team_context,
 )
 from shared.schemas import (
+    CollectiveProfile,
     ComparisonResult,
     PlayerProfile,
     RecruitmentCandidate,
     RecruitmentCriteria,
-    TeamProfile,
 )
 
 logger = logging.getLogger(__name__)
@@ -51,9 +51,9 @@ class ExplanationContextEngine:
         validate_player_context(context)
         return context
 
-    def get_team_context(self, profile: TeamProfile) -> TeamExplanationContext:
+    def get_team_context(self, profile: CollectiveProfile) -> TeamExplanationContext:
         """
-        Builds and validates an explanation context for a TeamProfile.
+        Builds and validates an explanation context for a CollectiveProfile.
         Raises ContextValidationError if incomplete.
         """
         context = build_team_context(profile)

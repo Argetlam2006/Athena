@@ -97,7 +97,7 @@ def generate_decision_signals(
     if all(s >= 60 for s in scores):
         signals.append("well_rounded")
 
-    if cap_score("physical_availability") >= 80:
+    if profile.player_attributes and profile.player_attributes.availability_rating and profile.player_attributes.availability_rating >= 80:
         signals.append("low_availability_risk")
     if raw("matches_played") < 5:
         signals.append("small_sample_warning")

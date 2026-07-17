@@ -49,7 +49,7 @@ def test_engine_process_cohort():
 
     # Check Lionel Messi
     messi = next(p for p in profiles if p.player_name == "Lionel Messi")
-    assert messi.archetype is not None
+    assert messi.archetype_profile is not None
     assert messi.capability_profile is not None
     assert messi.capability_profile.ball_progression is not None
 
@@ -60,7 +60,7 @@ def test_engine_process_cohort():
         competition="Ligue 1",
         season="2022/2023",
         players=[p for p in profiles if p.position_group == "Forward"],  # mock team
+        global_pool=profiles,
     )
     assert team_profile.team_name == "PSG"
-    assert team_profile.squad_size == 2
-    assert team_profile.style_label is not None
+    assert team_profile.identity is not None

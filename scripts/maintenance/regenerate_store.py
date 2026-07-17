@@ -59,10 +59,15 @@ def main():
     # Teams are built from competition profiles (or season, they are basically the same for team aggregation, but let's use competition to capture all matches precisely, wait, previously it used season_profiles (which were competition profiles)).
     team_profiles = engine.process_all_teams(competition_profiles)
 
-    store = IntelligenceStore()
-    store.save(all_profiles, team_profiles)
+    # Run 4: Collective Intelligence Engine
+    # team_profiles are already CollectiveProfiles in the new architecture
+    collective_profiles = team_profiles
 
-    print(f"Intelligence Store regenerated successfully with {len(competition_profiles)} competition, {len(season_profiles)} season, and {len(career_profiles)} career profiles.")
+    store = IntelligenceStore()
+    store.save(all_profiles, collective_profiles)
+
+    print(f"Intelligence Store regenerated successfully with {len(competition_profiles)} competition, {len(season_profiles)} and {len(career_profiles)} career profiles.")
+    print(f"Generated {len(collective_profiles)} collective intelligence profiles.")
 
 if __name__ == "__main__":
     main()

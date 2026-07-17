@@ -1,68 +1,86 @@
 """
 backend/recommendation/matching.py — Tactical Fit Evaluation.
 
-Evaluates how well a PlayerProfile fits a given TeamProfile or a tactical style.
+Evaluates how well a PlayerProfile fits a given CollectiveProfile or a tactical style,
+decomposed into a highly structured SystemCompatibilityContext.
 """
 
 from __future__ import annotations
 
-from shared.schemas import PlayerProfile
+from shared.schemas import CollectiveProfile, PlayerProfile, SystemCompatibilityContext
 
 
-def evaluate_tactical_fit(player: PlayerProfile, target_style: str) -> float:
+def evaluate_tactical_fit(
+    player: PlayerProfile, target_style: str, team: CollectiveProfile | None = None
+) -> SystemCompatibilityContext:
     """
-    Evaluate the player's fit for a given tactical style.
-    Returns a score from 0.0 to 100.0.
+    Evaluate the player's fit for a given tactical style and team context.
+    Returns a decomposed SystemCompatibilityContext.
     """
     if not player.capability_profile:
-        return 50.0
+        return SystemCompatibilityContext(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 
     cap = player.capability_profile
 
     def score(name: str) -> float:
-        val = getattr(cap, name)
+        val = getattr(cap, name, None)
         return val.score if val else 0.0
 
+    # 1. Capability Alignment (How well player matches the ideal style)
+    alignment = 50.0
     if target_style == "Possession-Dominant":
-        return (
-            (score("ball_security") * 0.40)
-            + (score("ball_progression") * 0.30)
-            + (score("press_resistance") * 0.30)
-        )
+        alignment = (score("ball_security") * 0.50) + (score("ball_progression") * 0.25) + (score("press_resistance") * 0.25)
+    elif target_style == "High Press":
+        alignment = (score("defensive_activity") * 0.60) + (score("press_resistance") * 0.40)
+    elif target_style == "Direct and Progressive":
+        alignment = (score("ball_progression") * 0.50) + (score("chance_creation") * 0.30) + (score("attacking_threat") * 0.20)
+    elif target_style == "Counter-Attacking":
+        alignment = (score("attacking_threat") * 0.50) + (score("ball_progression") * 0.30) + (score("defensive_activity") * 0.20)
+    elif target_style == "Defensive and Resilient":
+        alignment = (score("defensive_activity") * 0.60) + (score("ball_security") * 0.40)
+    else:
+        alignment = (score("ball_security") * 0.40) + (score("defensive_activity") * 0.40) + (score("ball_progression") * 0.20)
 
-    if target_style == "High Press":
-        return (
-            (score("defensive_activity") * 0.40)
-            + (score("physical_availability") * 0.30)
-            + (score("press_resistance") * 0.30)
-        )
+    # 2. Tactical Identity Preservation
+    identity = 50.0
+    relief = 50.0
+    if team:
+        # If team has weaknesses, does the player relieve them?
+        weak_caps = [c for c, v in team.avg_capabilities.items() if v < 60.0] if hasattr(team, "avg_capabilities") else []
+        if weak_caps:
+            rel_sum = 0.0
+            for w in weak_caps:
+                key = w.lower().replace(" ", "_")
+                rel_sum += score(key)
+            relief = rel_sum / len(weak_caps)
 
-    if target_style == "Direct and Progressive":
-        return (
-            (score("ball_progression") * 0.45)
-            + (score("chance_creation") * 0.35)
-            + (score("attacking_threat") * 0.20)
-        )
+    # 3. Contextual Trade-Offs (Using Versatility as proxy for adaptability)
+    trade_offs = 50.0
+    if player.player_attributes and player.player_attributes.tactical_versatility is not None:
+        trade_offs = player.player_attributes.tactical_versatility
 
-    if target_style == "Counter-Attacking":
-        return (
-            (score("attacking_threat") * 0.40)
-            + (score("ball_progression") * 0.30)
-            + (score("defensive_activity") * 0.30)
-        )
+    # 4. Availability Impact
+    availability = 50.0
+    if player.player_attributes and player.player_attributes.availability_rating is not None:
+        availability = player.player_attributes.availability_rating
 
-    if target_style == "Defensive and Resilient":
-        return (
-            (score("defensive_activity") * 0.50)
-            + (score("ball_security") * 0.30)
-            + (score("physical_availability") * 0.20)
-        )
+    # Combine into Overall Compatibility
+    # Weighting: Alignment (40%), Identity (20%), Relief (20%), Trade-offs (10%), Availability (10%)
+    overall = (
+        (alignment * 0.40) +
+        (identity * 0.20) +
+        (relief * 0.20) +
+        (trade_offs * 0.10) +
+        (availability * 0.10)
+    )
 
-    # "Balanced" or unknown
-    return (
-        (score("tactical_versatility") * 0.40)
-        + (score("ball_security") * 0.30)
-        + (score("defensive_activity") * 0.30)
+    return SystemCompatibilityContext(
+        capability_alignment=round(alignment, 1),
+        tactical_identity_preservation=round(identity, 1),
+        dependency_relief=round(relief, 1),
+        contextual_trade_offs=round(trade_offs, 1),
+        availability_impact=round(availability, 1),
+        overall_compatibility=round(overall, 1)
     )
 
 

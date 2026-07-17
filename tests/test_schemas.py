@@ -16,7 +16,6 @@ from shared.schemas import (
     CapabilityScore,
     PlayerFeatureVector,
     PlayerProfile,
-    TeamProfile,
 )
 
 
@@ -57,7 +56,7 @@ class TestCapabilityScore:
 
     def test_evidence_defaults_to_empty_dict(self) -> None:
         score = CapabilityScore(capability="x", score=50.0, confidence=0.5)
-        assert score.evidence == {}
+        assert score.evidence == []
 
 
 class TestCapabilityProfile:
@@ -76,14 +75,14 @@ class TestCapabilityProfile:
             ball_security=CapabilityScore("ball_security", 75.0, 0.8),
             press_resistance=CapabilityScore("press_resistance", 65.0, 0.75),
             defensive_activity=CapabilityScore("defensive_activity", 60.0, 0.7),
-            attacking_threat=CapabilityScore("attacking_threat", 55.0, 0.8),
-            physical_availability=CapabilityScore("physical_availability", 85.0, 0.95),
+            attacking_threat=CapabilityScore("attacking_threat", 65.0, 0.90),
+            overall_rating=82.5,
         )
 
-    def test_radar_dict_has_eight_keys(self) -> None:
+    def test_radar_dict_has_six_keys(self) -> None:
         profile = self._make_profile()
         radar = profile.as_radar_dict()
-        assert len(radar) == 7
+        assert len(radar) == 6
 
     def test_radar_dict_does_not_contain_financial_value(self) -> None:
         profile = self._make_profile()
@@ -185,26 +184,4 @@ class TestPlayerFeatureVector:
             matches_played=10,
         )
         result = vec.to_vector()
-        assert len(result) == 23, f"Expected 23 features, got {len(result)}"
-
-
-class TestTeamProfile:
-    """Tests for TeamProfile."""
-
-    def test_radar_dict_has_eight_keys(self) -> None:
-        team = TeamProfile(
-            team_id=1,
-            team_name="FC Test",
-            competition="La Liga",
-            season="2020/2021",
-            squad_size=25,
-            avg_ball_progression=72.0,
-            avg_chance_creation=68.0,
-            avg_ball_security=75.0,
-            avg_press_resistance=70.0,
-            avg_defensive_activity=65.0,
-            avg_attacking_threat=71.0,
-            avg_physical_availability=80.0,
-        )
-        radar = team.as_radar_dict()
-        assert len(radar) == 7
+        assert len(result) == 26, f"Expected 26 features, got {len(result)}"

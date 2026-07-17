@@ -73,6 +73,13 @@ class SeasonBuilder:
         total_pressures = 0.0
         total_recoveries = 0.0
         total_clearances = 0.0
+        total_tackles = 0.0
+        total_interceptions = 0.0
+        total_tackles_won = 0.0
+        total_dribbled_past = 0.0
+        total_errors_leading_to_shot = 0.0
+        total_aerials_won = 0.0
+        total_aerials_total = 0.0
 
         # Attacking Threat
         total_npxg = 0.0
@@ -129,6 +136,13 @@ class SeasonBuilder:
             total_pressures += unp90(c.pressures_p90, "pressures")
             total_recoveries += unp90(c.recoveries_p90, "recoveries")
             total_clearances += unp90(c.clearances_p90, "clearances")
+            total_tackles += unp90(getattr(c, 'tackles_p90', 0.0), "padj_tackles")
+            total_interceptions += unp90(getattr(c, 'interceptions_p90', 0.0), "padj_interceptions")
+            total_tackles_won += unp90(getattr(c, 'tackles_won_p90', 0.0), "tackles_won")
+            total_dribbled_past += unp90(getattr(c, 'dribbled_past_p90', 0.0), "dribbled_past")
+            total_errors_leading_to_shot += unp90(getattr(c, 'errors_leading_to_shot_p90', 0.0), "errors_leading_to_shot")
+            total_aerials_won += unp90(getattr(c, 'aerials_won_p90', 0.0), "aerials_won")
+            total_aerials_total += unp90(getattr(c, 'aerials_total_p90', 0.0), "aerials_total")
 
             # Attacking Threat
             total_npxg += unp90(c.npxg_p90, "npxg")
@@ -187,6 +201,13 @@ class SeasonBuilder:
             pressures_p90=p90(total_pressures),
             recoveries_p90=p90(total_recoveries),
             clearances_p90=p90(total_clearances),
+            tackles_p90=p90(total_tackles),
+            interceptions_p90=p90(total_interceptions),
+            tackles_won_p90=p90(total_tackles_won),
+            dribbled_past_p90=p90(total_dribbled_past),
+            errors_leading_to_shot_p90=p90(total_errors_leading_to_shot),
+            aerials_won_p90=p90(total_aerials_won),
+            aerials_total_p90=p90(total_aerials_total),
 
             # Attacking Threat
             npxg_p90=p90(total_npxg),
@@ -194,6 +215,27 @@ class SeasonBuilder:
             xg_per_shot=round(total_xg / total_shots, 3) if total_shots > 0 else 0.0,
             shot_accuracy_pct=pct(total_shots_on_target, total_shots),
             goals_minus_xg=round(total_goals - total_xg, 3),
-
-            positions_played_count=total_positions_played
+            positions_played_count=total_positions_played,
+            raw_metrics={
+                "goals": int(round(total_goals)),
+                "goal_assists": int(round(total_goal_assists)),
+                "shot_assists": int(round(total_shot_assists)),
+                "total_shots": int(round(total_shots)),
+                "shots_on_target": int(round(total_shots_on_target)),
+                "total_passes": int(round(total_passes)),
+                "accurate_passes": int(round(total_accurate_passes)),
+                "progressive_passes": int(round(total_progressive_passes)),
+                "progressive_carries": int(round(total_progressive_carries)),
+                "total_dribbles": int(round(total_dribbles)),
+                "dribbles_completed": int(round(total_successful_dribbles)),
+                "pressures": int(round(total_pressures)),
+                "ball_recoveries": int(round(total_recoveries)),
+                "clearances": int(round(total_clearances)),
+                "tackles": int(round(total_tackles)),
+                "interceptions": int(round(total_interceptions)),
+                "aerials_won": int(round(total_aerials_won)),
+                "aerials_total": int(round(total_aerials_total)),
+                "xg_total": round(total_xg, 3),
+                "npxg_total": round(total_npxg, 3),
+            }
         )

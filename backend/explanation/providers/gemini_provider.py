@@ -5,7 +5,7 @@ backend/explanation/providers/gemini_provider.py — Google Gemini Provider.
 from collections.abc import Generator
 
 from backend.explanation.prompt_builder import PromptPackage
-from backend.explanation.providers.base import ExplanationProvider
+from backend.explanation.providers.base import ExplanationProvider, GenerationResponse
 from shared.config.settings import settings
 
 try:
@@ -68,10 +68,12 @@ class GeminiProvider(ExplanationProvider):
             self.model_name = model_name or settings.GEMINI_MODEL
 
     def is_available(self) -> bool:
-        return HAS_GEMINI and bool(settings.GEMINI_API_KEY)
+        from shared.config.settings import settings
+        key = settings.GEMINI_API_KEY
+        return HAS_GEMINI and bool(key) and "your_" not in key
 
 
-    def stream(self, prompt: PromptPackage) -> Generator[str, None, None]:
+    def stream(self, prompt: PromptPackage) -> Generator[GenerationResponse, None, None]:
         if not self.is_available() or not self.model:
             raise RuntimeError("Gemini provider is not available.")
 
@@ -87,4 +89,29 @@ class GeminiProvider(ExplanationProvider):
 
         for chunk in response:
             if chunk.text:
-                yield chunk.text
+                yield GenerationResponse(
+                    generated_text=chunk.text,
+                    provider="gemini",
+                    model=self.model_name
+                )
+
+    def generate(self, prompt: PromptPackage) -> GenerationResponse:
+        if not self.is_available() or not self.model:
+            raise RuntimeError("Gemini provider is not available.")
+
+        full_prompt = f"{prompt.system_prompt}\n\n{prompt.user_prompt}"
+
+        response = self.model.generate_content(
+            full_prompt,
+            generation_config=genai.types.GenerationConfig(
+                temperature=self.temperature
+            ),
+            stream=False,
+        )
+        
+        return GenerationResponse(
+            generated_text=response.text,
+            provider="gemini",
+            model=self.model_name,
+            finish_reason="stop" # Google SDK doesn't easily expose this on the response object text property without diving into parts
+        )

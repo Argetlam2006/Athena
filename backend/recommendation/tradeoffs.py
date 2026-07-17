@@ -26,7 +26,7 @@ def generate_tradeoffs(
         "tactical_fit_score": tactical_fit_score,
         "criteria_match": {},
         "signals": player.decision_signals,
-        "archetype": player.archetype,
+        "archetype": player.display_archetype,
     }
 
     if not player.capability_profile:
@@ -76,12 +76,12 @@ def generate_tradeoffs(
             trade_offs.append(warning_signals[sig])
 
     # Check physical availability explicitly if not required but low
+    avail_score = player.player_attributes.availability_rating if player.player_attributes and player.player_attributes.availability_rating is not None else 50.0
     if (
-        score("physical_availability") < 50
-        and "physical_availability" not in criteria.required_capabilities
+        avail_score < 50
     ):
         trade_offs.append(
-            f"Availability concerns (Score: {score('physical_availability'):.1f})"
+            f"Availability concerns (Score: {avail_score:.1f})"
         )
 
     # Tactical fit

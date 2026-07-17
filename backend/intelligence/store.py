@@ -17,20 +17,19 @@ import pandas as pd
 from pydantic import TypeAdapter
 
 from backend.warehouse.connection import DB_PATH
-from shared.schemas import PlayerProfile, TeamProfile
+from shared.schemas import CollectiveProfile, PlayerProfile, ProfileType
 
 logger = logging.getLogger(__name__)
 
 STORE_DIR = Path("data/warehouse")
 FINGERPRINT_PATH = STORE_DIR / "intelligence_fingerprint.json"
 PLAYER_PROFILES_PATH = STORE_DIR / "player_profiles.parquet"
-TEAM_PROFILES_PATH = STORE_DIR / "team_profiles.parquet"
+COLLECTIVE_PROFILES_PATH = STORE_DIR / "collective_profiles.json"
 PLAYER_INDEX_PATH = STORE_DIR / "player_index.parquet"
-TEAM_INDEX_PATH = STORE_DIR / "team_index.parquet"
 
 # Reusable adapters for mapping dictionaries back to dataclasses
 _player_adapter = TypeAdapter(PlayerProfile)
-_team_adapter = TypeAdapter(TeamProfile)
+_collective_adapter = TypeAdapter(CollectiveProfile)
 
 class IntelligenceStore:
     def __init__(self):
@@ -51,15 +50,24 @@ class IntelligenceStore:
                     counts[t] = con.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]
                 except duckdb.CatalogException:
                     counts[t] = 0
-            return counts
+                    
+            from shared.constants import MODEL_VERSION, SCHEMA_VERSION, WEIGHTING_VERSION, ARCHETYPE_VERSION
+            
+            return {
+                "row_counts": counts,
+                "model_version": MODEL_VERSION,
+                "schema_version": SCHEMA_VERSION,
+                "weighting_version": WEIGHTING_VERSION,
+                "archetype_version": ARCHETYPE_VERSION
+            }
         finally:
             con.close()
 
     def is_valid(self) -> bool:
         """Check if the Intelligence Store is up-to-date with the warehouse."""
         paths = [
-            PLAYER_PROFILES_PATH, TEAM_PROFILES_PATH,
-            PLAYER_INDEX_PATH, TEAM_INDEX_PATH, FINGERPRINT_PATH
+            PLAYER_PROFILES_PATH,
+            PLAYER_INDEX_PATH, FINGERPRINT_PATH
         ]
         if not all(p.exists() for p in paths):
             return False
@@ -72,13 +80,21 @@ class IntelligenceStore:
         except Exception:
             return False
 
-    def save(self, players: Sequence[PlayerProfile], teams: Sequence[TeamProfile]) -> None:
+    def save(self, players: Sequence[PlayerProfile], collectives: Sequence[CollectiveProfile] = None) -> None:
         """Serialize profiles and generate lightweight discovery indexes."""
         logger.info("Building Intelligence Store...")
 
-        # 1. Full Profiles (Parquet for players, JSON for teams to avoid struct schema issues)
+        # 1. Full Profiles (Parquet for players)
         if players:
-            df_players = pd.DataFrame([asdict(p) for p in players])
+            dicts = []
+            complex_keys = ["capability_profile", "feature_vector", "player_attributes", "rating_presentation", "archetype_profile"]
+            for p in players:
+                d = asdict(p)
+                for key in complex_keys:
+                    if d.get(key) is not None:
+                        d[key] = json.dumps(d[key])
+                dicts.append(d)
+            df_players = pd.DataFrame(dicts)
             df_players.to_parquet(PLAYER_PROFILES_PATH, engine="pyarrow", index=False)
 
             # Player Metadata Index
@@ -99,22 +115,14 @@ class IntelligenceStore:
             pd.DataFrame().to_parquet(PLAYER_PROFILES_PATH, engine="pyarrow", index=False)
             pd.DataFrame().to_parquet(PLAYER_INDEX_PATH, engine="pyarrow", index=False)
 
-        if teams:
-            with open(TEAM_PROFILES_PATH.with_suffix(".json"), "w") as f:
-                json.dump([asdict(t) for t in teams], f)
 
-            # Team Metadata Index
-            team_index_data = [{
-                "team_id": t.team_id,
-                "team_name": t.team_name,
-                "competition": t.competition,
-                "season": t.season
-            } for t in teams]
-            pd.DataFrame(team_index_data).to_parquet(TEAM_INDEX_PATH, engine="pyarrow", index=False)
+
+        if collectives:
+            with open(COLLECTIVE_PROFILES_PATH, "w") as f:
+                json.dump([asdict(c) for c in collectives], f)
         else:
-            with open(TEAM_PROFILES_PATH.with_suffix(".json"), "w") as f:
+            with open(COLLECTIVE_PROFILES_PATH, "w") as f:
                 json.dump([], f)
-            pd.DataFrame().to_parquet(TEAM_INDEX_PATH, engine="pyarrow", index=False)
 
         # 2. Fingerprint Validation
         with open(FINGERPRINT_PATH, "w") as f:
@@ -128,10 +136,7 @@ class IntelligenceStore:
             return pd.DataFrame()
         return pd.read_parquet(PLAYER_INDEX_PATH)
 
-    def get_team_index(self) -> pd.DataFrame:
-        if not TEAM_INDEX_PATH.exists():
-            return pd.DataFrame()
-        return pd.read_parquet(TEAM_INDEX_PATH)
+
 
     def get_player(self, player_id: int) -> PlayerProfile | None:
         """O(1) lazy loading via DuckDB predicate pushdown."""
@@ -146,7 +151,10 @@ class IntelligenceStore:
                 return None
             dict_row = df.to_dict(orient="records")[0]
 
-            # Handle nested duckdb dicts for schemas
+            complex_keys = ["capability_profile", "feature_vector", "player_attributes", "rating_presentation", "archetype_profile"]
+            for key in complex_keys:
+                if dict_row.get(key) and isinstance(dict_row[key], str):
+                    dict_row[key] = json.loads(dict_row[key])
             return _player_adapter.validate_python(dict_row)
         except Exception as e:
             logger.error(f"Failed to load player {player_id}: {e}")
@@ -167,6 +175,11 @@ class IntelligenceStore:
                 return []
 
             dicts = df.to_dict(orient="records")
+            complex_keys = ["capability_profile", "feature_vector", "player_attributes", "rating_presentation", "archetype_profile"]
+            for d in dicts:
+                for key in complex_keys:
+                    if d.get(key) and isinstance(d[key], str):
+                        d[key] = json.loads(d[key])
             return [_player_adapter.validate_python(d) for d in dicts]
         except Exception as e:
             logger.error(f"Failed to load player career {player_id}: {e}")
@@ -174,35 +187,25 @@ class IntelligenceStore:
         finally:
             con.close()
 
-    def get_team(self, team_id: int) -> TeamProfile | None:
-        """O(1) lazy loading for team profiles (JSON)."""
-        json_path = TEAM_PROFILES_PATH.with_suffix(".json")
-        if not json_path.exists():
-            return None
 
-        try:
-            with open(json_path) as f:
-                teams = json.load(f)
-            for t in teams:
-                if t["team_id"] == team_id:
-                    return _team_adapter.validate_python(t)
-            return None
-        except Exception as e:
-            logger.error(f"Failed to load team {team_id}: {e}")
-            return None
 
-    def get_players_by_position(self, position: str) -> list[PlayerProfile]:
+    def get_players_by_position(self, position: str, profile_type: ProfileType = ProfileType.CAREER) -> list[PlayerProfile]:
         """Load profiles dynamically based on position to avoid full memory loads."""
         if not PLAYER_PROFILES_PATH.exists():
             return []
 
         con = duckdb.connect(":memory:")
         try:
-            query = f"SELECT * FROM read_parquet('{PLAYER_PROFILES_PATH}') WHERE position_group = ?"
-            df = con.execute(query, [position]).fetchdf()
+            query = f"SELECT * FROM read_parquet('{PLAYER_PROFILES_PATH}') WHERE position_group = ? AND profile_type = ?"
+            df = con.execute(query, [position, profile_type.value]).fetchdf()
             if df.empty:
                 return []
             dicts = df.to_dict(orient="records")
+            complex_keys = ["capability_profile", "feature_vector", "player_attributes", "rating_presentation", "archetype_profile"]
+            for d in dicts:
+                for key in complex_keys:
+                    if d.get(key) and isinstance(d[key], str):
+                        d[key] = json.loads(d[key])
             return [_player_adapter.validate_python(d) for d in dicts]
         except Exception as e:
             logger.error(f"Failed to retrieve players for position {position}: {e}")
@@ -210,17 +213,23 @@ class IntelligenceStore:
         finally:
             con.close()
 
-    def get_all_players(self) -> list[PlayerProfile]:
+    def get_all_players(self, profile_type: ProfileType = ProfileType.CAREER) -> list[PlayerProfile]:
         """[DEVELOPER ONLY / DEBUGGING] Load all PlayerProfiles."""
         if not PLAYER_PROFILES_PATH.exists():
             return []
 
         con = duckdb.connect(":memory:")
         try:
-            df = con.execute(f"SELECT * FROM read_parquet('{PLAYER_PROFILES_PATH}')").fetchdf()
+            query = f"SELECT * FROM read_parquet('{PLAYER_PROFILES_PATH}') WHERE profile_type = ?"
+            df = con.execute(query, [profile_type.value]).fetchdf()
             if df.empty:
                 return []
             dicts = df.to_dict(orient="records")
+            complex_keys = ["capability_profile", "feature_vector", "player_attributes", "rating_presentation", "archetype_profile"]
+            for d in dicts:
+                for key in complex_keys:
+                    if d.get(key) and isinstance(d[key], str):
+                        d[key] = json.loads(d[key])
             return [_player_adapter.validate_python(d) for d in dicts]
         except Exception as e:
             logger.error(f"Failed to retrieve all players: {e}")
@@ -228,16 +237,31 @@ class IntelligenceStore:
         finally:
             con.close()
 
-    def get_all_teams(self) -> list[TeamProfile]:
-        """Load all TeamProfiles from the JSON store."""
-        json_path = TEAM_PROFILES_PATH.with_suffix(".json")
-        if not json_path.exists():
-            return []
 
+
+    def get_collective(self, team_id: int) -> CollectiveProfile | None:
+        """Load Collective Profile from JSON store."""
+        if not COLLECTIVE_PROFILES_PATH.exists():
+            return None
         try:
-            with open(json_path) as f:
-                teams = json.load(f)
-            return [_team_adapter.validate_python(t) for t in teams]
+            with open(COLLECTIVE_PROFILES_PATH) as f:
+                collectives = json.load(f)
+            for c in collectives:
+                if c["team_id"] == team_id:
+                    return _collective_adapter.validate_python(c)
+            return None
         except Exception as e:
-            logger.error(f"Failed to load teams: {e}")
+            logger.error(f"Failed to load collective profile for team {team_id}: {e}")
+            return None
+
+    def get_all_collectives(self) -> list[CollectiveProfile]:
+        """Load all Collective Profiles."""
+        if not COLLECTIVE_PROFILES_PATH.exists():
+            return []
+        try:
+            with open(COLLECTIVE_PROFILES_PATH) as f:
+                collectives = json.load(f)
+            return [_collective_adapter.validate_python(c) for c in collectives]
+        except Exception as e:
+            logger.error(f"Failed to load collective profiles: {e}")
             return []

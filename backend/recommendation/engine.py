@@ -17,11 +17,11 @@ from backend.recommendation.matching import (
 )
 from backend.recommendation.recruitment import rank_candidates, recommend_replacement
 from shared.schemas import (
+    CollectiveProfile,
     ComparisonResult,
     PlayerProfile,
     RecruitmentCandidate,
     RecruitmentCriteria,
-    TeamProfile,
 )
 
 logger = logging.getLogger(__name__)
@@ -31,7 +31,7 @@ class DecisionIntelligenceEngine:
     """
     Facade for the Decision Intelligence Layer.
 
-    Transforms PlayerProfiles and TeamProfiles into explainable football decisions.
+    Transforms PlayerProfiles and CollectiveProfiles into explainable football decisions.
     Never computes capabilities directly; relies entirely on the upstream FIE.
     """
 
@@ -89,20 +89,21 @@ class DecisionIntelligenceEngine:
         return recommend_replacement(target, pool, tactical_style, max_results)
 
     def evaluate_team_fit(
-        self, player: PlayerProfile, team: TeamProfile
+        self, player: PlayerProfile, team: CollectiveProfile
     ) -> dict[str, str | float]:
         """
         Evaluate how well a player fits into a specific team's tactical style.
 
         Args:
             player: The player to evaluate.
-            team: The target TeamProfile.
+            team: The target CollectiveProfile.
 
         Returns:
             Dictionary containing the fit score and a natural language explanation.
         """
-        style = team.style_label or "Balanced"
-        fit_score = evaluate_tactical_fit(player, style)
+        style = team.identity.primary_identity if team.identity else "Balanced"
+        tactical_fit = evaluate_tactical_fit(player, style, team)
+        fit_score = tactical_fit.overall_compatibility
         explanation = get_tactical_fit_explanation(player, style, fit_score)
 
         return {
@@ -111,4 +112,9 @@ class DecisionIntelligenceEngine:
             "target_style": style,
             "fit_score": fit_score,
             "explanation": explanation,
+            "capability_alignment": tactical_fit.capability_alignment,
+            "tactical_identity_preservation": tactical_fit.tactical_identity_preservation,
+            "dependency_relief": tactical_fit.dependency_relief,
+            "contextual_trade_offs": tactical_fit.contextual_trade_offs,
+            "availability_impact": tactical_fit.availability_impact,
         }

@@ -7,7 +7,7 @@ Layer communication flow:
   ETL → PlayerRaw
   Analytics Engine → PlayerFeatureVector
   AIF / Capability Engine → CapabilityProfile
-  Intelligence Layer → PlayerProfile, TeamProfile
+  Intelligence Layer → PlayerProfile, CollectiveProfile
   Decision Engine → RecruitmentCandidate, ComparisonResult
   AI Layer → ScoutingReport
 
@@ -93,6 +93,8 @@ class PlayerFeatureVector:
     season: str
     competition: str
     position_group: str
+    secondary_position_group: str | None = None
+    position_confidence: float = 1.0
     profile_type: ProfileType = ProfileType.COMPETITION
     minutes_played: float | None = None
     matches_played: int | None = None
@@ -136,10 +138,19 @@ class PlayerFeatureVector:
     pressure_pct: float = 0.0
     events_under_pressure_p90: float = 0.0
 
-    # Defensive Activity (3)
+    # Defensive Activity (6)
     pressures_p90: float = 0.0
     recoveries_p90: float = 0.0
     clearances_p90: float = 0.0
+    tackles_p90: float = 0.0
+    interceptions_p90: float = 0.0
+    tackles_won_p90: float = 0.0
+
+    # Internal Defensive Components (Phase B)
+    dribbled_past_p90: float = 0.0
+    errors_leading_to_shot_p90: float = 0.0
+    aerials_won_p90: float = 0.0
+    aerials_total_p90: float = 0.0
 
     # Attacking Threat (5)
     npxg_p90: float = 0.0
@@ -151,7 +162,9 @@ class PlayerFeatureVector:
     # Derived Attacking Threat
     npxg_per_shot: float = 0.0
 
-    # Extensibility for Future-Proofing
+    # Extensibility for Future-Proofing & Presentation
+    # Canonical location for presentation-only cumulative statistics (e.g., total goals, assists).
+    # These exist strictly to enrich the UI and must NOT influence intelligence modelling.
     raw_metrics: dict | None = None
 
     # Tactical Versatility (1)
@@ -181,10 +194,13 @@ class PlayerFeatureVector:
             # Press Resistance (2)
             self.pressure_pct,
             self.events_under_pressure_p90,
-            # Defensive Activity (3)
+            # Defensive Activity (6)
             self.pressures_p90,
             self.recoveries_p90,
             self.clearances_p90,
+            self.tackles_p90,
+            self.interceptions_p90,
+            self.tackles_won_p90,
             # Attacking Threat (5)
             self.npxg_p90,
             self.goals_p90,
@@ -207,15 +223,58 @@ class PlayerAttributes:
     """
     tactical_versatility: float | None = None
     minutes_reliability: str | None = None
+    availability_rating: float | None = None
     positional_history: list[str] = field(default_factory=list)
     seasons_indexed: int = 1
     competitions_indexed: int = 1
+
+@dataclass
+class RatingPresentation:
+    """
+    Display-friendly representation of the player's overall rating.
+    """
+    raw_rating: float
+    display_rating: float
+    rating_percentile: float
+    z_score: float
+
+@dataclass
+class ArchetypeProfile:
+    """
+    Result of deterministic style matching.
+    """
+    primary_archetype: str
+    confidence: float
+    alternatives: list[tuple[str, float]] = field(default_factory=list)
+    contributing_capabilities: list[str] = field(default_factory=list)
+
+@dataclass
+class SystemCompatibilityContext:
+    """
+    Decomposed deterministic reasoning for tactical fit.
+    """
+    capability_alignment: float
+    tactical_identity_preservation: float
+    dependency_relief: float
+    contextual_trade_offs: float
+    availability_impact: float
+    overall_compatibility: float
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Layer 3: Capability Scores
 # ─────────────────────────────────────────────────────────────────────────────
 
+@dataclass
+class SupportingMetric:
+    """
+    Structured evidence proving exactly how a capability score was derived.
+    """
+    metric_name: str
+    raw_value: float
+    percentile: float
+    contribution_weight: float
+    explanation: str
 
 @dataclass
 class CapabilityScore:
@@ -224,13 +283,13 @@ class CapabilityScore:
 
     score: 0–100, higher is better (always)
     confidence: 0–1, based on sample size and data completeness
-    evidence: dict of metric_name → raw_value for traceability
+    evidence: List of SupportingMetric for deterministic traceability
     """
 
     capability: str
     score: float
     confidence: float
-    evidence: dict[str, float] = field(default_factory=dict)
+    evidence: list[SupportingMetric] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         if not (0.0 <= self.score <= 100.0):
@@ -253,60 +312,43 @@ class CapabilityProfile:
     season: str
     competition: str
     position_group: str
+    secondary_position_group: str | None = None
+    position_confidence: float = 1.0
     minutes_played: float | None = None
     profile_type: ProfileType = ProfileType.COMPETITION
 
-    # The 8 capabilities
+    # The 6 capabilities
     ball_progression: CapabilityScore | None = None
     chance_creation: CapabilityScore | None = None
     ball_security: CapabilityScore | None = None
     press_resistance: CapabilityScore | None = None
     defensive_activity: CapabilityScore | None = None
     attacking_threat: CapabilityScore | None = None
-    physical_availability: CapabilityScore | None = None
 
     overall_rating: float | None = None
 
     def as_radar_dict(self) -> dict[str, float]:
-        """Return capability scores suitable for radar chart rendering."""
+        """
+        Returns a canonical dictionary of capabilities formatted for visualization.
+        """
         return {
-            "Ball Progression": self.ball_progression.score
-            if self.ball_progression
-            else 0.0,
-            "Chance Creation": self.chance_creation.score
-            if self.chance_creation
-            else 0.0,
+            "Ball Progression": self.ball_progression.score if self.ball_progression else 0.0,
+            "Chance Creation": self.chance_creation.score if self.chance_creation else 0.0,
             "Ball Security": self.ball_security.score if self.ball_security else 0.0,
-            "Press Resistance": self.press_resistance.score
-            if self.press_resistance
-            else 0.0,
-            "Defensive Activity": self.defensive_activity.score
-            if self.defensive_activity
-            else 0.0,
-            "Attacking Threat": self.attacking_threat.score
-            if self.attacking_threat
-            else 0.0,
-            "Physical Availability": self.physical_availability.score
-            if self.physical_availability
-            else 0.0,
+            "Press Resistance": self.press_resistance.score if self.press_resistance else 0.0,
+            "Defensive Activity": self.defensive_activity.score if self.defensive_activity else 0.0,
+            "Attacking Threat": self.attacking_threat.score if self.attacking_threat else 0.0,
         }
 
     def overall_confidence(self) -> float:
-        """Mean confidence across all populated capabilities."""
-        scores = [
-            cap.confidence
-            for cap in [
-                self.ball_progression,
-                self.chance_creation,
-                self.ball_security,
-                self.press_resistance,
-                self.defensive_activity,
-                self.attacking_threat,
-                self.physical_availability,
-            ]
-            if cap is not None
+        """Returns the minimum confidence across all instantiated capabilities."""
+        from shared.config.capabilities import CORE_CAPABILITIES
+        confs = [
+            getattr(self, cap).confidence
+            for cap in CORE_CAPABILITIES
+            if getattr(self, cap) is not None
         ]
-        return sum(scores) / len(scores) if scores else 0.0
+        return min(confs) if confs else 0.0
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -334,7 +376,9 @@ class PlayerProfile:
     team_name: str
     competition: str
     season: str
-    profile_type: ProfileType = ProfileType.COMPETITION
+    secondary_position_group: str | None = None
+    position_confidence: float = 1.0
+    profile_type: ProfileType = ProfileType.SEASON
     birth_date: str | None = None
     minutes_played: float | None = None
 
@@ -355,12 +399,40 @@ class PlayerProfile:
         except Exception:
             return None
 
-    # Computed by rule-based archetype engine
-    archetype: str | None = None
-    archetype_description: str | None = None
+    rating_presentation: RatingPresentation | None = None
+    archetype_profile: ArchetypeProfile | None = None
+
+    @property
+    def display_archetype(self) -> str:
+        """Canonical accessor for UI to safely get the primary archetype."""
+        if self.archetype_profile:
+            return self.archetype_profile.primary_archetype
+        return "Unknown"
+
+    @property
+    def archetype_description(self) -> str:
+        """Canonical accessor for UI to get archetype description."""
+        # Optional: retrieve from a config/mapping if we have one.
+        # For now, it returns a placeholder or empty string.
+        if self.archetype_profile and self.archetype_profile.primary_archetype != "Unknown":
+            return f"Specialist acting as a {self.archetype_profile.primary_archetype}."
+        return "Not enough data to categorize playing style."
 
     # Generated decision signals
     decision_signals: list[str] = field(default_factory=list)
+
+    def as_radar_dict(self) -> dict[str, float]:
+        """Returns the canonical visualization radar dictionary for the player."""
+        if self.capability_profile:
+            return self.capability_profile.as_radar_dict()
+        return {
+            "Ball Progression": 0.0,
+            "Chance Creation": 0.0,
+            "Ball Security": 0.0,
+            "Press Resistance": 0.0,
+            "Defensive Activity": 0.0,
+            "Attacking Threat": 0.0,
+        }
 
     # Similarity results (populated on demand)
     similar_players: list[dict[str, Any]] = field(default_factory=list)
@@ -373,53 +445,77 @@ class PlayerProfile:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Layer 5: Team Intelligence
+# Layer 5.5: Collective Intelligence (Phase 15)
 # ─────────────────────────────────────────────────────────────────────────────
 
+@dataclass
+class CollectiveIdentity:
+    """
+    Deterministically derived tactical identity of a team.
+    """
+    primary_identity: str
+    secondary_identity: str | None = None
+    emergent_traits: list[str] = field(default_factory=list)
 
 @dataclass
-class TeamProfile:
+class CapabilityConcentration:
     """
-    Team intelligence profile.
-
-    Aggregates player capabilities into collective tactical characteristics.
+    Measures the distribution (or over-centralization) of a capability across a squad using HHI.
     """
+    capability_name: str
+    hhi_score: float
+    is_over_centralized: bool
+    top_contributors: list[tuple[str, float]] = field(default_factory=list)  # (player_name, percentage)
 
+@dataclass
+class SystemFragility:
+    """
+    Deterministic measurement of capability collapse when a player is removed.
+    """
+    player_name: str
+    player_id: int
+    replaceability_index: float
+    structural_deficit: float
+    capability_loss: dict[str, float] = field(default_factory=dict)
+
+@dataclass
+class CapabilityBottleneck:
+    """
+    Identifies where upstream capabilities fail to convert into downstream value.
+    """
+    upstream_capability: str
+    downstream_capability: str
+    severity: float
+    diagnosis: str
+
+@dataclass
+class CollectiveProfile:
+    """
+    The output of the Collective Intelligence Engine.
+    Explains the structural realities, fragilities, and identity of a team.
+    """
     team_id: int
     team_name: str
     competition: str
     season: str
-    squad_size: int
+    squad_size: int = 0
+    avg_age: float | None = None
 
-    # Average capability scores across squad
-    avg_ball_progression: float = 0.0
-    avg_chance_creation: float = 0.0
-    avg_ball_security: float = 0.0
-    avg_press_resistance: float = 0.0
-    avg_defensive_activity: float = 0.0
-    avg_attacking_threat: float = 0.0
-    avg_physical_availability: float = 0.0
+    identity: CollectiveIdentity | None = None
+    concentration: list[CapabilityConcentration] = field(default_factory=list)
+    fragility_map: list[SystemFragility] = field(default_factory=list)
+    bottlenecks: list[CapabilityBottleneck] = field(default_factory=list)
 
-    # Squad composition
-    avg_age: float = 0.0
-    position_distribution: dict[str, int] = field(default_factory=dict)
-
-    # Identified tactical identity (derived from capability profile)
-    style_label: str | None = None
-    strengths: list[str] = field(default_factory=list)
-    weaknesses: list[str] = field(default_factory=list)
+    avg_capabilities: dict[str, float] = field(default_factory=dict)
 
     def as_radar_dict(self) -> dict[str, float]:
-        """Return average capability scores for radar chart rendering."""
-        return {
-            "Ball Progression": self.avg_ball_progression,
-            "Chance Creation": self.avg_chance_creation,
-            "Ball Security": self.avg_ball_security,
-            "Press Resistance": self.avg_press_resistance,
-            "Defensive Activity": self.avg_defensive_activity,
-            "Attacking Threat": self.avg_attacking_threat,
-            "Physical Availability": self.avg_physical_availability,
-        }
+        """Returns the canonical visualization radar dictionary for the team."""
+        from shared.config.capabilities import CORE_CAPABILITIES
+        result = {}
+        for cap in CORE_CAPABILITIES:
+            name = cap.replace("_", " ").title()
+            result[name] = self.avg_capabilities.get(cap, 0.0)
+        return result
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -501,7 +597,7 @@ class TeamDecisionCard:
     """
     Deterministic football reasoning for a team.
     """
-    team: TeamProfile
+    team: CollectiveProfile
     tactical_identity: str
     biggest_strengths: list[CapabilityExplanation] = field(default_factory=list)
     biggest_weaknesses: list[CapabilityExplanation] = field(default_factory=list)
@@ -518,7 +614,7 @@ class RecruitmentCandidate:
     player: PlayerProfile
     fit_score: float = 0.0
     rank: int = 0
-    system_compatibility: float | None = None
+    system_compatibility: SystemCompatibilityContext | None = None
     player_attributes: PlayerAttributes | None = None
 
     # Capability Restoration (Counterfactual impact)

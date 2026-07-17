@@ -57,18 +57,38 @@ class ContextFormatter:
     @staticmethod
     def format(context: Any) -> str:
         """
-        Converts the strongly typed context (which is a dataclass) into a JSON string.
+        Converts the strongly typed context into a JSON string.
+        Safely falls back through dictionaries, dataclasses, pydantic models, and standard objects.
         """
         if not context:
             return "{}"
 
-        # If it's already a dict, just dump it. Otherwise, assume it's a dataclass.
+        ctx_dict = None
+
         if isinstance(context, dict):
             ctx_dict = context
-        else:
+        elif hasattr(context, "__dataclass_fields__"):
             ctx_dict = asdict(context)
+        elif hasattr(context, "model_dump") and callable(getattr(context, "model_dump")):
+            ctx_dict = context.model_dump()
+        elif hasattr(context, "__dict__"):
+            ctx_dict = vars(context)
+        else:
+            raise TypeError(f"ContextFormatter cannot serialize object of type {type(context).__name__}")
 
-        return json.dumps(ctx_dict, indent=2)
+        # Handle potential non-serializable objects (like Enums) inside the dict
+        # The easiest robust way in standard library is custom default encoder
+        class ContextEncoder(json.JSONEncoder):
+            def default(self, obj: Any) -> Any:
+                from enum import Enum
+                if isinstance(obj, Enum):
+                    return obj.value
+                try:
+                    return super().default(obj)
+                except TypeError:
+                    return str(obj)
+
+        return json.dumps(ctx_dict, indent=2, cls=ContextEncoder)
 
 
 class UserPromptBuilder:

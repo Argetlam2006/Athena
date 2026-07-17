@@ -15,9 +15,9 @@ from backend.intelligence.normalization import calculate_confidence
 from shared.schemas import (
     CapabilityProfile,
     CapabilityScore,
+    PlayerAttributes,
     PlayerFeatureVector,
     PlayerProfile,
-    PlayerAttributes,
 )
 
 
@@ -106,23 +106,13 @@ def build_capability_profile(
         cap_scores[cap] = compute_weighted_capability(
             capability=cap,
             normalized_metrics=normalized_metrics,
+            raw_vector=vector,
             position_group=vector.position_group,
             confidence=confidence_val,
         )
 
-    # Physical Availability
-    # We expect matches_played to be normalized in normalized_metrics as 'matches_played'
-    matches_played_pct = normalized_metrics.get("matches_played", 50.0)
-    coverage_rate = (
-        vector.matches_played / float(competition_matches)
-        if competition_matches > 0
-        else 0.0
-    )
-    cap_scores["physical_availability"] = compute_physical_availability(
-        matches_played_percentile=matches_played_pct,
-        coverage_rate=coverage_rate,
-        confidence=confidence_val,
-    )
+    # Remove physical_availability from CapabilityProfile
+    # It will be calculated in build_player_profile for PlayerAttributes.
 
     # Tactical Versatility
     is_low_sample = vector.matches_played < 8
@@ -147,45 +137,13 @@ def build_capability_profile(
         press_resistance=cap_scores["press_resistance"],
         defensive_activity=cap_scores["defensive_activity"],
         attacking_threat=cap_scores["attacking_threat"],
-        physical_availability=cap_scores["physical_availability"],
-        overall_rating=compute_overall_rating(cap_scores, vector.position_group)
+        overall_rating=0.0 # Will be computed in engine after archetype assignment
     )
 
-def compute_overall_rating(scores: dict, position_group: str) -> float:
-    weights = {
-        "Forward": {
-            "attacking_threat": 3.5,
-            "chance_creation": 2.5,
-            "ball_progression": 1.5,
-            "ball_security": 1.5,
-            "press_resistance": 1.0,
-            "defensive_activity": 0.5,
-            "physical_availability": 1.0
-        },
-        "Midfielder": {
-            "ball_progression": 3.0,
-            "ball_security": 3.0,
-            "press_resistance": 2.5,
-            "chance_creation": 2.0,
-            "defensive_activity": 1.5,
-            "attacking_threat": 1.0,
-            "physical_availability": 1.0
-        },
-        "Defender": {
-            "ball_security": 3.0,
-            "ball_progression": 2.5,
-            "defensive_activity": 2.0,
-            "physical_availability": 1.5,
-            "press_resistance": 1.5,
-            "chance_creation": 0.5,
-            "attacking_threat": 0.2
-        }
-    }
-
-    pos_weights = weights.get(position_group)
-    if not pos_weights:
-        # Default balanced weights
-        pos_weights = dict.fromkeys(scores.keys(), 1.0)
+def compute_overall_rating(scores: dict, role_family: str) -> float:
+    from backend.intelligence.roles import get_role_importance_vector
+    
+    pos_weights = get_role_importance_vector(role_family)
 
     total_score = 0.0
     total_weight = 0.0
@@ -197,7 +155,6 @@ def compute_overall_rating(scores: dict, position_group: str) -> float:
 
     if total_weight == 0:
         return 0.0
-
     return round(total_score / total_weight, 1)
 
 
@@ -219,13 +176,12 @@ def build_player_profile(
         "press_resistance": cap_profile.press_resistance,
         "defensive_activity": cap_profile.defensive_activity,
         "attacking_threat": cap_profile.attacking_threat,
-        "physical_availability": cap_profile.physical_availability,
     }
     # For role assignment we pass the raw dict (which has type dict[str, CapabilityScore])
     # However we need a dictionary of CapabilityScore
     typed_cap_dict = {k: v for k, v in cap_dict.items() if v is not None}
-    
-    # Delegate to Archetype Engine (deterministic percentile based) 
+
+    # Delegate to Archetype Engine (deterministic percentile based)
     # For now, fallback to determine_role until archetype engine is fully written
     role_label, role_desc = determine_role(typed_cap_dict, vector.position_group)
 
@@ -240,9 +196,23 @@ def build_player_profile(
         is_low_sample=is_low_sample,
     ).score
 
+    matches_played_pct = normalized_metrics.get("matches_played", 50.0)
+    coverage_rate = (
+        vector.matches_played / float(competition_matches)
+        if competition_matches > 0
+        else 0.0
+    )
+    availability = compute_physical_availability(
+        matches_played_percentile=matches_played_pct,
+        matches_played_raw=vector.matches_played,
+        coverage_rate=coverage_rate,
+        confidence=confidence_val,
+    ).score
+
     attributes = PlayerAttributes(
         tactical_versatility=versatility_score,
         minutes_reliability="High" if vector.matches_played >= 25 else "Medium" if vector.matches_played >= 15 else "Low",
+        availability_rating=availability,
         positional_history=[vector.position_group], # Simplified for now
         seasons_indexed=1,
         competitions_indexed=1,
@@ -263,7 +233,7 @@ def build_player_profile(
         capability_profile=cap_profile,
         feature_vector=vector,
         player_attributes=attributes,
-        archetype=role_label,
-        archetype_description=role_desc,
+        archetype_profile=None,
+        rating_presentation=None,
         similar_players=[],
     )

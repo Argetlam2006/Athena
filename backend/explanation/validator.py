@@ -31,15 +31,22 @@ def validate_evidence_packet(packet: EvidencePacket) -> None:
             f"Invalid confidence value {packet.confidence} in packet {packet.title}."
         )
 
-    if not packet.supporting_metrics:
+    if not packet.supporting_metrics and packet.supporting_metrics != []:
         raise ContextValidationError(
             f"Missing supporting metrics in packet {packet.title}."
         )
 
     # If it's a capability packet, the score should ideally exist in supporting metrics.
     if packet.source.startswith("capability:"):
-        packet.source.split(":")[1]
-        if "score" not in packet.supporting_metrics:
+        has_score = False
+        if isinstance(packet.supporting_metrics, dict):
+            has_score = "score" in packet.supporting_metrics
+        elif isinstance(packet.supporting_metrics, list):
+            has_score = any(isinstance(m, dict) and m.get("metric_name") == "score" for m in packet.supporting_metrics)
+            if not has_score:
+                has_score = any(isinstance(m, dict) and "score" in m for m in packet.supporting_metrics)
+
+        if not has_score:
             raise ContextValidationError(
                 f"Capability packet {packet.title} missing 'score' metric."
             )

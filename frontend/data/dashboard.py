@@ -6,15 +6,15 @@ Aggregates platform KPIs and health metrics.
 
 import streamlit as st
 
-from frontend.data.players import get_player_index, get_player_profile
-from frontend.data.teams import get_team_index, get_team_profile
+from frontend.data.player_service import get_player_index, get_player_profile
+from frontend.data.team_service import get_collective_index, get_collective_profile
 
 
 @st.cache_data
 def get_dashboard_summary() -> dict:
     """Retrieve global platform overview statistics."""
     player_idx = get_player_index()
-    team_idx = get_team_index()
+    team_idx = get_collective_index()
 
     featured_player = None
     if not player_idx.empty and len(player_idx) > 1:
@@ -24,7 +24,7 @@ def get_dashboard_summary() -> dict:
     featured_team = None
     if not team_idx.empty and len(team_idx) > 1:
         tid = int(team_idx.iloc[1]['team_id'])
-        featured_team = get_team_profile(tid)
+        featured_team = get_collective_profile(tid)
 
     from shared.schemas import ProfileType
 

@@ -12,8 +12,10 @@ from backend.explanation.validator import ContextValidationError
 from shared.schemas import (
     CapabilityProfile,
     CapabilityScore,
+    CollectiveIdentity,
+    CollectiveProfile,
     PlayerProfile,
-    TeamProfile,
+    SupportingMetric,
 )
 
 
@@ -27,18 +29,20 @@ def valid_player_profile() -> PlayerProfile:
         position_group="Forward",
         minutes_played=2000,
         ball_progression=CapabilityScore(
-            "ball_progression", 85.0, 1.0, {"progressive_passes_p90": 5.0}
+            "ball_progression", 85.0, 1.0, [SupportingMetric("progressive_passes_p90", 5.0, 95.0, 0.5, "exp")]
         ),
         chance_creation=CapabilityScore(
-            "chance_creation", 98.0, 1.0, {"shot_assists_p90": 2.0}
+            "chance_creation", 98.0, 1.0, [SupportingMetric("shot_assists_p90", 2.0, 98.0, 0.5, "exp")]
         ),
         ball_security=CapabilityScore(
-            "ball_security", 80.0, 1.0, {"pass_accuracy_pct": 85.0}
+            "ball_security", 80.0, 1.0, [SupportingMetric("pass_accuracy_pct", 85.0, 80.0, 0.5, "exp")]
         ),
-        press_resistance=CapabilityScore("press_resistance", 90.0, 1.0, {}),
-        defensive_activity=CapabilityScore("defensive_activity", 25.0, 1.0, {}),
-        attacking_threat=CapabilityScore("attacking_threat", 95.0, 1.0, {}),
-        physical_availability=CapabilityScore("physical_availability", 90.0, 1.0, {}),
+        press_resistance=CapabilityScore("press_resistance", 90.0, 1.0, []),
+        defensive_activity=CapabilityScore("defensive_activity", 80.0, 0.9, [
+            SupportingMetric("pressures_p90", 25.0, 99.0, 0.25, "exp"),
+            SupportingMetric("defensive_philosophy", 1.0, 100.0, 0.0, "Defensive Activity evaluated using Active philosophy.")
+        ]),
+        attacking_threat=CapabilityScore("attacking_threat", 60.0, 0.8, []),
     )
     return PlayerProfile(
         player_id=1,
@@ -50,8 +54,6 @@ def valid_player_profile() -> PlayerProfile:
         birth_date="2000-01-01",
         minutes_played=2000,
         capability_profile=cap,
-        decision_signals=["elite_goal_scorer"],
-        archetype="Complete Forward",
     )
 
 
@@ -60,15 +62,21 @@ def test_valid_player_context_builds(valid_player_profile):
     ctx = engine.get_player_context(valid_player_profile)
 
     assert ctx.player_name == "Test Player"
-    assert len(ctx.evidence_packets) == 7  # 7 capabilities
+    assert len(ctx.evidence_packets) == 6  # 6 capabilities
 
     # Check that a packet contains supporting metrics
     bp_packet = next(
         p for p in ctx.evidence_packets if p.source == "capability:ball_progression"
     )
     assert bp_packet.title == "Ball Progression Capability"
-    assert bp_packet.supporting_metrics["score"] == 85.0
-    assert bp_packet.supporting_metrics["progressive_passes_p90"] == 5.0
+    assert any(m["metric_name"] == "score" and m["raw_value"] == 85.0 for m in bp_packet.supporting_metrics)
+    assert any(m["metric_name"] == "progressive_passes_p90" and m["raw_value"] == 5.0 for m in bp_packet.supporting_metrics)
+    
+    # Check that defensive philosophy is present
+    da_packet = next(
+        p for p in ctx.evidence_packets if p.source == "capability:defensive_activity"
+    )
+    assert any(m["metric_name"] == "defensive_philosophy" and m["explanation"] == "Defensive Activity evaluated using Active philosophy." for m in da_packet.supporting_metrics)
 
 
 def test_missing_evidence_fails_validation(valid_player_profile):
@@ -92,14 +100,13 @@ def test_invalid_confidence_fails_validation(valid_player_profile):
 
 
 def test_team_context_serialization():
-    tp = TeamProfile(
+    tp = CollectiveProfile(
         team_id=101,
         team_name="Test Team",
         competition="Ligue 1",
         season="2023",
-        squad_size=25,
-        avg_ball_progression=80.0,
-        style_label="Direct",
+        identity=CollectiveIdentity(primary_identity="Direct"),
+        avg_capabilities={"ball_progression": 80.0},
     )
 
     engine = ExplanationContextEngine()
@@ -116,14 +123,14 @@ def test_team_context_serialization():
 
 
 def test_team_validation_failure():
-    tp = TeamProfile(
+    # Trigger a failure by missing team_name
+    tp = CollectiveProfile(
         team_id=101,
-        team_name="Test Team",
+        team_name="",
         competition="Ligue 1",
         season="2023",
-        squad_size=0,  # Invalid
-        style_label="Direct",
+        avg_capabilities={},
     )
     engine = ExplanationContextEngine()
-    with pytest.raises(ContextValidationError, match="invalid squad size"):
+    with pytest.raises(ContextValidationError, match="Team context missing team name"):
         engine.get_team_context(tp)

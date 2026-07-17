@@ -149,6 +149,27 @@ def _null_carry() -> dict:
 def _null_dribble() -> dict:
     return dict.fromkeys(_extract_dribble({}))
 
+def _extract_duel(event: dict) -> dict:
+    """Extract duel-specific columns."""
+    d = event.get("duel") or {}
+    return {
+        "duel_type": _get(d, "type", "name"),
+        "duel_outcome": _get(d, "outcome", "name"),
+    }
+
+def _null_duel() -> dict:
+    return dict.fromkeys(_extract_duel({}))
+
+def _extract_interception(event: dict) -> dict:
+    """Extract interception-specific columns."""
+    i = event.get("interception") or {}
+    return {
+        "interception_outcome": _get(i, "outcome", "name"),
+    }
+
+def _null_interception() -> dict:
+    return dict.fromkeys(_extract_interception({}))
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Public API
@@ -317,6 +338,12 @@ def normalize_events(data: list[dict], match_id: int) -> pd.DataFrame:
             "location_y": _loc_y(location),
             "duration": e.get("duration"),
             "under_pressure": bool(e.get("under_pressure")),
+            "aerial_won": bool(
+                _get(e, "pass", "aerial_won") or 
+                _get(e, "clearance", "aerial_won") or 
+                _get(e, "shot", "aerial_won") or 
+                _get(e, "miscontrol", "aerial_won")
+            ),
         }
 
         # Type-specific attributes
@@ -324,6 +351,8 @@ def normalize_events(data: list[dict], match_id: int) -> pd.DataFrame:
         row.update(_extract_shot(e) if type_name == "Shot" else _null_shot())
         row.update(_extract_carry(e) if type_name == "Carry" else _null_carry())
         row.update(_extract_dribble(e) if type_name == "Dribble" else _null_dribble())
+        row.update(_extract_duel(e) if type_name == "Duel" else _null_duel())
+        row.update(_extract_interception(e) if type_name == "Interception" else _null_interception())
 
         rows.append(row)
 

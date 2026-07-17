@@ -10,11 +10,11 @@ import numpy as np
 
 from shared.schemas import (
     CapabilityExplanation,
+    CollectiveProfile,
     DependencyAnalysis,
     PlayerDecisionCard,
     PlayerProfile,
     TeamDecisionCard,
-    TeamProfile,
 )
 
 
@@ -41,7 +41,6 @@ class DecisionEngine:
             "Press Resistance": profile.capability_profile.press_resistance,
             "Defensive Activity": profile.capability_profile.defensive_activity,
             "Attacking Threat": profile.capability_profile.attacking_threat,
-            "Physical Availability": profile.capability_profile.physical_availability,
         }
 
         cap_score_obj = cap_map.get(capability_name)
@@ -52,17 +51,9 @@ class DecisionEngine:
         evidence = cap_score_obj.evidence
 
         drivers = {}
-        # For each piece of evidence, calculate percentile against cohort
-        for metric_name, value in evidence.items():
-            cohort_values = []
-            for p in cohort:
-                if p.capability_profile:
-                    p_cap = getattr(p.capability_profile, capability_name.lower().replace(" ", "_"), None)
-                    if p_cap and metric_name in p_cap.evidence:
-                        cohort_values.append(p_cap.evidence[metric_name])
-
-            pct = DecisionEngine._calculate_percentile(value, cohort_values)
-            drivers[metric_name] = f"{pct}th percentile"
+        # Since evidence is now a list of SupportingMetric, we can directly read the precomputed percentiles
+        for metric in evidence:
+            drivers[metric.metric_name] = f"{int(round(metric.percentile))}th percentile"
 
         return CapabilityExplanation(
             capability_name=capability_name,
@@ -80,7 +71,7 @@ class DecisionEngine:
 
         capabilities = [
             "Ball Progression", "Chance Creation", "Ball Security", "Press Resistance",
-            "Defensive Activity", "Attacking Threat", "Physical Availability"
+            "Defensive Activity", "Attacking Threat"
         ]
 
         elite_traits = []
@@ -109,21 +100,21 @@ class DecisionEngine:
 
         return PlayerDecisionCard(
             player=profile,
-            primary_role=profile.archetype or "Balanced Profile",
+            primary_role=profile.display_archetype,
             elite_traits=elite_traits[:3],  # Top 3
             weak_areas=weak_areas[:3],      # Bottom 3
-            playing_style=profile.archetype,
+            playing_style=profile.display_archetype,
             player_attributes=profile.player_attributes
         )
 
     @staticmethod
-    def analyze_team_dependency(team: TeamProfile, squad: list[PlayerProfile]) -> dict[str, DependencyAnalysis]:
+    def analyze_team_dependency(team: CollectiveProfile, squad: list[PlayerProfile]) -> dict[str, DependencyAnalysis]:
         """
         Calculates exact percentage contributions per player for every core capability.
         """
         capabilities = [
             "ball_progression", "chance_creation", "ball_security", "press_resistance",
-            "defensive_activity", "attacking_threat", "physical_availability"
+            "defensive_activity", "attacking_threat"
         ]
 
         dependencies = {}
@@ -157,7 +148,7 @@ class DecisionEngine:
         return dependencies
 
     @staticmethod
-    def build_team_decision_card(team: TeamProfile, squad: list[PlayerProfile], cohort_teams: list[TeamProfile]) -> TeamDecisionCard:
+    def build_team_decision_card(team: CollectiveProfile, squad: list[PlayerProfile], cohort_teams: list[CollectiveProfile]) -> TeamDecisionCard:
         """
         Builds deterministic team reasoning.
         """
@@ -166,7 +157,7 @@ class DecisionEngine:
         gap_analysis = {}
         capabilities = [
             "avg_ball_progression", "avg_chance_creation", "avg_ball_security", "avg_press_resistance",
-            "avg_defensive_activity", "avg_attacking_threat", "avg_physical_availability"
+            "avg_defensive_activity", "avg_attacking_threat"
         ]
 
         # Calculate strengths and weaknesses based on top/bottom quartile gap analysis
@@ -201,7 +192,7 @@ class DecisionEngine:
 
         return TeamDecisionCard(
             team=team,
-            tactical_identity=team.style_label or "Balanced",
+            tactical_identity=team.identity.primary_identity if team.identity else "Balanced",
             biggest_strengths=sorted(strengths, key=lambda x: x.score, reverse=True)[:3],
             biggest_weaknesses=sorted(weaknesses, key=lambda x: x.score)[:3],
             dependency_analysis=dependencies,

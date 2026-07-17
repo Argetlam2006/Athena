@@ -3,8 +3,8 @@ frontend/components/selectors.py — Reusable Context Selectors
 """
 import streamlit as st
 
-from frontend.data.players import get_player_index
-from frontend.data.teams import get_team_index
+from frontend.data.player_service import get_player_index
+from frontend.data.team_service import get_collective_index
 from frontend.session import get_state, set_selected_player, set_selected_team
 
 
@@ -77,7 +77,7 @@ def render_player_selector(key_prefix: str = "global") -> None:
             st.info("No players found matching your query.")
 
 def render_team_selector(key_prefix: str = "global") -> None:
-    df_teams = get_team_index()
+    df_teams = get_collective_index()
     state = get_state()
     if df_teams.empty:
         st.warning("Team data not loaded.")

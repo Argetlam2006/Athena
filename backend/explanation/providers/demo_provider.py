@@ -9,7 +9,7 @@ import time
 from collections.abc import Generator
 
 from backend.explanation.prompt_builder import PromptPackage
-from backend.explanation.providers.base import ExplanationProvider
+from backend.explanation.providers.base import ExplanationProvider, GenerationResponse
 
 
 class DemoProvider(ExplanationProvider):
@@ -42,10 +42,22 @@ class DemoProvider(ExplanationProvider):
 
         return response
 
-    def stream(self, prompt: PromptPackage) -> Generator[str, None, None]:
+    def stream(self, prompt: PromptPackage) -> Generator[GenerationResponse, None, None]:
         text = self._generate_demo_text(prompt)
         # Yield word by word to simulate streaming
         words = text.split(" ")
         for word in words:
-            yield word + " "
+            yield GenerationResponse(
+                generated_text=word + " ",
+                provider="demo",
+                model=self.model_name
+            )
             time.sleep(0.05)  # Simulate network latency
+
+    def generate(self, prompt: PromptPackage) -> GenerationResponse:
+        return GenerationResponse(
+            generated_text=self._generate_demo_text(prompt),
+            provider="demo",
+            model=self.model_name,
+            finish_reason="stop"
+        )

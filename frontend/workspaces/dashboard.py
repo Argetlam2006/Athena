@@ -46,40 +46,38 @@ def render() -> None:
     # Dataset Transparency
     render_section_header("Dataset Transparency")
     st.markdown(
-        f"""
-        <div style="background: #111827; padding: 1.5rem; border-radius: 8px; border: 1px solid #374151;">
-            <p style="color: #e5e7eb; line-height: 1.6; margin-top: 0;">
-                Athena is built on the philosophy of <strong>Evidence Before AI</strong>.
-                Rather than relying on Large Language Models to hallucinate football knowledge,
-                Athena grounds all intelligence entirely in a deterministic dataset.
-            </p>
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 1rem; margin-top: 1.5rem; text-align: center;">
-                <div>
-                    <div style="color: #6366f1; font-size: 1.5rem; font-weight: 700;">{summary['unique_players']:,}</div>
-                    <div style="color: #9ca3af; font-size: 0.85rem; text-transform: uppercase;">Players Indexed</div>
-                </div>
-                <div>
-                    <div style="color: #6366f1; font-size: 1.5rem; font-weight: 700;">{summary['career_profiles']:,}</div>
-                    <div style="color: #9ca3af; font-size: 0.85rem; text-transform: uppercase;">Career Analyses</div>
-                </div>
-                <div>
-                    <div style="color: #6366f1; font-size: 1.5rem; font-weight: 700;">{summary['season_profiles']:,}</div>
-                    <div style="color: #9ca3af; font-size: 0.85rem; text-transform: uppercase;">Season Analyses</div>
-                </div>
-                <div>
-                    <div style="color: #6366f1; font-size: 1.5rem; font-weight: 700;">{summary['competition_profiles']:,}</div>
-                    <div style="color: #9ca3af; font-size: 0.85rem; text-transform: uppercase;">Competition Analyses</div>
-                </div>
-                <div>
-                    <div style="color: #6366f1; font-size: 1.5rem; font-weight: 700;">{summary['total_teams']:,}</div>
-                    <div style="color: #9ca3af; font-size: 0.85rem; text-transform: uppercase;">Indexed Teams</div>
-                </div>
-            </div>
-            <p style="color: #9ca3af; font-size: 0.85rem; margin-bottom: 0; margin-top: 1.5rem; border-top: 1px solid #1f2937; padding-top: 1rem;">
-                <em>Note: Player intelligence is strictly limited to the seasons and competitions available in the loaded warehouse.</em>
-            </p>
-        </div>
-        """,
+        f"""<div style="background: #111827; padding: 1.5rem; border-radius: 8px; border: 1px solid #374151;">
+<p style="color: #e5e7eb; line-height: 1.6; margin-top: 0;">
+Athena is built on the philosophy of <strong>Evidence Before AI</strong>.
+Rather than relying on Large Language Models to hallucinate football knowledge,
+Athena grounds all intelligence entirely in a deterministic dataset.
+</p>
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 1rem; margin-top: 1.5rem; text-align: center;">
+<div>
+<div style="color: #6366f1; font-size: 1.5rem; font-weight: 700;">{summary['unique_players']:,}</div>
+<div style="color: #9ca3af; font-size: 0.85rem; text-transform: uppercase;">Players Indexed</div>
+</div>
+<div>
+<div style="color: #6366f1; font-size: 1.5rem; font-weight: 700;">{summary['career_profiles']:,}</div>
+<div style="color: #9ca3af; font-size: 0.85rem; text-transform: uppercase;">Career Analyses</div>
+</div>
+<div>
+<div style="color: #6366f1; font-size: 1.5rem; font-weight: 700;">{summary['season_profiles']:,}</div>
+<div style="color: #9ca3af; font-size: 0.85rem; text-transform: uppercase;">Season Analyses</div>
+</div>
+<div>
+<div style="color: #6366f1; font-size: 1.5rem; font-weight: 700;">{summary['competition_profiles']:,}</div>
+<div style="color: #9ca3af; font-size: 0.85rem; text-transform: uppercase;">Competition Analyses</div>
+</div>
+<div>
+<div style="color: #6366f1; font-size: 1.5rem; font-weight: 700;">{summary['total_teams']:,}</div>
+<div style="color: #9ca3af; font-size: 0.85rem; text-transform: uppercase;">Indexed Teams</div>
+</div>
+</div>
+<p style="color: #9ca3af; font-size: 0.85rem; margin-bottom: 0; margin-top: 1.5rem; border-top: 1px solid #1f2937; padding-top: 1rem;">
+<em>Note: Player intelligence is strictly limited to the seasons and competitions available in the loaded warehouse.</em>
+</p>
+</div>""",
         unsafe_allow_html=True
     )
 
@@ -92,13 +90,11 @@ def render() -> None:
         p = summary["featured_player"]
         if p:
             st.markdown(
-                f"""
-            <div class="card-container">
-                <h3 style="margin-top: 0; color: #f9fafb;">{p.player_name}</h3>
-                <p style="color: #9ca3af; font-size: 0.9rem;">{p.position_group} • {p.team_name}</p>
-                <div style="margin-top: 1rem; color: #818cf8; font-size: 0.85rem; font-weight: 600;">{p.archetype}</div>
-            </div>
-            """,
+                f"""<div class="card-container">
+<h3 style="margin-top: 0; color: #f9fafb;">{p.player_name}</h3>
+<p style="color: #9ca3af; font-size: 0.9rem;">{p.position_group} • {p.team_name}</p>
+<div style="margin-top: 1rem; color: #818cf8; font-size: 0.85rem; font-weight: 600;">{p.display_archetype}</div>
+</div>""",
                 unsafe_allow_html=True,
             )
         else:
@@ -109,13 +105,11 @@ def render() -> None:
         t = summary["featured_team"]
         if t:
             st.markdown(
-                f"""
-            <div class="card-container">
-                <h3 style="margin-top: 0; color: #f9fafb;">{t.team_name}</h3>
-                <p style="color: #9ca3af; font-size: 0.9rem;">{t.competition} • Squad: {t.squad_size}</p>
-                <div style="margin-top: 1rem; color: #818cf8; font-size: 0.85rem; font-weight: 600;">{t.style_label}</div>
-            </div>
-            """,
+                f"""<div class="card-container">
+<h3 style="margin-top: 0; margin-bottom: 0.25rem; color: #f9fafb;">{t.team_name}</h3>
+<p style="color: #9ca3af; font-size: 0.9rem;">{t.competition}</p>
+<div style="margin-top: 1rem; color: #818cf8; font-size: 0.85rem; font-weight: 600;">{t.identity.primary_identity if t.identity else 'Balanced'}</div>
+</div>""",
                 unsafe_allow_html=True,
             )
         else:

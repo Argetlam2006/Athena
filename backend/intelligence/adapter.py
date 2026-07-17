@@ -24,12 +24,20 @@ def map_position_to_group(position_name: str | None) -> str:
     pos = position_name.lower()
     if "goalkeeper" in pos:
         return "Goalkeeper"
+    if "center back" in pos:
+        return "Center Back"
     if "back" in pos:
-        return "Defender"
+        return "Fullback"
+    if "defensive midfield" in pos:
+        return "Defensive Midfielder"
+    if "attacking midfield" in pos:
+        return "Attacking Midfielder"
     if "midfield" in pos:
-        return "Midfielder"
-    if "wing" in pos or "forward" in pos or "striker" in pos:
-        return "Forward"
+        return "Central Midfielder"
+    if "wing" in pos:
+        return "Winger"
+    if "forward" in pos or "striker" in pos:
+        return "Center Forward"
 
     return "Unknown"
 
@@ -96,6 +104,13 @@ def map_player_summary_to_vectors(df: pd.DataFrame) -> list[PlayerFeatureVector]
                 pressures_p90=row.get("pressures_p90", 0.0),
                 recoveries_p90=row.get("recoveries_p90", 0.0),
                 clearances_p90=row.get("clearances_p90", 0.0),
+                tackles_p90=row.get("tackles_p90", 0.0),
+                tackles_won_p90=row.get("tackles_won_p90", 0.0),
+                interceptions_p90=row.get("interceptions_p90", 0.0),
+                dribbled_past_p90=row.get("dribbled_past_p90", 0.0),
+                errors_leading_to_shot_p90=row.get("errors_leading_to_shot_p90", 0.0),
+                aerials_won_p90=row.get("aerials_won_p90", 0.0),
+                aerials_total_p90=row.get("aerials_total_p90", 0.0),
                 # Attacking Threat
                 npxg_p90=row.get("npxg_p90", 0.0),
                 goals_p90=row.get("goals_p90", 0.0),
@@ -104,6 +119,29 @@ def map_player_summary_to_vectors(df: pd.DataFrame) -> list[PlayerFeatureVector]
                 goals_minus_xg=row.get("goals_minus_xg", 0.0),
                 # Contextual
                 positions_played_count=int(positions_played_count),
+                raw_metrics={
+                    "goals": int(row.get("goals", 0)),
+                    "goal_assists": int(row.get("goal_assists", 0)),
+                    "shot_assists": int(row.get("shot_assists", 0)),
+                    "total_shots": int(row.get("total_shots", 0)),
+                    "shots_on_target": int(row.get("shots_on_target", 0)),
+                    "total_passes": int(row.get("total_passes", 0)),
+                    "accurate_passes": int(row.get("accurate_passes", 0)),
+                    "progressive_passes": int(row.get("progressive_passes", 0)),
+                    "progressive_carries": int(row.get("progressive_carries", 0)),
+                    "total_carries": int(row.get("total_carries", 0)),
+                    "total_dribbles": int(row.get("total_dribbles", 0)),
+                    "dribbles_completed": int(row.get("dribbles_completed", 0)),
+                    "pressures": int(row.get("pressures", 0)),
+                    "ball_recoveries": int(row.get("ball_recoveries", 0)),
+                    "clearances": int(row.get("clearances", 0)),
+                    "tackles": int(row.get("tackles", 0)),
+                    "interceptions": int(row.get("interceptions", 0)),
+                    "aerials_won": int(row.get("aerials_won", 0)),
+                    "aerials_total": int(row.get("aerials_total", 0)),
+                    "xg_total": float(row.get("xg_total", 0.0)),
+                    "npxg_total": float(row.get("npxg_total", 0.0)),
+                },
             )
         )
 

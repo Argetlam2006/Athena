@@ -12,6 +12,7 @@ from collections.abc import Sequence
 from backend.intelligence.normalization import euclidean_distance
 from backend.recommendation.matching import evaluate_tactical_fit
 from backend.recommendation.tradeoffs import generate_tradeoffs
+from shared.constants import BROAD_POSITION_MAP
 from shared.schemas import PlayerProfile, RecruitmentCandidate, RecruitmentCriteria
 
 
@@ -37,8 +38,12 @@ def rank_candidates(
         ):
             continue
 
-        if criteria.position and player.position_group != criteria.position:
-            continue
+        if criteria.position:
+            if criteria.position in BROAD_POSITION_MAP:
+                if player.position_group not in BROAD_POSITION_MAP[criteria.position]:
+                    continue
+            elif player.position_group != criteria.position:
+                continue
 
         if player.minutes_played < criteria.min_minutes:
             continue
@@ -64,17 +69,17 @@ def rank_candidates(
             base_score = 50.0  # Fallback if no specific requirements
 
         # 2. Tactical Fit Adjustment
-        tactical_fit = 0.0
+        tactical_fit = None
         if criteria.tactical_style:
             tactical_fit = evaluate_tactical_fit(player, criteria.tactical_style)
             # Blend base score and tactical fit
-            fit_score = (base_score * 0.70) + (tactical_fit * 0.30)
+            fit_score = (base_score * 0.70) + (tactical_fit.overall_compatibility * 0.30)
         else:
             fit_score = base_score
 
         # 3. Generate Trade-offs and Context
         strengths, trade_offs, explanation_context = generate_tradeoffs(
-            player=player, criteria=criteria, tactical_fit_score=tactical_fit
+            player=player, criteria=criteria, tactical_fit_score=tactical_fit.overall_compatibility if tactical_fit else 0.0
         )
 
         # Determine confidence

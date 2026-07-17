@@ -110,19 +110,16 @@ class PlayerProfileResponse(BaseModel):
     is_analytically_sufficient: bool
 
 
-class TeamProfileResponse(BaseModel):
+class CollectiveProfileResponse(BaseModel):
     """Team intelligence profile response."""
 
     team_name: str
     competition: str
     season: str
-    squad_size: int
-    avg_age: float
-    style_label: str | None
-    strengths: list[str]
-    weaknesses: list[str]
-    capability_radar: dict[str, float]
-    position_distribution: dict[str, int]
+    identity: dict
+    fragilities: list
+    bottlenecks: list
+    avg_capabilities: dict
 
 
 class RecruitmentCandidateResponse(BaseModel):

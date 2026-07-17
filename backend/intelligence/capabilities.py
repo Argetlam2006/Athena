@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from backend.intelligence.normalization import standard_deviation
 from shared.config.capabilities import CAPABILITY_METRIC_WEIGHTS
-from shared.schemas import CapabilityScore
+from shared.schemas import CapabilityScore, PlayerFeatureVector, SupportingMetric
 
 
 def get_weights_for_position(capability: str, position_group: str) -> dict[str, float]:
@@ -29,9 +29,77 @@ def get_weights_for_position(capability: str, position_group: str) -> dict[str, 
     return weights
 
 
+def _compute_defensive_activity(
+    normalized_metrics: dict[str, float],
+    raw_vector: PlayerFeatureVector,
+    confidence: float,
+) -> CapabilityScore:
+    weights = CAPABILITY_METRIC_WEIGHTS.get("defensive_activity", {})
+    active_weights = weights.get("active", {})
+    controlling_weights = weights.get("controlling", {})
+
+    active_score = 0.0
+    active_evidence = []
+    for metric, weight in active_weights.items():
+        val = normalized_metrics.get(metric, 0.0)
+        raw_val = getattr(raw_vector, metric, 0.0)
+        active_score += val * weight
+        active_evidence.append(SupportingMetric(
+            metric_name=metric,
+            raw_value=raw_val,
+            percentile=val,
+            contribution_weight=weight,
+            explanation=f"Contributes {weight*100:.0f}% to Active Defensive Volume."
+        ))
+
+    controlling_score = 0.0
+    controlling_evidence = []
+    for metric, weight in controlling_weights.items():
+        val = normalized_metrics.get(metric, 0.0)
+        is_negative = metric in ("dribbled_past_p90", "errors_leading_to_shot_p90")
+        if is_negative:
+            # Invert negative metrics: 0th percentile (lowest errors) -> 100th percentile (best)
+            val = max(0.0, 100.0 - val)
+
+        raw_val = getattr(raw_vector, metric, 0.0)
+        controlling_score += val * weight
+        controlling_evidence.append(SupportingMetric(
+            metric_name=metric,
+            raw_value=raw_val,
+            percentile=val,
+            contribution_weight=weight,
+            explanation=f"Contributes {weight*100:.0f}% to Controlling Defensive Quality."
+        ))
+
+    if active_score >= controlling_score:
+        active_evidence.append(SupportingMetric(
+            metric_name="defensive_philosophy",
+            raw_value=1.0,
+            percentile=100.0,
+            contribution_weight=0.0,
+            explanation="Defensive Activity evaluated using Active philosophy."
+        ))
+        return CapabilityScore(
+            capability="defensive_activity", score=active_score, confidence=confidence, evidence=active_evidence
+        )
+    else:
+        controlling_evidence.append(SupportingMetric(
+            metric_name="defensive_philosophy",
+            raw_value=0.0,
+            percentile=100.0,
+            contribution_weight=0.0,
+            explanation="Defensive Activity evaluated using Controlling philosophy."
+        ))
+        return CapabilityScore(
+            capability="defensive_activity", score=controlling_score, confidence=confidence, evidence=controlling_evidence
+        )
+
+
+
 def compute_weighted_capability(
     capability: str,
     normalized_metrics: dict[str, float],
+    raw_vector: PlayerFeatureVector,
     position_group: str,
     confidence: float,
 ) -> CapabilityScore:
@@ -41,22 +109,33 @@ def compute_weighted_capability(
     Args:
         capability: The capability name (e.g. 'ball_progression').
         normalized_metrics: A dictionary of metric_name -> percentile (0-100).
+        raw_vector: The PlayerFeatureVector containing raw metrics.
         position_group: Used to look up specific weights if they differ by position.
         confidence: The confidence score for this capability (0-1).
 
     Returns:
         CapabilityScore object containing the final score and evidence.
     """
+    if capability == "defensive_activity":
+        return _compute_defensive_activity(normalized_metrics, raw_vector, confidence)
+
     weights = get_weights_for_position(capability, position_group)
 
     score = 0.0
-    evidence: dict[str, float] = {}
+    evidence: list[SupportingMetric] = []
 
     for metric, weight in weights.items():
-        # Fallback to 0 if metric is missing (should not happen with valid data)
+        # Fallback to 0 if metric is missing
         val = normalized_metrics.get(metric, 0.0)
+        raw_val = getattr(raw_vector, metric, 0.0)
         score += val * weight
-        evidence[metric] = val
+        evidence.append(SupportingMetric(
+            metric_name=metric,
+            raw_value=raw_val,
+            percentile=val,
+            contribution_weight=weight,
+            explanation=f"Contributes {weight*100:.0f}% to {capability} based on positional requirements."
+        ))
 
     return CapabilityScore(
         capability=capability, score=score, confidence=confidence, evidence=evidence
@@ -64,7 +143,7 @@ def compute_weighted_capability(
 
 
 def compute_physical_availability(
-    matches_played_percentile: float, coverage_rate: float, confidence: float
+    matches_played_percentile: float, matches_played_raw: int, coverage_rate: float, confidence: float
 ) -> CapabilityScore:
     """
     Compute Physical Availability.
@@ -72,14 +151,28 @@ def compute_physical_availability(
     """
     score = (coverage_rate * 100.0 * 0.60) + (matches_played_percentile * 0.40)
 
+    evidence = [
+        SupportingMetric(
+            metric_name="coverage_rate",
+            raw_value=coverage_rate,
+            percentile=coverage_rate * 100.0,
+            contribution_weight=0.60,
+            explanation="Percentage of total competition minutes played."
+        ),
+        SupportingMetric(
+            metric_name="matches_played",
+            raw_value=float(matches_played_raw),
+            percentile=matches_played_percentile,
+            contribution_weight=0.40,
+            explanation="Total appearances normalized against positional peers."
+        )
+    ]
+
     return CapabilityScore(
         capability="physical_availability",
         score=min(100.0, score),
         confidence=confidence,
-        evidence={
-            "coverage_rate_pct": coverage_rate * 100.0,
-            "matches_played_pct": matches_played_percentile,
-        },
+        evidence=evidence,
     )
 
 
@@ -146,13 +239,33 @@ def compute_tactical_versatility(
 
     score = (pos_score * w_pos) + (cap_breadth * w_cap) + (phase_balance * w_pha)
 
+    evidence = [
+        SupportingMetric(
+            metric_name="positional_breadth",
+            raw_value=float(positions_played_count),
+            percentile=pos_score,
+            contribution_weight=w_pos,
+            explanation=f"Positions played ({positions_played_count})."
+        ),
+        SupportingMetric(
+            metric_name="capability_breadth",
+            raw_value=cap_breadth,
+            percentile=cap_breadth,
+            contribution_weight=w_cap,
+            explanation="Inverse standard deviation of capability scores."
+        ),
+        SupportingMetric(
+            metric_name="phase_balance",
+            raw_value=phase_balance,
+            percentile=phase_balance,
+            contribution_weight=w_pha,
+            explanation="Balance between attacking and defensive contributions."
+        )
+    ]
+
     return CapabilityScore(
         capability="tactical_versatility",
         score=max(0.0, min(100.0, score)),
         confidence=confidence,
-        evidence={
-            "positional_breadth": pos_score,
-            "capability_breadth": cap_breadth,
-            "phase_balance": phase_balance,
-        },
+        evidence=evidence,
     )

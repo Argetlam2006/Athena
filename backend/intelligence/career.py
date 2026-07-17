@@ -28,10 +28,15 @@ class CareerBuilder:
         # Most frequent position
         positions = [s.position_group for s in seasons if s.position_group != "Unknown"]
         if positions:
-            # Mode of positions
             position_group = max(set(positions), key=positions.count)
         else:
             position_group = "Unknown"
+
+        secondary_positions = [s.secondary_position_group for s in seasons if getattr(s, "secondary_position_group", None)]
+        secondary_position_group = max(set(secondary_positions), key=secondary_positions.count) if secondary_positions else None
+        
+        confidences = [getattr(s, "position_confidence", 1.0) for s in seasons]
+        position_confidence = sum(confidences) / len(confidences) if confidences else 1.0
 
         # Accumulators for raw counts
         total_minutes = 0.0
@@ -65,6 +70,13 @@ class CareerBuilder:
         total_pressures = 0.0
         total_recoveries = 0.0
         total_clearances = 0.0
+        total_tackles = 0.0
+        total_interceptions = 0.0
+        total_tackles_won = 0.0
+        total_dribbled_past = 0.0
+        total_errors_leading_to_shot = 0.0
+        total_aerials_won = 0.0
+        total_aerials_total = 0.0
 
         # Attacking Threat
         total_npxg = 0.0
@@ -121,9 +133,16 @@ class CareerBuilder:
                 total_events += season_events_under_pressure / (s.pressure_pct / 100.0)
 
             # Defensive Activity
-            total_pressures += unp90(s.pressures_p90, "pressures")
-            total_recoveries += unp90(s.recoveries_p90, "recoveries")
-            total_clearances += unp90(s.clearances_p90, "clearances")
+            total_pressures += unp90(s.pressures_p90, "padj_pressures")
+            total_recoveries += unp90(s.recoveries_p90, "padj_recoveries")
+            total_clearances += unp90(s.clearances_p90, "padj_clearances")
+            total_tackles += unp90(getattr(s, 'tackles_p90', 0.0), "padj_tackles")
+            total_interceptions += unp90(getattr(s, 'interceptions_p90', 0.0), "padj_interceptions")
+            total_tackles_won += unp90(getattr(s, 'tackles_won_p90', 0.0), "tackles_won")
+            total_dribbled_past += unp90(getattr(s, 'dribbled_past_p90', 0.0), "dribbled_past")
+            total_errors_leading_to_shot += unp90(getattr(s, 'errors_leading_to_shot_p90', 0.0), "errors_leading_to_shot")
+            total_aerials_won += unp90(getattr(s, 'aerials_won_p90', 0.0), "aerials_won")
+            total_aerials_total += unp90(getattr(s, 'aerials_total_p90', 0.0), "aerials_total")
 
             # Attacking Threat
             total_npxg += unp90(s.npxg_p90, "npxg")
@@ -148,6 +167,8 @@ class CareerBuilder:
             player_id=player_id,
             player_name=player_name,
             position_group=position_group,
+            secondary_position_group=secondary_position_group,
+            position_confidence=position_confidence,
             team_name="Multiple",
             competition="All Competitions",
             season="Career",
@@ -182,6 +203,13 @@ class CareerBuilder:
             pressures_p90=p90(total_pressures),
             recoveries_p90=p90(total_recoveries),
             clearances_p90=p90(total_clearances),
+            tackles_p90=p90(total_tackles),
+            interceptions_p90=p90(total_interceptions),
+            tackles_won_p90=p90(total_tackles_won),
+            dribbled_past_p90=p90(total_dribbled_past),
+            errors_leading_to_shot_p90=p90(total_errors_leading_to_shot),
+            aerials_won_p90=p90(total_aerials_won),
+            aerials_total_p90=p90(total_aerials_total),
 
             # Attacking Threat
             npxg_p90=p90(total_npxg),
@@ -189,6 +217,27 @@ class CareerBuilder:
             xg_per_shot=round(total_xg / total_shots, 3) if total_shots > 0 else 0.0,
             shot_accuracy_pct=pct(total_shots_on_target, total_shots),
             goals_minus_xg=round(total_goals - total_xg, 3),
-
-            positions_played_count=total_positions_played
+            positions_played_count=total_positions_played,
+            raw_metrics={
+                "goals": int(round(total_goals)),
+                "goal_assists": int(round(total_goal_assists)),
+                "shot_assists": int(round(total_shot_assists)),
+                "total_shots": int(round(total_shots)),
+                "shots_on_target": int(round(total_shots_on_target)),
+                "total_passes": int(round(total_passes)),
+                "accurate_passes": int(round(total_accurate_passes)),
+                "progressive_passes": int(round(total_progressive_passes)),
+                "progressive_carries": int(round(total_progressive_carries)),
+                "total_dribbles": int(round(total_dribbles)),
+                "dribbles_completed": int(round(total_successful_dribbles)),
+                "pressures": int(round(total_pressures)),
+                "ball_recoveries": int(round(total_recoveries)),
+                "clearances": int(round(total_clearances)),
+                "tackles": int(round(total_tackles)),
+                "interceptions": int(round(total_interceptions)),
+                "aerials_won": int(round(total_aerials_won)),
+                "aerials_total": int(round(total_aerials_total)),
+                "xg_total": round(total_xg, 3),
+                "npxg_total": round(total_npxg, 3),
+            }
         )

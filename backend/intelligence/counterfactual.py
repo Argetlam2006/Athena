@@ -7,14 +7,14 @@ The backbone of Recruitment, Squad Planning, and Dependency Analysis.
 
 
 from backend.intelligence.team import aggregate_capabilities
-from shared.schemas import CounterfactualResult, PlayerProfile, TeamProfile
+from shared.schemas import CollectiveProfile, CounterfactualResult, PlayerProfile
 
 
 class CounterfactualEngine:
 
     @staticmethod
     def simulate_removal(
-        team: TeamProfile, squad: list[PlayerProfile], player_to_remove: PlayerProfile
+        team: CollectiveProfile, squad: list[PlayerProfile], player_to_remove: PlayerProfile
     ) -> list[CounterfactualResult]:
         """
         Simulate the impact of removing a player from the squad.
@@ -47,7 +47,7 @@ class CounterfactualEngine:
 
     @staticmethod
     def simulate_addition(
-        team: TeamProfile, squad: list[PlayerProfile], player_to_add: PlayerProfile
+        team: CollectiveProfile, squad: list[PlayerProfile], player_to_add: PlayerProfile
     ) -> list[CounterfactualResult]:
         """
         Simulate the impact of adding a player to the squad.

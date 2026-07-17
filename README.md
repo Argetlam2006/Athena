@@ -1,116 +1,160 @@
-<div align="center">
-  <h1>◇ Athena</h1>
-  <p><b>An AI-Powered Football Decision Intelligence Platform</b></p>
-  <p>
-    <a href="#overview">Overview</a> •
-    <a href="#evidence-before-ai">Philosophy</a> •
-    <a href="#quick-start">Quick Start</a> •
-    <a href="#architecture">Architecture</a>
-  </p>
-</div>
+# Athena
+
+Athena is a production-quality, deterministic football intelligence platform. It bridges the gap between raw match event data and advanced sporting analytics by employing strict, mathematical reasoning models over which artificial intelligence acts strictly as an explanation layer. Athena is designed to empower analysts, sporting directors, and scouts with transparent, reproducible, and explainable football intelligence.
 
 ---
 
-## Overview
+## Why Athena?
 
-**Athena** is a modern football analytics platform designed to bridge the gap between raw, deterministic event data and explainable artificial intelligence. Rather than relying on black-box LLM analysis, Athena forces AI to act strictly as an *explanation layer* on top of a rigorously validated, deterministic **Football Intelligence Engine**.
+**The Problem**
+Traditional football analytics dashboards often suffer from two extremes: they are either overwhelming grids of raw, uninterpreted numbers that require a trained data scientist to parse, or they are impenetrable "black-box" models (including raw LLMs) that hallucinate insights, invent statistics, and fail to provide deterministic proof for their claims.
 
-## Evidence Before AI
+**The "Evidence Before AI" Philosophy**
+Athena rejects both paradigms. Its core philosophy is **"Evidence Before AI"**. 
+Athena forces AI to act strictly as an *explanation layer* on top of a rigorously validated, deterministic **Football Intelligence Engine**. The system mathematically calculates all capabilities, percentiles, and match compatibilities internally. The AI sandbox is then provided with structured, immutable `EvidencePackets`. It cannot invent numbers; it can only narrate the deterministic evidence produced by the python backend.
 
-Athena's core philosophy is **"Evidence Before AI"**. 
+---
 
-LLMs are prone to hallucinating statistics, especially in highly nuanced domains like football analytics. Athena solves this by implementing a strict, multi-layer firewall:
-1. **Deterministic Processing**: Raw event data is mathematically processed into exactly 8 standard capabilities (e.g., *Ball Progression*, *Chance Creation*).
-2. **Context Engine**: These capabilities are bundled into strongly-typed `EvidencePackets`.
-3. **The AI Sandbox**: The AI (Claude, OpenAI, or Gemini) is restricted via a canonical System Prompt to *only* explain the structured evidence provided to it. It cannot invent numbers. It cannot infer capabilities that lack evidence.
+## Core Capabilities
 
-## Features
-- **Global Data Integration**: Athena automatically discovers and ingests the *complete* publicly available StatsBomb Open Data catalogue (across all competitions and seasons) dynamically, rather than relying on a fixed or hardcoded list of leagues.
-- **Player Intelligence**: Deep capability profiling mapping event actions to overarching tactical skills.
-- **Team Intelligence**: Aggregated squad analytics and tactical style identification.
-- **Recruitment Intelligence**: Semantic player search utilizing deterministic fit-scoring algorithms.
+- **Football Intelligence Engine (FIE)**: Synthesizes raw event data into canonical capability scores and percentiles.
+- **Collective Intelligence Engine (CIE)**: Aggregates individual player metrics to form cohesive team profiles and identify tactical styles.
+- **Decision Intelligence**: Produces deterministic reasoning (Player and Team Decision Cards) highlighting elite traits, weak areas, and dependencies.
+- **Recruitment Intelligence**: A semantic player search engine utilizing deterministic fit-scoring algorithms based on required capabilities.
+- **Counterfactual Engine**: Analyzes "what-if" scenarios, such as the impact on a team's tactical identity if a key player is replaced.
+- **Explainability Engine**: Translates mathematical vectors into strictly controlled, highly contextual `EvidencePackets` for LLM consumption.
 - **Ask Athena**: A persistent, context-aware AI assistant capable of streaming intelligent explanations based entirely on validated telemetry.
 
-## Download Football Data
+---
 
-Athena does NOT ship with the StatsBomb dataset because the generated data (several gigabytes of JSON and Parquet files) is intentionally excluded from GitHub to keep the repository lightweight.
+## System Architecture
 
-However, you only need to run a single command to completely bootstrap the platform. The `scripts/bootstrap.py` script automatically:
-1. Discovers and downloads every available competition, season, and match from the StatsBomb Open Data catalogue.
-2. Runs the ETL pipeline to clean and normalize the JSON into Parquet.
-3. Builds the DuckDB warehouse and creates all analytical views.
+Athena enforces a strict, unidirectional data flow and clear separation of concerns across its architectural layers.
 
-**Note:** The first time you run this bootstrap, it downloads and processes the complete StatsBomb Open Data catalogue, which may take **20-40 minutes**. However, the script is fully idempotent. Subsequent runs will safely reuse the local dataset whenever possible, skipping redundant downloads and ETL processing.
-
-## Quick Start (Zero Config)
-
-Athena is designed to run perfectly out of the box with zero configuration required, thanks to the built-in `DemoProvider`.
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/yourusername/athena.git
-cd athena
-
-# 2. Install dependencies
-pip install -r requirements.txt
-
-# 3. Data Generation (First Bootstrap)
-python scripts/bootstrap.py
-```
-
-**What happens during Bootstrap?**
-The first time you run this command, Athena will download the dataset, run ETL, build the warehouse, and generate the Intelligence Store. This heavy analytical processing may take **20-40 minutes**.
-
-However, `scripts/bootstrap.py` is entirely idempotent and safe to rerun. Only changed data will trigger a rebuild.
-
-```bash
-# 4. Launch the application
-streamlit run frontend/app.py
-```
-
-**Subsequent Launches**: Because heavy computations are handled by the Intelligence Store during bootstrap, running the Streamlit app on subsequent launches is nearly **instantaneous**.
-
-## Configuration & Real LLM Providers
-
-If you wish to attach a real LLM for dynamic responses, Athena supports Anthropic, OpenAI, and Google Gemini.
-
-1. Copy `.env.example` to `.env`.
-2. Set `ATHENA_PROVIDER` to `auto`, `claude`, `openai`, or `gemini`.
-3. Add your respective API keys (e.g., `OPENAI_API_KEY=sk-...`).
-
-```env
-ATHENA_ENV=development
-ATHENA_PROVIDER=auto
-OPENAI_API_KEY=your_key_here
-```
-
-## Architecture
-
-Athena follows a strictly decoupled architecture designed to feel like a commercial analytics platform like Power BI or Tableau. 
-
-**Data Flow Pipeline:**
 ```text
-StatsBomb → ETL → Warehouse → Football Intelligence Engine → Intelligence Store → Frontend → Ask Athena
+Raw Event Data
+      ↓
+  Warehouse (DuckDB / SQL Views)
+      ↓
+Football Intelligence Engine (Capability Engineering)
+      ↓
+Collective Intelligence Engine (Team Aggregation)
+      ↓
+Reasoning Layer (Decision & Recruitment Engines)
+      ↓
+Evidence Packets (Explanation Engine)
+      ↓
+ LLM Narration
+      ↓
+   Frontend (Streamlit / Service Layer)
 ```
 
-Heavy deterministic analytics execute **only once** during data generation. 
-- **The Intelligence Store**: A set of Parquet files containing mathematically processed Player and Team capability profiles. 
-- **Deterministic**: The Store is rebuilt *only* when the warehouse fingerprint changes.
-- **Excluded from Git**: The generated Intelligence Store is treated exactly like raw JSON or DuckDB data.
+**Layer Responsibilities:**
+1. **Warehouse**: Handles raw data persistence, indexing, and SQL aggregation.
+2. **Intelligence Engines (FIE/CIE)**: Processes statistical aggregates into normalized [0-100] capabilities, archetypes, and tactical identities.
+3. **Reasoning Layer**: Synthesizes capabilities into actionable decisions, gap analyses, and recruitment recommendations.
+4. **Explanation Engine**: Constructs deterministic prompts and `EvidencePackets` for safe LLM consumption.
+5. **Frontend**: A thin presentation layer that coordinates via stable service modules, strictly isolated from backend implementation details.
 
-### Subsystems
-- **Ingestion & Warehouse**: DuckDB-powered analytics store.
-- **Intelligence Framework**: Feature engineering and mathematical capability generation.
-- **Intelligence Store**: O(1) Parquet storage enabling near-instantaneous frontend loading.
-- **Decision Engine**: Recruitment algorithms, comparisons, and tactical fit scoring.
-- **Explanation Platform**: Provider-agnostic Prompt Builders, Context Validators, and Conversation Managers.
-- **Frontend**: A highly modular Streamlit application shell operating purely as a thin presentation layer.
+---
 
-## Tech Stack
-- **Data**: DuckDB, Pandas, NumPy
-- **Backend Core**: Python 3.11+, Pydantic (Dataclasses)
-- **Frontend**: Streamlit
-- **AI Integration**: Anthropic, OpenAI, Google GenAI SDKs
+## Intelligence Pipeline
 
-## License
-Distributed under the MIT License. See `LICENSE` for more information.
+1. **Ingestion**: Raw JSON event data is parsed into Parquet format.
+2. **Aggregation**: DuckDB processes the Parquet files into analytical SQL views (Match, Player, and Team summaries).
+3. **Feature Engineering**: Summary views are translated into `PlayerFeatureVector` objects.
+4. **Capability Generation**: Vectors are scored mathematically to produce a `CapabilityProfile` encompassing traits like Ball Progression, Press Resistance, and Attacking Threat.
+5. **Reasoning Synthesis**: Capabilities are evaluated against positional cohorts to produce `DecisionCards` containing percentile-backed explanations.
+6. **User Delivery**: The UI consumes the final Canonical Schemas (`PlayerProfile`, `PlayerDecisionCard`) via the Frontend Service Layer.
+
+---
+
+## Key Concepts
+
+- **Capabilities**: Standardized [0-100] metrics derived from raw statistical features (e.g., *Chance Creation*, *Ball Security*).
+- **Archetypes**: A classification of a player's primary role (e.g., *Deep Lying Playmaker*, *Target Man*) derived from capability clustering.
+- **Collective Intelligence**: The emergent tactical profile of a team based on the aggregate capabilities of its squad.
+- **Decision Cards**: The final synthesized evaluation of a player or team, highlighting top strengths, bottom weaknesses, and cohort percentiles.
+- **Counterfactual Analysis**: The ability to project changes in team output by swapping players in and out of the squad context.
+- **Recruitment Intelligence**: Ranking players not by simple stats, but by their mathematical compatibility with a desired capability profile.
+- **Replaceability**: Measuring how dependent a team is on a single player for a specific capability (e.g., identifying a critical single point of failure in ball progression).
+- **Tactical Identity**: The dominant playing style of a team (e.g., *Possession-Dominant*, *Counter-Attacking*).
+
+---
+
+## Current Dataset
+
+Out of the box, Athena integrates with the **StatsBomb Open Data** catalogue. 
+- **Coverage**: Competitions spanning multiple decades including the World Cup, Euros, Champions League, La Liga, and FA WSL.
+- **Seasons**: Extensive historical data containing thousands of matches and tens of thousands of unique player profiles.
+
+---
+
+## Dataset Limitations
+
+While the open dataset provides an excellent foundation, users should be aware of the following limitations in the public tier:
+- **Incomplete Competition Coverage**: Not all weeks of a league or all teams are universally covered.
+- **Missing Recent Seasons**: The most current active seasons are often excluded from the free tier.
+- **No Optical Tracking**: Lacks skeletal and broadcast tracking data.
+- **Missing Off-Ball Events**: Primarily focuses on on-ball event data, limiting insights into off-ball movement and spatial occupation.
+- **Limited Transition Metrics**: Precise transition states and pressing triggers are sometimes difficult to infer purely from event data.
+- **Incomplete Pass Networks**: Missing continuous 22-man coordinate data limits absolute pass network fidelity.
+
+---
+
+## Bring Your Own Data
+
+Athena is explicitly **dataset-agnostic**. 
+
+While it ships with a StatsBomb adapter, the Intelligence Architecture is entirely decoupled from the ingestion source. The warehouse pipeline is designed to ingest data from any modern event or tracking provider, including:
+- **Opta**
+- **Wyscout**
+- **StatsBomb 360**
+- **SkillCorner**
+- **Second Spectrum**
+- **Internal club proprietary datasets**
+
+Replacing the data source **does not require redesigning the intelligence architecture**. By writing a simple adapter to map your provider's raw XML/JSON/CSV into Athena's `PlayerRaw` and `MatchRaw` schemas, the entire Football Intelligence Engine, Recruitment Engine, and LLM Explainability layer will function automatically without modification.
+
+---
+
+## Repository Structure
+
+```text
+athena/
+├── backend/
+│   ├── collective/      # Team intelligence & tactical identity
+│   ├── explanation/     # LLM orchestration, prompts & intents
+│   ├── intelligence/    # Player profiling, archetypes & decision cards
+│   └── recommendation/  # Recruitment & counterfactual logic
+├── data/
+│   ├── raw/             # Raw JSON event data
+│   └── warehouse/       # Processed Parquet & DuckDB indices
+├── frontend/
+│   ├── components/      # UI widgets (Ask Athena, Selectors)
+│   ├── data/            # Frontend Service Layer (API Facade)
+│   ├── workspaces/      # Dashboard, Player, Team, Recruitment Views
+│   └── app.py           # Streamlit entry point
+├── scripts/             # Data bootstrapping & ETL pipelines
+├── shared/              # Canonical Schemas & configuration
+└── tests/               # Unit, Integration & Regression suites
+```
+
+---
+
+## Design Principles
+
+- **Evidence Before AI**: The LLM narrates; it never calculates.
+- **Deterministic Reasoning**: All insights must be traceable back to mathematical percentiles and raw features.
+- **Single Source of Truth**: Unified canonical schemas (`PlayerProfile`, `CollectiveProfile`) are used universally.
+- **Separation of Concerns**: The Frontend Service layer isolates the UI from Backend Engines and Warehouse internals.
+- **Stable Public APIs**: Consumer layers only interact with public contracts (`PlayerDecisionCard`, `CapabilityExplanation`).
+
+---
+
+## Future Roadmap
+
+- **Optical Tracking Integration**: Expanding the ETL layer to ingest spatial and tracking broadcast data for off-ball analysis.
+- **Advanced Counterfactuals**: Implementing dynamic squad-building workspaces for real-time scenario simulation.
+- **Expanded Tactical Identities**: Enhancing Collective Intelligence to support more granular phase-of-play styles (e.g., High-Block Pressing vs Mid-Block Rest Defense).
+- **Dynamic Cohort Filtering**: Allowing users to filter percentile calculations by specific leagues, age brackets, or timeframes on the fly.

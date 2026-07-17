@@ -45,6 +45,17 @@ POSITION_GROUP_DISPLAY: dict[str, str] = {
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Broad Position Mappings (for Recruitment & UI Filtering)
+# ─────────────────────────────────────────────────────────────────────────────
+
+BROAD_POSITION_MAP: dict[str, list[str]] = {
+    "Goalkeeper": ["Goalkeeper"],
+    "Defender": ["Center Back", "Fullback"],
+    "Midfielder": ["Defensive Midfielder", "Central Midfielder", "Attacking Midfielder"],
+    "Forward": ["Winger", "Center Forward"],
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Data source configuration
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -95,6 +106,17 @@ STATSBOMB_COMPETITIONS: dict[str, int] = {
 
 # Minimum minutes threshold for a player to be included in analytics
 MIN_MINUTES_THRESHOLD: int = 450  # ~5 full matches
+
+# Bayesian Shrinkage Configuration (Phase 16)
+MIN_SAMPLE_MINUTES: int = 90
+SHRINKAGE_TARGET_MINUTES: int = 900
+COHORT_PRIOR_WEIGHT: float = 0.5
+
+# Model Versioning (Phase 16)
+MODEL_VERSION: str = "2.0.0"
+SCHEMA_VERSION: str = "1.5.0"
+WEIGHTING_VERSION: str = "2.1.0"
+ARCHETYPE_VERSION: str = "1.2.0"
 
 # Percentile computation — use position-relative percentiles
 USE_POSITION_RELATIVE_PERCENTILES: bool = True

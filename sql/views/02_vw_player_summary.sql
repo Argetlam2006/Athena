@@ -117,9 +117,16 @@ defensive_stats AS (
         player_id,
         COUNT(*) FILTER (WHERE type_name = 'Pressure')                       AS pressures,
         COUNT(*) FILTER (WHERE type_name = 'Ball Recovery')                  AS ball_recoveries,
-        COUNT(*) FILTER (WHERE type_name = 'Clearance')                      AS clearances
+        COUNT(*) FILTER (WHERE type_name = 'Clearance')                      AS clearances,
+        COUNT(*) FILTER (WHERE type_name = 'Duel' AND duel_type = 'Tackle')  AS tackles,
+        COUNT(*) FILTER (WHERE type_name = 'Interception')                   AS interceptions,
+        COUNT(*) FILTER (WHERE type_name = 'Duel' AND duel_type = 'Tackle' AND duel_outcome IN ('Won', 'Success In Play', 'Success Out')) AS tackles_won,
+        COUNT(*) FILTER (WHERE type_name = 'Dribbled Past')                  AS dribbled_past,
+        COUNT(*) FILTER (WHERE type_name = 'Error')                          AS errors_leading_to_shot,
+        COUNT(*) FILTER (WHERE aerial_won = true)                            AS aerials_won,
+        COUNT(*) FILTER (WHERE aerial_won = true OR (type_name = 'Duel' AND duel_type = 'Aerial Lost')) AS aerials_total
     FROM   events
-    WHERE  type_name IN ('Pressure', 'Ball Recovery', 'Clearance')
+    WHERE  type_name IN ('Pressure', 'Ball Recovery', 'Clearance', 'Duel', 'Interception', 'Dribbled Past', 'Error', 'Pass', 'Shot', 'Miscontrol')
       AND  player_id IS NOT NULL
     GROUP  BY match_id, player_id
 ),
@@ -187,21 +194,39 @@ player_appearances AS (
 
 -- ─── CTE 8: primary position — the most common starting position for each
 --           player in each competition-season (uses DuckDB's QUALIFY clause)
-primary_positions AS (
+position_counts AS (
     SELECT
         player_id,
         competition_id,
         season_id,
         starting_position     AS position_name,
         COUNT(*)              AS pos_count,
+        SUM(COUNT(*)) OVER (PARTITION BY player_id, competition_id, season_id) AS total_starts,
+        ROW_NUMBER() OVER (
+            PARTITION BY player_id, competition_id, season_id
+            ORDER     BY COUNT(*) DESC
+        ) AS pos_rank,
         COUNT(*) OVER (PARTITION BY player_id, competition_id, season_id) AS positions_played_count
     FROM   player_appearances
     WHERE  starting_position IS NOT NULL
     GROUP  BY player_id, competition_id, season_id, starting_position
-    QUALIFY ROW_NUMBER() OVER (
-        PARTITION BY player_id, competition_id, season_id
-        ORDER     BY COUNT(*) DESC
-    ) = 1
+),
+primary_positions AS (
+    SELECT
+        p1.player_id,
+        p1.competition_id,
+        p1.season_id,
+        p1.position_name,
+        p2.position_name AS secondary_position_name,
+        ROUND(CAST(p1.pos_count AS FLOAT) / CAST(p1.total_starts AS FLOAT), 2) AS position_confidence,
+        p1.positions_played_count
+    FROM position_counts p1
+    LEFT JOIN position_counts p2
+        ON p1.player_id = p2.player_id
+        AND p1.competition_id = p2.competition_id
+        AND p1.season_id = p2.season_id
+        AND p2.pos_rank = 2
+    WHERE p1.pos_rank = 1
 ),
 
 -- ─── Final aggregation ────────────────────────────────────────────────────────
@@ -221,6 +246,8 @@ aggregated AS (
         pa.country_name,
         pa.birth_date,
         pp.position_name,
+        pp.secondary_position_name,
+        COALESCE(pp.position_confidence, 1.0)                                AS position_confidence,
         COALESCE(pp.positions_played_count, 1)                               AS positions_played_count,
 
         -- Appearance volume
@@ -261,6 +288,30 @@ aggregated AS (
         COALESCE(SUM(def.pressures),             0)                          AS pressures,
         COALESCE(SUM(def.ball_recoveries),       0)                          AS ball_recoveries,
         COALESCE(SUM(def.clearances),            0)                          AS clearances,
+        COALESCE(SUM(def.tackles),               0)                          AS tackles,
+        COALESCE(SUM(def.tackles_won),           0)                          AS tackles_won,
+        COALESCE(SUM(def.interceptions),         0)                          AS interceptions,
+        COALESCE(SUM(def.dribbled_past),         0)                          AS dribbled_past,
+        COALESCE(SUM(def.errors_leading_to_shot),0)                          AS errors_leading_to_shot,
+        COALESCE(SUM(def.aerials_won),           0)                          AS aerials_won,
+        COALESCE(SUM(def.aerials_total),         0)                          AS aerials_total,
+
+        -- Possession-adjusted defensive aggregations
+        COALESCE(SUM(def.pressures * (2.0 / (1.0 + EXP(-0.1 * (
+            CASE WHEN pa.team_name = vms.home_team_name THEN vms.home_possession_pct ELSE vms.away_possession_pct END - 50.0
+        ))))), 0)                                                            AS padj_pressures,
+        COALESCE(SUM(def.ball_recoveries * (2.0 / (1.0 + EXP(-0.1 * (
+            CASE WHEN pa.team_name = vms.home_team_name THEN vms.home_possession_pct ELSE vms.away_possession_pct END - 50.0
+        ))))), 0)                                                            AS padj_recoveries,
+        COALESCE(SUM(def.clearances * (2.0 / (1.0 + EXP(-0.1 * (
+            CASE WHEN pa.team_name = vms.home_team_name THEN vms.home_possession_pct ELSE vms.away_possession_pct END - 50.0
+        ))))), 0)                                                            AS padj_clearances,
+        COALESCE(SUM(def.tackles * (2.0 / (1.0 + EXP(-0.1 * (
+            CASE WHEN pa.team_name = vms.home_team_name THEN vms.home_possession_pct ELSE vms.away_possession_pct END - 50.0
+        ))))), 0)                                                            AS padj_tackles,
+        COALESCE(SUM(def.interceptions * (2.0 / (1.0 + EXP(-0.1 * (
+            CASE WHEN pa.team_name = vms.home_team_name THEN vms.home_possession_pct ELSE vms.away_possession_pct END - 50.0
+        ))))), 0)                                                            AS padj_interceptions,
 
         -- ── Pressure / volume ────────────────────────────────────────────────
         COALESCE(SUM(prs.total_events),          0)                          AS total_events,
@@ -282,13 +333,14 @@ aggregated AS (
                                      AND pa.player_id       = def.player_id
     LEFT JOIN  pressure_stats     prs ON pa.match_id        = prs.match_id
                                      AND pa.player_id       = prs.player_id
+    LEFT JOIN  vw_match_summary   vms ON pa.match_id        = vms.match_id
     GROUP BY
         pa.player_id, pa.player_name, pa.player_nickname,
         pa.team_id,   pa.team_name,
         pa.competition_id, pa.competition_name,
         pa.season_id, pa.season_name,
         pa.height_cm, pa.weight_kg, pa.country_name, pa.birth_date,
-        pp.position_name, pp.positions_played_count
+        pp.position_name, pp.secondary_position_name, pp.position_confidence, pp.positions_played_count
 )
 
 SELECT
@@ -302,6 +354,8 @@ SELECT
     season_id,
     season_name,
     position_name,
+    secondary_position_name,
+    position_confidence,
     country_name,
     height_cm,
     weight_kg,
@@ -356,6 +410,18 @@ SELECT
     pressures,
     ball_recoveries,
     clearances,
+    tackles,
+    tackles_won,
+    interceptions,
+    dribbled_past,
+    errors_leading_to_shot,
+    aerials_won,
+    aerials_total,
+    padj_pressures,
+    padj_recoveries,
+    padj_clearances,
+    padj_tackles,
+    padj_interceptions,
 
     -- ── Pressure ────────────────────────────────────────────────────────────
     events_under_pressure,
@@ -379,9 +445,16 @@ SELECT
     ROUND(through_balls * 90.0 / NULLIF(minutes_played, 0), 3)               AS through_balls_p90,
     ROUND(shot_assists * 90.0 / NULLIF(minutes_played, 0), 3)                AS shot_assists_p90,
     ROUND(goal_assists * 90.0 / NULLIF(minutes_played, 0), 3)                AS goal_assists_p90,
-    ROUND(pressures * 90.0 / NULLIF(minutes_played, 0), 2)                   AS pressures_p90,
-    ROUND(ball_recoveries * 90.0 / NULLIF(minutes_played, 0), 2)             AS recoveries_p90,
-    ROUND(clearances * 90.0 / NULLIF(minutes_played, 0), 2)                  AS clearances_p90,
+    ROUND(padj_pressures * 90.0 / NULLIF(minutes_played, 0), 2)              AS pressures_p90,
+    ROUND(padj_recoveries * 90.0 / NULLIF(minutes_played, 0), 2)             AS recoveries_p90,
+    ROUND(padj_clearances * 90.0 / NULLIF(minutes_played, 0), 2)             AS clearances_p90,
+    ROUND(padj_tackles * 90.0 / NULLIF(minutes_played, 0), 2)                AS tackles_p90,
+    ROUND(padj_interceptions * 90.0 / NULLIF(minutes_played, 0), 2)          AS interceptions_p90,
+    ROUND(tackles_won * 90.0 / NULLIF(minutes_played, 0), 2)                 AS tackles_won_p90,
+    ROUND(dribbled_past * 90.0 / NULLIF(minutes_played, 0), 2)               AS dribbled_past_p90,
+    ROUND(errors_leading_to_shot * 90.0 / NULLIF(minutes_played, 0), 3)      AS errors_leading_to_shot_p90,
+    ROUND(aerials_won * 90.0 / NULLIF(minutes_played, 0), 2)                 AS aerials_won_p90,
+    ROUND(aerials_total * 90.0 / NULLIF(minutes_played, 0), 2)               AS aerials_total_p90,
     ROUND(events_under_pressure * 90.0 / NULLIF(minutes_played, 0), 2)       AS events_under_pressure_p90
 
 FROM   aggregated

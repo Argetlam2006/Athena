@@ -230,6 +230,10 @@ def sample_events() -> pd.DataFrame:
             "dribble_outcome": None,
             "dribble_overrun": False,
             "dribble_nutmeg": False,
+            # Defensive Activity nulls
+            "duel_type": None,
+            "duel_outcome": None,
+            "aerial_won": False,
         }
         base.update(kwargs)
         eid += 1

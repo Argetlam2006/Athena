@@ -21,7 +21,7 @@ class EvidencePacket:
     source: str  # e.g., "capability:ball_progression", "signal:elite_goal_scorer"
     title: str
     confidence: float
-    supporting_metrics: dict[str, float] = field(default_factory=dict)
+    supporting_metrics: list[dict[str, Any]] = field(default_factory=list)
     supporting_signals: list[str] = field(default_factory=list)
     optional_caveats: list[str] = field(default_factory=list)
 
@@ -58,6 +58,12 @@ class TeamExplanationContext:
     average_age: float
 
     style_label: str
+
+    # Phase 15 Collective Intelligence Fields
+    collective_identity: dict[str, Any] = field(default_factory=dict)
+    concentration_risks: list[dict[str, Any]] = field(default_factory=list)
+    system_bottlenecks: list[dict[str, Any]] = field(default_factory=list)
+    key_fragilities: list[dict[str, Any]] = field(default_factory=list)
 
     evidence_packets: list[EvidencePacket] = field(default_factory=list)
 

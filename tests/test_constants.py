@@ -27,11 +27,11 @@ class TestCapabilityConstants:
         "press_resistance",
         "defensive_activity",
         "attacking_threat",
-        "physical_availability",
     }
 
-    def test_exactly_seven_capabilities(self) -> None:
-        assert len(CORE_CAPABILITIES) == 7, (
+    def test_exactly_six_capabilities(self):
+        """Must define exactly 6 core capabilities."""
+        assert len(CORE_CAPABILITIES) == 6, (
             f"Expected 7 capabilities, got {len(CORE_CAPABILITIES)}"
         )
 

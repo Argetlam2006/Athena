@@ -1,6 +1,6 @@
 from backend.intelligence.team import build_team_profile
 from frontend.data.players import get_player_index, get_player_profile
-from frontend.data.teams import get_all_teams
+from frontend.data.teams import get_all_collectives
 from shared.schemas import ProfileType
 
 
@@ -8,7 +8,7 @@ def validate_team_intelligence():
     print("\n--- Validating Team Intelligence ---")
 
     # Get a list of teams
-    teams = get_all_teams()
+    teams = get_all_collectives()
 
     # Find Barcelona and another team (e.g., Eibar or Almeria)
     barca = next((t for t in teams if "Barcelona" in t.team_name), None)
@@ -48,24 +48,28 @@ def validate_team_intelligence():
     )
 
     print("\nAggregated Capabilities:")
-    print(f"Ball Security: {team_prof.avg_ball_security:.1f}")
-    print(f"Chance Creation: {team_prof.avg_chance_creation:.1f}")
-    print(f"Ball Progression: {team_prof.avg_ball_progression:.1f}")
-    print(f"Attacking Threat: {team_prof.avg_attacking_threat:.1f}")
-    print(f"Defensive Activity: {team_prof.avg_defensive_activity:.1f}")
+    print(f"Ball Security: {team_prof.avg_capabilities.get('ball_security', 0.0):.1f}")
+    print(f"Chance Creation: {team_prof.avg_capabilities.get('chance_creation', 0.0):.1f}")
+    print(f"Ball Progression: {team_prof.avg_capabilities.get('ball_progression', 0.0):.1f}")
+    print(f"Attacking Threat: {team_prof.avg_capabilities.get('attacking_threat', 0.0):.1f}")
+    print(f"Defensive Activity: {team_prof.avg_capabilities.get('defensive_activity', 0.0):.1f}")
 
-    print(f"\nTactical Identity: {team_prof.style_label}")
+    identity = team_prof.identity.primary_identity if team_prof.identity else "Balanced"
+    print(f"\nTactical Identity: {identity}")
+
+    # 3. Check tactical identity logic (Barcelona should be Possession)
+    # We allow "Balanced" if the sample is small, but let's test the mapping.
 
     # Deterministic checks
-    if team_prof.avg_ball_security < 50.0:
+    if team_prof.avg_capabilities.get('ball_security', 0.0) < 50.0:
         print("[FAIL] Barcelona's aggregated ball security is too low.")
     else:
         print("[PASS] Barcelona possesses expected high ball security.")
 
-    if team_prof.style_label not in ["Possession-Dominant", "Balanced", "High Press", "Direct and Progressive"]:
-        print(f"[FAIL] Tactical Identity '{team_prof.style_label}' is unusual for Barcelona.")
+    if identity not in ["Possession-Dominant", "Balanced", "High Press", "Direct and Progressive"]:
+        print(f"[FAIL] Tactical Identity '{identity}' is unusual for Barcelona.")
     else:
-        print(f"[PASS] Tactical Identity '{team_prof.style_label}' is acceptable.")
+        print(f"[PASS] Tactical Identity '{identity}' is acceptable.")
 
 if __name__ == "__main__":
     validate_team_intelligence()

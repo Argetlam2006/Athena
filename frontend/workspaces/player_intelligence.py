@@ -14,46 +14,39 @@ def render_decision_card(player) -> None:
     if not player.capability_profile:
         return
 
-    from backend.intelligence.decision import DecisionEngine
-    from frontend.data.players import get_players_by_position
+    from frontend.data.player_service import get_player_decision_card
 
-    # Use positional peers as the dynamic cohort
-    cohort = get_players_by_position(player.position_group)
-    card = DecisionEngine.build_player_decision_card(player, cohort)
+    with st.spinner("Analyzing player profile..."):
+        card = get_player_decision_card(player)
 
     def render_cap_explanation(exp):
         drivers_html = "".join([f"<li><strong>{k}:</strong> {v}</li>" for k, v in exp.drivers.items()])
-        return f"""
-        <div style="margin-bottom: 0.5rem;">
-            <strong style="color: #f9fafb;">{exp.capability_name} ({exp.score})</strong>
-            <ul style="margin: 0; padding-left: 1.2rem; color: #9ca3af; font-size: 0.85rem;">
-                {drivers_html}
-            </ul>
-        </div>
-        """
+        return f"""<div style="margin-bottom: 0.5rem;">
+<strong style="color: #f9fafb;">{exp.capability_name} ({exp.score})</strong>
+<ul style="margin: 0; padding-left: 1.2rem; color: #9ca3af; font-size: 0.85rem;">
+{drivers_html}
+</ul>
+</div>"""
 
     elite_html = "".join([render_cap_explanation(e) for e in card.elite_traits]) if card.elite_traits else "<p style='color: #9ca3af; font-size: 0.9rem;'>No elite outliers identified against positional peers.</p>"
     weak_html = "".join([render_cap_explanation(w) for w in card.weak_areas]) if card.weak_areas else "<p style='color: #9ca3af; font-size: 0.9rem;'>No significant weaknesses against positional peers.</p>"
 
-    summary = f"""
-    <div class="card-container" style="background: rgba(99, 102, 241, 0.05); border-color: rgba(99, 102, 241, 0.2);">
-        <h3 style="margin-top: 0; color: #e5e7eb;">Player Decision Card</h3>
-        <p style="color: #d1d5db; line-height: 1.6;">
-            <strong>{player.player_name}</strong> operates as a <strong>{card.primary_role}</strong>.
-        </p>
-
-        <div style="display: flex; gap: 2rem; margin-top: 1rem;">
-            <div style="flex: 1;">
-                <h4 style="color: #10b981; margin-bottom: 0.5rem;">Elite Traits</h4>
-                {elite_html}
-            </div>
-            <div style="flex: 1;">
-                <h4 style="color: #ef4444; margin-bottom: 0.5rem;">Weak Areas</h4>
-                {weak_html}
-            </div>
-        </div>
-    </div>
-    """
+    summary = f"""<div class="card-container" style="background: rgba(99, 102, 241, 0.05); border-color: rgba(99, 102, 241, 0.2);">
+<h3 style="margin-top: 0; color: #e5e7eb;">Player Decision Card</h3>
+<p style="color: #d1d5db; line-height: 1.6;">
+<strong>{player.player_name}</strong> operates as a <strong>{card.primary_role}</strong>.
+</p>
+<div style="display: flex; gap: 2rem; margin-top: 1rem;">
+<div style="flex: 1;">
+<h4 style="color: #10b981; margin-bottom: 0.5rem;">Elite Traits</h4>
+{elite_html}
+</div>
+<div style="flex: 1;">
+<h4 style="color: #ef4444; margin-bottom: 0.5rem;">Weak Areas</h4>
+{weak_html}
+</div>
+</div>
+</div>"""
     st.markdown(summary, unsafe_allow_html=True)
 
 
@@ -82,7 +75,7 @@ def render() -> None:
         )
         return
 
-    from frontend.data.players import get_player_career
+    from frontend.data.player_service import get_player_career
     career = get_player_career(state.selected_player_id)
 
     if not career:
@@ -118,7 +111,7 @@ def render() -> None:
     st.markdown("<div style='margin-top: 2rem;'></div>", unsafe_allow_html=True)
 
     # Main Profile Header
-    col1, col2 = st.columns([2, 1])
+    col1, col_arch = st.columns([2, 1])
     with col1:
         # Construct header metadata without placeholders
         metadata_parts = []
@@ -140,125 +133,159 @@ def render() -> None:
         metadata_str = " • ".join(metadata_parts)
 
         st.markdown(
-            f"""
-        <h2 style="margin: 0; color: #f9fafb;">{player.player_name}</h2>
-        <div style="color: #9ca3af; font-size: 1.1rem; margin-bottom: 1rem;">
-            {metadata_str}
-            <span style="font-size: 0.8rem; background: #374151; padding: 0.1rem 0.5rem; border-radius: 4px; margin-left: 0.5rem;">Dataset Context: Latest available season {player.season}</span>
-        </div>
-        """,
+            f"""<h2 style="margin: 0; color: #f9fafb;">{player.player_name}</h2>
+<div style="color: #9ca3af; font-size: 1.1rem; margin-bottom: 1rem;">
+{metadata_str}
+<span style="font-size: 0.8rem; background: #374151; padding: 0.1rem 0.5rem; border-radius: 4px; margin-left: 0.5rem;">Dataset Context: Latest available season {player.season}</span>
+</div>""",
             unsafe_allow_html=True,
         )
-    with col2:
-        if player.archetype:
-            st.markdown(
-                f"""
-            <div style="text-align: right;">
-                <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: #4b5563;">Role Classification</div>
-                <div style="font-size: 1.2rem; font-weight: 600; color: #818cf8;">{player.archetype}</div>
-                <div style="font-size: 0.85rem; color: #6b7280;">{player.archetype_description}</div>
-            </div>
-            """,
-                unsafe_allow_html=True,
-            )
+    with col_arch:
+        st.markdown(
+            f"""<div style="background: rgba(30, 41, 59, 0.5); padding: 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); text-align: center;">
+<div style="font-size: 0.75rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Playing Style</div>
+<div style="font-size: 1.2rem; font-weight: 600; color: #818cf8;">{player.display_archetype}</div>
+<div style="font-size: 0.85rem; color: #6b7280;">{player.archetype_description}</div>
+</div>""",
+            unsafe_allow_html=True,
+        )
+
+        from backend.intelligence.roles import get_role_family
+        role_family = get_role_family(player.display_archetype)
+        st.markdown(
+            f"""<div style="margin-top: 0.5rem; background: rgba(30, 41, 59, 0.5); padding: 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); text-align: center;">
+<div style="font-size: 0.75rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Role Family</div>
+<div style="font-size: 1.1rem; font-weight: 600; color: #10b981;">{role_family}</div>
+</div>""",
+            unsafe_allow_html=True,
+        )
 
     render_divider()
 
-    # Explainable Overall Rating
-    cap = player.capability_profile
-    if cap and getattr(cap, "overall_rating", None):
-        st.markdown("<div style='margin-bottom: 1rem;'></div>", unsafe_allow_html=True)
-        # Determine rating label
-        r = cap.overall_rating
-        if r >= 85:
-            rating_label = "Elite"
-            rating_color = "#10b981"
-        elif r >= 75:
-            rating_label = "Excellent"
-            rating_color = "#3b82f6"
-        elif r >= 60:
-            rating_label = "Good"
-            rating_color = "#f59e0b"
-        else:
-            rating_label = "Average"
-            rating_color = "#6b7280"
-
-        c1, c2, c3 = st.columns([1, 1, 1])
-        with c1:
-            st.markdown(
-                f"""
-                <div style="text-align: center; background: #1f2937; padding: 1.5rem; border-radius: 8px; border: 1px solid #374151;">
-                    <div style="color: #9ca3af; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;">Overall Rating</div>
-                    <div style="color: {rating_color}; font-size: 3rem; font-weight: 700; line-height: 1;">{r:.1f}</div>
-                    <div style="color: #d1d5db; font-size: 1.1rem; margin-top: 0.5rem; font-weight: 500;">{rating_label}</div>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-        scores = cap.as_radar_dict()
-        sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
-        top_scores = sorted_scores[:3]
-        bottom_scores = sorted_scores[-3:]
-
-        with c2:
-            st.markdown(
-                """
-                <div style="background: #1f2937; padding: 1rem; border-radius: 8px; border: 1px solid #374151; height: 100%;">
-                    <div style="color: #9ca3af; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">Primary Contributors</div>
-                """,
-                unsafe_allow_html=True
-            )
-            for k, _v in top_scores:
-                st.markdown(f"<div style='color: #10b981; font-weight: 500; margin-bottom: 0.25rem;'>+ {k}</div>", unsafe_allow_html=True)
-            st.markdown("</div>", unsafe_allow_html=True)
-
-        with c3:
-            st.markdown(
-                """
-                <div style="background: #1f2937; padding: 1rem; border-radius: 8px; border: 1px solid #374151; height: 100%;">
-                    <div style="color: #9ca3af; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">Lower Contributors</div>
-                """,
-                unsafe_allow_html=True
-            )
-            for k, _v in bottom_scores:
-                st.markdown(f"<div style='color: #ef4444; font-weight: 500; margin-bottom: 0.25rem;'>− {k}</div>", unsafe_allow_html=True)
-            st.markdown("</div>", unsafe_allow_html=True)
-
-        render_divider()
-
-    # Player Snapshot
+    # Player Header Stats
     fv = player.feature_vector
     if fv:
-        raw_metrics = {
+        st.markdown("<div style='margin-bottom: 1rem;'></div>", unsafe_allow_html=True)
+        raw = fv.raw_metrics or {}
+        header_stats = {
             "Matches": fv.matches_played,
             "Minutes": int(fv.minutes_played) if fv.minutes_played is not None else None,
-            "Goals p90": f"{fv.goals_p90:.2f}" if fv.goals_p90 is not None else None,
-            "Assists p90": f"{fv.goal_assists_p90:.2f}" if fv.goal_assists_p90 is not None else None,
-            "xG p90": f"{fv.npxg_p90:.2f}" if fv.npxg_p90 is not None else None,
-            "Prog Passes": f"{fv.progressive_passes_p90:.1f}" if fv.progressive_passes_p90 is not None else None,
-            "Prog Carries": f"{fv.progressive_carries_p90:.1f}" if fv.progressive_carries_p90 is not None else None
         }
+        
+        if "goals" in raw:
+            header_stats["Goals"] = raw["goals"]
+        if "goal_assists" in raw:
+            header_stats["Assists"] = raw["goal_assists"]
+            
+        header_stats["Goals p90"] = f"{fv.goals_p90:.2f}" if fv.goals_p90 is not None else None
+        header_stats["Assists p90"] = f"{fv.goal_assists_p90:.2f}" if fv.goal_assists_p90 is not None else None
 
-        # Omit any None/N/A values
-        metrics = {k: v for k, v in raw_metrics.items() if v is not None}
+        metrics = {k: v for k, v in header_stats.items() if v is not None}
 
         cols = st.columns(len(metrics))
         for i, (label, val) in enumerate(metrics.items()):
             with cols[i]:
                 st.markdown(
-                    f"""
-                    <div style="background: #1f2937; padding: 1rem; border-radius: 8px; border: 1px solid #374151; text-align: center;">
-                        <div style="color: #9ca3af; font-size: 0.8rem; margin-bottom: 0.25rem;">{label}</div>
-                        <div style="color: #f9fafb; font-size: 1.25rem; font-weight: 600;">{val}</div>
-                    </div>
-                    """,
+                    f"""<div style="background: #1f2937; padding: 1rem; border-radius: 8px; border: 1px solid #374151; text-align: center;">
+<div style="color: #9ca3af; font-size: 0.8rem; margin-bottom: 0.25rem;">{label}</div>
+<div style="color: #f9fafb; font-size: 1.25rem; font-weight: 600;">{val}</div>
+</div>""",
                     unsafe_allow_html=True
                 )
 
     render_divider()
 
+    # Dynamic Player Statistics
+    if fv:
+        if role_family == "Goalkeeper":
+            category = "Goalkeeper"
+        elif role_family in ["Progressive Defender", "Traditional Defender"]:
+            category = "Defender"
+        elif role_family in ["Midfield Controller", "Midfield Destroyer"]:
+            category = "Midfielder"
+        elif role_family in ["Creative Attacker", "Goal Scorer"]:
+            category = "Attacker"
+        else:
+            pos = player.position_group.lower() if player.position_group else ""
+            if "goalkeeper" in pos: category = "Goalkeeper"
+            elif "back" in pos or "defender" in pos: category = "Defender"
+            elif "mid" in pos: category = "Midfielder"
+            else: category = "Attacker"
+
+        render_section_header(f"{category} Statistics")
+        st.markdown("<p style='color: #9ca3af; font-size: 0.9rem; margin-bottom: 1.5rem;'>Raw primitive metrics feeding the Intelligence Engine (Per 90).</p>", unsafe_allow_html=True)
+
+        def render_stat_group(title: str, stats: dict[str, float | None]):
+            valid_stats = {k: v for k, v in stats.items() if v is not None}
+            if not valid_stats:
+                return
+            st.markdown(f"#### {title}")
+            scols = st.columns(max(len(valid_stats), 1))
+            for i, (label, val) in enumerate(valid_stats.items()):
+                with scols[i % len(scols)]:
+                    st.markdown(
+                        f"""<div style="border-left: 2px solid #4f46e5; padding-left: 0.75rem; margin-bottom: 1rem;">
+<div style="color: #9ca3af; font-size: 0.75rem; text-transform: uppercase;">{label}</div>
+<div style="color: #e5e7eb; font-size: 1.1rem; font-weight: 500;">{val:.2f}</div>
+</div>""",
+                        unsafe_allow_html=True
+                    )
+            st.markdown("<div style='margin-bottom: 1rem;'></div>", unsafe_allow_html=True)
+
+        if category != "Goalkeeper":
+            if category in ["Attacker", "Midfielder"]:
+                render_stat_group("Attacking Threat", {
+                    "Goals": fv.goals_p90,
+                    "NPxG": fv.npxg_p90,
+                    "Shot Accuracy %": fv.shot_accuracy_pct,
+                    "Goals - xG": fv.goals_minus_xg
+                })
+                render_stat_group("Chance Creation", {
+                    "Assists": fv.goal_assists_p90,
+                    "Shot Assists": fv.shot_assists_p90,
+                    "Through Balls": fv.through_balls_p90,
+                    "Crosses": fv.crosses_p90
+                })
+
+            if category in ["Attacker", "Midfielder", "Defender"]:
+                render_stat_group("Ball Progression", {
+                    "Progressive Passes": fv.progressive_passes_p90,
+                    "Progressive Carries": fv.progressive_carries_p90,
+                    "Carry Distance": fv.carry_distance_p90,
+                    "Switches": fv.switches_p90
+                })
+
+            if category in ["Midfielder", "Defender"]:
+                render_stat_group("Ball Security", {
+                    "Pass Accuracy %": fv.pass_accuracy_pct,
+                    "Dribble Success %": fv.dribble_success_pct,
+                    "Total Passes": fv.passes_p90,
+                    "Avg Pass Length": fv.avg_pass_length_m
+                })
+                render_stat_group("Press Resistance", {
+                    "Pressure %": fv.pressure_pct,
+                    "Events Under Pressure": fv.events_under_pressure_p90
+                })
+
+            if category in ["Defender", "Midfielder", "Attacker"]:
+                render_stat_group("Defensive Activity", {
+                    "Pressures": fv.pressures_p90,
+                    "Recoveries": fv.recoveries_p90,
+                    "Interceptions": fv.interceptions_p90,
+                    "Tackles": fv.tackles_p90,
+                    "Tackles Won": fv.tackles_won_p90,
+                    "Clearances": fv.clearances_p90,
+                    "Aerial Win %": (fv.aerials_won_p90 / fv.aerials_total_p90 * 100) if getattr(fv, 'aerials_total_p90', 0) else 0.0,
+                    "Dribbled Past": fv.dribbled_past_p90,
+                    "Errors -> Shot": fv.errors_leading_to_shot_p90
+                })
+        else:
+            st.info("No advanced metrics available for Goalkeepers in current dataset.")
+
+    render_divider()
+
     # Render Strengths/Weaknesses if Career Overview
+    cap = player.capability_profile
     if player.season == "Career" and cap:
         st.markdown("<div style='margin-bottom: 1rem;'></div>", unsafe_allow_html=True)
         render_section_header("Career Analysis")
@@ -301,38 +328,27 @@ def render() -> None:
     with col_cap:
         render_section_header("Capability Profile")
         if player.capability_profile:
-            # We would render a real radar chart here with Plotly or Altair.
-            # For the structural phase, we render the raw bars.
-            cap = player.capability_profile
-            for metric in [
-                "ball_progression",
-                "chance_creation",
-                "ball_security",
-                "press_resistance",
-                "defensive_activity",
-                "attacking_threat",
-                "physical_availability",
-                "tactical_versatility",
-            ]:
-                val_obj = getattr(cap, metric)
-                if val_obj:
-                    score = val_obj.score
-                    name = metric.replace("_", " ").title()
-                    # A simple CSS bar
-                    st.markdown(
-                        f"""
-                    <div style="margin-bottom: 0.75rem;">
-                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
-                            <span style="color: #d1d5db;">{name}</span>
-                            <span style="color: #9ca3af; font-weight: 600;">{score:.1f}</span>
-                        </div>
-                        <div style="width: 100%; background-color: #1f2937; border-radius: 4px; height: 8px;">
-                            <div style="width: {score}%; background-color: {"#10b981" if score >= 75 else "#3b82f6" if score >= 50 else "#ef4444"}; height: 100%; border-radius: 4px;"></div>
-                        </div>
-                    </div>
-                    """,
-                        unsafe_allow_html=True,
-                    )
+            cap_data = player.capability_profile.as_radar_dict()
+            import altair as alt
+            import pandas as pd
+            cap_df = pd.DataFrame(list(cap_data.items()), columns=["Capability", "Score"])
+
+            bars = alt.Chart(cap_df).mark_bar(color="#6366f1", cornerRadiusTopLeft=4, cornerRadiusTopRight=4).encode(
+                x=alt.X('Capability:N', sort=None, axis=alt.Axis(labelAngle=-45, labelColor="#9ca3af", title=None, labelFontSize=12)),
+                y=alt.Y('Score:Q', scale=alt.Scale(domain=[0, 100]), axis=alt.Axis(grid=True, gridColor="rgba(255,255,255,0.1)", labelColor="#9ca3af", title=None))
+            )
+            text = bars.mark_text(
+                align='center',
+                baseline='bottom',
+                dy=-5,
+                color="#f9fafb",
+                fontSize=13,
+                fontWeight=600
+            ).encode(
+                text=alt.Text('Score:Q', format='.1f')
+            )
+            chart = (bars + text).properties(height=350).configure_view(strokeWidth=0).configure_axis(domain=False, ticks=False)
+            st.altair_chart(chart, use_container_width=True)
         else:
             st.info("Capability profile not generated.")
 

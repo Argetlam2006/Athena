@@ -168,8 +168,26 @@ SELECT
         1
     )                                                                         AS home_shot_share_pct,
 
-    -- Pass volume balance
-    COALESCE(hs.home_passes, 0) + COALESCE(aws.away_passes, 0)               AS total_passes
+    -- Pass volume balance & Possession
+    COALESCE(hs.home_passes, 0) + COALESCE(aws.away_passes, 0)               AS total_passes,
+
+    ROUND(
+        COALESCE(hs.home_passes, 0) * 100.0
+        / NULLIF(
+            COALESCE(hs.home_passes, 0) + COALESCE(aws.away_passes, 0),
+            0
+          ),
+        1
+    )                                                                         AS home_possession_pct,
+
+    ROUND(
+        COALESCE(aws.away_passes, 0) * 100.0
+        / NULLIF(
+            COALESCE(hs.home_passes, 0) + COALESCE(aws.away_passes, 0),
+            0
+          ),
+        1
+    )                                                                         AS away_possession_pct
 
 FROM   matches m
 LEFT   JOIN home_stats hs  ON m.match_id = hs.match_id

@@ -31,7 +31,36 @@ def main() -> int:
         # 2. Extract Vectors
         logger.info("Extracting vectors from Warehouse...")
         df = wh.query.get_player_summary()
-        vectors = map_player_summary_to_vectors(df)
+        comp_vectors = map_player_summary_to_vectors(df)
+
+        from backend.intelligence.season import SeasonBuilder
+        from backend.intelligence.career import CareerBuilder
+        from collections import defaultdict
+        from shared.schemas import ProfileType
+
+        # ARCHITECTURAL INVARIANT: SINGLE SOURCE OF TRUTH PIPELINE
+        # Competition Profiles -> SeasonBuilder -> Season Profiles -> CareerBuilder -> Career Profiles
+        # This deterministic pipeline must never be bypassed.
+        
+        # 2a. Aggregate Competition vectors into Season vectors
+        season_groups = defaultdict(list)
+        for v in comp_vectors:
+            season_groups[(v.player_id, v.season)].append(v)
+            
+        season_vectors = []
+        for comps in season_groups.values():
+            season_vectors.append(SeasonBuilder.build_season_vector(comps))
+            
+        # 2b. Aggregate Season vectors into Career vectors
+        career_groups = defaultdict(list)
+        for v in season_vectors:
+            career_groups[v.player_id].append(v)
+            
+        career_vectors = []
+        for seasons in career_groups.values():
+            career_vectors.append(CareerBuilder.build_career_vector(seasons))
+            
+        vectors = comp_vectors + season_vectors + career_vectors
 
         # 3. Process Intelligence
         logger.info(f"Computing Football Intelligence for {len(vectors)} players...")
@@ -39,7 +68,8 @@ def main() -> int:
         players = engine.process_cohort(vectors)
 
         logger.info("Computing Team Intelligence...")
-        teams = engine.process_all_teams(players)
+        comp_players = [p for p in players if p.profile_type == ProfileType.COMPETITION]
+        teams = engine.process_all_teams(comp_players)
 
         # 4. Save Store
         logger.info("Serializing profiles to Intelligence Store...")

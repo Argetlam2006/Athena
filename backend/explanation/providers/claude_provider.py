@@ -6,7 +6,7 @@ import os
 from collections.abc import Generator
 
 from backend.explanation.prompt_builder import PromptPackage
-from backend.explanation.providers.base import ExplanationProvider
+from backend.explanation.providers.base import ExplanationProvider, GenerationResponse
 
 try:
     from anthropic import Anthropic
@@ -24,9 +24,10 @@ class ClaudeProvider(ExplanationProvider):
         self.client = Anthropic() if self.is_available() else None
 
     def is_available(self) -> bool:
-        return HAS_ANTHROPIC and bool(os.getenv("ANTHROPIC_API_KEY"))
+        key = os.getenv("ANTHROPIC_API_KEY", "")
+        return HAS_ANTHROPIC and bool(key) and "your_" not in key
 
-    def stream(self, prompt: PromptPackage) -> Generator[str, None, None]:
+    def stream(self, prompt: PromptPackage) -> Generator[GenerationResponse, None, None]:
         if not self.is_available() or not self.client:
             raise RuntimeError("Claude provider is not available.")
 
@@ -37,4 +38,31 @@ class ClaudeProvider(ExplanationProvider):
             temperature=self.temperature,
             max_tokens=2048,
         ) as stream:
-            yield from stream.text_stream
+            for text_chunk in stream.text_stream:
+                yield GenerationResponse(
+                    generated_text=text_chunk,
+                    provider="claude",
+                    model=self.model_name
+                )
+
+    def generate(self, prompt: PromptPackage) -> GenerationResponse:
+        if not self.is_available() or not self.client:
+            raise RuntimeError("Claude provider is not available.")
+
+        response = self.client.messages.create(
+            model=self.model_name,
+            system=prompt.system_prompt,
+            messages=[{"role": "user", "content": prompt.user_prompt}],
+            temperature=self.temperature,
+            max_tokens=2048,
+        )
+        
+        usage = dict(response.usage) if response.usage else None
+        
+        return GenerationResponse(
+            generated_text=response.content[0].text,
+            provider="claude",
+            model=self.model_name,
+            finish_reason=response.stop_reason,
+            usage=usage
+        )

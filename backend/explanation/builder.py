@@ -15,11 +15,11 @@ from backend.explanation.context import (
     TeamExplanationContext,
 )
 from shared.schemas import (
+    CollectiveProfile,
     ComparisonResult,
     PlayerProfile,
     RecruitmentCandidate,
     RecruitmentCriteria,
-    TeamProfile,
 )
 
 
@@ -27,10 +27,11 @@ def _build_capability_packet(
     cap_name: str, cap_obj: Any, signals: list[str]
 ) -> EvidencePacket:
     """Builds an EvidencePacket for a specific capability."""
-    metrics = {"score": getattr(cap_obj, "score", 0.0)}
-    if hasattr(cap_obj, "evidence") and isinstance(cap_obj.evidence, dict):
-        for k, v in cap_obj.evidence.items():
-            metrics[k] = v
+    metrics = [{"metric_name": "score", "raw_value": getattr(cap_obj, "score", 0.0), "percentile": getattr(cap_obj, "score", 0.0), "contribution_weight": 1.0, "explanation": "Overall Score"}]
+    if hasattr(cap_obj, "evidence") and isinstance(cap_obj.evidence, list):
+        from dataclasses import asdict
+        for metric in cap_obj.evidence:
+            metrics.append(asdict(metric))
 
     title = cap_name.replace("_", " ").title()
 
@@ -87,14 +88,14 @@ def build_player_context(profile: PlayerProfile) -> PlayerExplanationContext:
         position_group=profile.position_group,
         birth_date=profile.birth_date,
         minutes_played=profile.minutes_played,
-        archetype=profile.archetype or "Unknown",
+        archetype=profile.display_archetype,
         overall_confidence=overall_conf,
         evidence_packets=packets,
     )
 
 
-def build_team_context(profile: TeamProfile) -> TeamExplanationContext:
-    """Builds an explanation context from a TeamProfile."""
+def build_team_context(profile: CollectiveProfile) -> TeamExplanationContext:
+    """Builds an explanation context from a CollectiveProfile."""
     packets = []
 
     # We create evidence packets for the aggregated capabilities
@@ -104,26 +105,52 @@ def build_team_context(profile: TeamProfile) -> TeamExplanationContext:
 
 
     for cap_name in cap_names:
-        score = getattr(profile, f"avg_{cap_name}", None)
+        score = profile.avg_capabilities.get(cap_name, None)
         if score is not None:
             packets.append(
                 EvidencePacket(
                     source=f"capability:{cap_name}",
                     title=f"{cap_name.replace('_', ' ').title()} Capability (Squad Avg)",
                     confidence=1.0,
-                    supporting_metrics={"score": score},
+                    supporting_metrics=[{"metric_name": "score", "raw_value": score, "percentile": score, "contribution_weight": 1.0, "explanation": "Average squad capability"}],
                     supporting_signals=[],
                 )
             )
+
+    identity_dict = {
+        "primary": profile.identity.primary_identity if profile.identity else "Unknown",
+        "secondary": profile.identity.secondary_identity if profile.identity else None,
+        "emergent_traits": profile.identity.emergent_traits if profile.identity else []
+    }
+
+    concentration = [
+        {"capability": c.capability_name, "hhi": c.hhi_score, "is_over_centralized": c.is_over_centralized, "top_contributors": c.top_contributors}
+        for c in profile.concentration if c.is_over_centralized
+    ]
+
+    bottlenecks = [
+        {"upstream": b.upstream_capability, "downstream": b.downstream_capability, "severity": b.severity, "diagnosis": b.diagnosis}
+        for b in profile.bottlenecks
+    ]
+
+    # Top 3 fragilities
+    fragilities = [
+        {"player_name": f.player_name, "replaceability_index": f.replaceability_index, "structural_deficit": f.structural_deficit}
+        for f in sorted(profile.fragility_map, key=lambda x: x.structural_deficit, reverse=True)[:3]
+    ]
 
     return TeamExplanationContext(
         team_id=profile.team_id,
         team_name=profile.team_name,
         competition=profile.competition,
         season=profile.season,
-        squad_size=profile.squad_size,
-        average_age=profile.avg_age,
-        style_label=profile.style_label or "Balanced",
+        squad_size=20, # Fixed for now or computed
+        average_age=25.0, # Fixed for now
+        style_label=identity_dict["primary"],
+        collective_identity=identity_dict,
+        concentration_risks=concentration,
+        system_bottlenecks=bottlenecks,
+        key_fragilities=fragilities,
         evidence_packets=packets,
     )
 
