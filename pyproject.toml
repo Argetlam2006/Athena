@@ -54,6 +54,13 @@ extend-exclude = '''
 [tool.ruff]
 line-length = 88
 target-version = "py310"
+exclude = [
+    ".venv",
+    "data/",
+    "docs/",
+]
+
+[tool.ruff.lint]
 select = [
     "E",   # pycodestyle errors
     "W",   # pycodestyle warnings
@@ -67,13 +74,8 @@ ignore = [
     "E501",  # line too long (handled by black)
     "B008",  # do not perform function calls in default arguments
 ]
-exclude = [
-    ".venv",
-    "data/",
-    "docs/",
-]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 known-first-party = ["backend", "frontend", "shared"]
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -91,7 +93,7 @@ markers = [
     "performance: tests measuring performance budget/latency",
 ]
 filterwarnings = [
-    "ignore:.*google.generativeai.*:FutureWarning",
+    "ignore::FutureWarning",
 ]
 
 # ─────────────────────────────────────────────────────────────────────────────

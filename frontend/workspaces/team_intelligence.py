@@ -58,7 +58,6 @@ def render() -> None:
         unsafe_allow_html=True,
     )
 
-
     squad_size = team.squad_size
     avg_age = team.avg_age
 

@@ -1,4 +1,3 @@
-
 import pytest
 
 from backend.intelligence.store import IntelligenceStore
@@ -13,7 +12,9 @@ def test_display_ratings_within_calibrated_ranges():
     store = IntelligenceStore()
     players = store.get_all_players()
     if not players:
-        pytest.skip("Intelligence Store not found. Run: python scripts/maintenance/bootstrap.py before running integration tests.")
+        pytest.skip(
+            "Intelligence Store not found. Run: python scripts/maintenance/bootstrap.py before running integration tests."
+        )
 
     display_ratings = [
         p.rating_presentation.display_rating for p in players if p.rating_presentation
@@ -29,7 +30,9 @@ def test_default_retrieval_returns_unique_footballers():
     # Find position where Cruyff plays (Center Forward)
     forwards = store.get_players_by_position("Center Forward")
     if not forwards:
-        pytest.skip("Intelligence Store not found. Run: python scripts/maintenance/bootstrap.py before running integration tests.")
+        pytest.skip(
+            "Intelligence Store not found. Run: python scripts/maintenance/bootstrap.py before running integration tests."
+        )
 
     cruyffs = [p for p in forwards if "Cruyff" in p.player_name]
     assert len(cruyffs) <= 1, f"Expected 0 or 1 canonical Cruyff, found {len(cruyffs)}!"
@@ -44,10 +47,14 @@ def test_explicit_temporal_retrieval():
     seasons = store.get_players_by_position("Center Forward", ProfileType.SEASON)
     cruyffs_season = [p for p in seasons if "Cruyff" in p.player_name]
     if not seasons:
-        pytest.skip("Intelligence Store not found. Run: python scripts/maintenance/bootstrap.py before running integration tests.")
+        pytest.skip(
+            "Intelligence Store not found. Run: python scripts/maintenance/bootstrap.py before running integration tests."
+        )
     assert len(cruyffs_season) > 1, "Expected multiple seasons for Cruyff."
 
-    competitions = store.get_players_by_position("Center Forward", ProfileType.COMPETITION)
+    competitions = store.get_players_by_position(
+        "Center Forward", ProfileType.COMPETITION
+    )
     cruyffs_comp = [p for p in competitions if "Cruyff" in p.player_name]
     assert len(cruyffs_comp) > 1, "Expected multiple competitions for Cruyff."
 
@@ -62,7 +69,9 @@ def test_recruitment_never_returns_duplicates():
     try:
         candidates = search_candidates(criteria)
     except Exception:
-        pytest.skip("Intelligence Store not found. Run: python scripts/maintenance/bootstrap.py before running integration tests.")
+        pytest.skip(
+            "Intelligence Store not found. Run: python scripts/maintenance/bootstrap.py before running integration tests."
+        )
 
     seen_players = set()
     for c in candidates:

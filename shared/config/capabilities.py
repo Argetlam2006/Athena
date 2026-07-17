@@ -2,7 +2,6 @@
 shared/config/capabilities.py — Capability and metric definitions.
 """
 
-
 CORE_CAPABILITIES: list[str] = [
     "ball_progression",
     "chance_creation",

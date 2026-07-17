@@ -17,6 +17,7 @@ Pipeline Sequence:
 
 import subprocess
 import sys
+from importlib.util import find_spec
 from pathlib import Path
 
 # Identify project root (scripts/maintenance/bootstrap.py -> parents[2] is root)
@@ -43,15 +44,12 @@ def run_command(command: list[str], description: str) -> None:
 def verify_dependencies() -> None:
     """Verify core dependencies are installed before starting."""
     print(">> Step 0: Verifying Dependencies...")
-    try:
-        import pandas
-        import duckdb
-        import pydantic
-        import streamlit
-    except ImportError as e:
-        print(f"\nFAIL Missing dependency: {e.name}")
-        print("Please run: pip install -r requirements.txt")
-        sys.exit(1)
+    required = ["pandas", "duckdb", "pydantic", "streamlit"]
+    for pkg in required:
+        if find_spec(pkg) is None:
+            print(f"\nFAIL Missing dependency: {pkg}")
+            print("Please run: pip install -r requirements.txt")
+            sys.exit(1)
     print("OK Dependencies verified.\n")
 
 
@@ -59,8 +57,12 @@ def validate_artifacts() -> None:
     """Verify that the generated artifacts actually exist."""
     print(">> Step 5: Validating Generated Artifacts...")
     duckdb_path = PROJECT_ROOT / "data" / "warehouse" / "athena.duckdb"
-    player_profiles_path = PROJECT_ROOT / "data" / "warehouse" / "player_profiles.parquet"
-    collective_profiles_path = PROJECT_ROOT / "data" / "warehouse" / "collective_profiles.json"
+    player_profiles_path = (
+        PROJECT_ROOT / "data" / "warehouse" / "player_profiles.parquet"
+    )
+    collective_profiles_path = (
+        PROJECT_ROOT / "data" / "warehouse" / "collective_profiles.json"
+    )
 
     missing = []
     if not duckdb_path.exists():
@@ -69,14 +71,20 @@ def validate_artifacts() -> None:
         missing.append("player_profiles.parquet")
     if not collective_profiles_path.exists():
         missing.append("collective_profiles.json")
-    
+
     if missing:
         print(f"\nFAIL Validation failed. Missing artifacts: {', '.join(missing)}")
         sys.exit(1)
-        
-    print(f"OK Validated: {duckdb_path.name} ({duckdb_path.stat().st_size / 1024 / 1024:.2f} MB)")
-    print(f"OK Validated: {player_profiles_path.name} ({player_profiles_path.stat().st_size / 1024 / 1024:.2f} MB)")
-    print(f"OK Validated: {collective_profiles_path.name} ({collective_profiles_path.stat().st_size / 1024 / 1024:.2f} MB)")
+
+    print(
+        f"OK Validated: {duckdb_path.name} ({duckdb_path.stat().st_size / 1024 / 1024:.2f} MB)"
+    )
+    print(
+        f"OK Validated: {player_profiles_path.name} ({player_profiles_path.stat().st_size / 1024 / 1024:.2f} MB)"
+    )
+    print(
+        f"OK Validated: {collective_profiles_path.name} ({collective_profiles_path.stat().st_size / 1024 / 1024:.2f} MB)"
+    )
     print("OK Artifacts verified.\n")
 
 
@@ -112,7 +120,7 @@ def main() -> None:
         ["-m", "backend.intelligence.build_store"],
         "Step 4: Building Intelligence Store",
     )
-    
+
     # Step 5: Validate Artifacts
     validate_artifacts()
 

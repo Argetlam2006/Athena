@@ -2,7 +2,6 @@
 frontend/components/ask_athena.py — Ask Athena Contextual Drawer.
 """
 
-
 import streamlit as st
 
 from frontend.data.athena_service import (

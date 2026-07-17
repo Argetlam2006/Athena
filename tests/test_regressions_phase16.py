@@ -16,21 +16,27 @@ def store():
 def test_store_contains_competition_profiles(store):
     comp_profiles = store.get_all_players(ProfileType.COMPETITION)
     if not comp_profiles:
-        pytest.skip("Intelligence Store not found. Run: python scripts/maintenance/bootstrap.py before running integration tests.")
+        pytest.skip(
+            "Intelligence Store not found. Run: python scripts/maintenance/bootstrap.py before running integration tests."
+        )
     assert len(comp_profiles) > 0, "Store is missing Competition profiles"
 
 
 def test_store_contains_season_profiles(store):
     season_profiles = store.get_all_players(ProfileType.SEASON)
     if not season_profiles:
-        pytest.skip("Intelligence Store not found. Run: python scripts/maintenance/bootstrap.py before running integration tests.")
+        pytest.skip(
+            "Intelligence Store not found. Run: python scripts/maintenance/bootstrap.py before running integration tests."
+        )
     assert len(season_profiles) > 0, "Store is missing Season profiles"
 
 
 def test_store_contains_career_profiles(store):
     career_profiles = store.get_all_players(ProfileType.CAREER)
     if not career_profiles:
-        pytest.skip("Intelligence Store not found. Run: python scripts/maintenance/bootstrap.py before running integration tests.")
+        pytest.skip(
+            "Intelligence Store not found. Run: python scripts/maintenance/bootstrap.py before running integration tests."
+        )
     assert len(career_profiles) > 0, "Store is missing Career profiles"
 
 
@@ -48,9 +54,12 @@ def test_dashboard_counts_match_store_metadata(store):
 
 def test_recruitment_returns_non_empty_results():
     from backend.intelligence.store import IntelligenceStore
+
     store = IntelligenceStore()
     if not store.get_all_players(ProfileType.COMPETITION):
-        pytest.skip("Intelligence Store not found. Run: python scripts/maintenance/bootstrap.py before running integration tests.")
+        pytest.skip(
+            "Intelligence Store not found. Run: python scripts/maintenance/bootstrap.py before running integration tests."
+        )
 
     criteria = RecruitmentCriteria(
         position="Central Midfielder", required_capabilities={"ball_progression": 1.0}

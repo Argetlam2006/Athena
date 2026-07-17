@@ -69,9 +69,7 @@ class ContextFormatter:
             ctx_dict = context
         elif hasattr(context, "__dataclass_fields__"):
             ctx_dict = asdict(context)
-        elif hasattr(context, "model_dump") and callable(
-            context.model_dump
-        ):
+        elif hasattr(context, "model_dump") and callable(context.model_dump):
             ctx_dict = context.model_dump()
         elif hasattr(context, "__dict__"):
             ctx_dict = vars(context)

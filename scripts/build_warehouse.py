@@ -4,6 +4,7 @@ from backend.etl.normalize import DuckDBWarehouseBuilder
 
 logging.basicConfig(level=logging.INFO)
 
+
 def main():
     builder = DuckDBWarehouseBuilder()
     builder.build_warehouse()
