@@ -27,6 +27,7 @@ def render() -> None:
     )
 
     from frontend.components.selectors import render_team_selector
+
     render_team_selector(key_prefix="page")
 
     state = get_state()
@@ -57,8 +58,7 @@ def render() -> None:
         unsafe_allow_html=True,
     )
 
-    from frontend.data.player_service import get_all_players
-    
+
     squad_size = team.squad_size
     avg_age = team.avg_age
 
@@ -66,14 +66,13 @@ def render() -> None:
     with col1:
         render_kpi_card("Squad Size", squad_size)
     with col2:
-        render_kpi_card(
-            "Avg Age", f"{avg_age:.1f}" if avg_age else "N/A"
-        )
+        render_kpi_card("Avg Age", f"{avg_age:.1f}" if avg_age else "N/A")
     with col3:
         identity_label = team.identity.primary_identity if team.identity else "Balanced"
         render_kpi_card("Tactical Identity", identity_label)
     with col4:
         from backend.collective.engine import compute_team_grade
+
         grade = compute_team_grade(team)
         render_kpi_card("Capability Rating", grade)
     render_divider()
@@ -84,7 +83,12 @@ def render() -> None:
         card = get_team_decision_card(team_profile)
 
         def render_dependency(dep):
-            top_players_html = "".join([f"<li><strong>{player}:</strong> {pct}% contribution</li>" for player, pct in list(dep.contributions.items())[:3]])
+            top_players_html = "".join(
+                [
+                    f"<li><strong>{player}:</strong> {pct}% contribution</li>"
+                    for player, pct in list(dep.contributions.items())[:3]
+                ]
+            )
             return f"""<div style="margin-bottom: 0.8rem;">
 <strong style="color: #f9fafb;">{dep.capability_name}</strong>
 <ul style="margin: 0; padding-left: 1.2rem; color: #9ca3af; font-size: 0.85rem;">
@@ -92,12 +96,18 @@ def render() -> None:
 </ul>
 </div>"""
 
-        dependencies_html = "".join([render_dependency(d) for d in list(card.dependency_analysis.values())[:3]])
+        dependencies_html = "".join(
+            [render_dependency(d) for d in list(card.dependency_analysis.values())[:3]]
+        )
 
-        gaps_html = "".join([
-            f"<li><strong>{cap}:</strong> {gap} vs Elite Benchmark</li>"
-            for cap, gap in sorted(card.gap_analysis.items(), key=lambda x: x[1])[:3]
-        ])
+        gaps_html = "".join(
+            [
+                f"<li><strong>{cap}:</strong> {gap} vs Elite Benchmark</li>"
+                for cap, gap in sorted(card.gap_analysis.items(), key=lambda x: x[1])[
+                    :3
+                ]
+            ]
+        )
 
         summary = f"""<div class="card-container" style="background: rgba(99, 102, 241, 0.05); border-color: rgba(99, 102, 241, 0.2);">
 <h3 style="margin-top: 0; color: #e5e7eb;">Team Decision Card</h3>
@@ -131,23 +141,49 @@ def render() -> None:
 
         import altair as alt
         import pandas as pd
+
         cap_df = pd.DataFrame(list(cap_data.items()), columns=["Capability", "Score"])
 
-        bars = alt.Chart(cap_df).mark_bar(color="#6366f1", cornerRadiusTopLeft=4, cornerRadiusTopRight=4).encode(
-            x=alt.X('Capability:N', sort=None, axis=alt.Axis(labelAngle=-45, labelColor="#9ca3af", title=None, labelFontSize=12)),
-            y=alt.Y('Score:Q', scale=alt.Scale(domain=[0, 100]), axis=alt.Axis(grid=True, gridColor="rgba(255,255,255,0.1)", labelColor="#9ca3af", title=None))
+        bars = (
+            alt.Chart(cap_df)
+            .mark_bar(color="#6366f1", cornerRadiusTopLeft=4, cornerRadiusTopRight=4)
+            .encode(
+                x=alt.X(
+                    "Capability:N",
+                    sort=None,
+                    axis=alt.Axis(
+                        labelAngle=-45,
+                        labelColor="#9ca3af",
+                        title=None,
+                        labelFontSize=12,
+                    ),
+                ),
+                y=alt.Y(
+                    "Score:Q",
+                    scale=alt.Scale(domain=[0, 100]),
+                    axis=alt.Axis(
+                        grid=True,
+                        gridColor="rgba(255,255,255,0.1)",
+                        labelColor="#9ca3af",
+                        title=None,
+                    ),
+                ),
+            )
         )
         text = bars.mark_text(
-            align='center',
-            baseline='bottom',
+            align="center",
+            baseline="bottom",
             dy=-5,
             color="#f9fafb",
             fontSize=13,
-            fontWeight=600
-        ).encode(
-            text=alt.Text('Score:Q', format='.1f')
+            fontWeight=600,
+        ).encode(text=alt.Text("Score:Q", format=".1f"))
+        chart = (
+            (bars + text)
+            .properties(height=350)
+            .configure_view(strokeWidth=0)
+            .configure_axis(domain=False, ticks=False)
         )
-        chart = (bars + text).properties(height=350).configure_view(strokeWidth=0).configure_axis(domain=False, ticks=False)
         st.altair_chart(chart, use_container_width=True)
 
     with col_depth:
@@ -155,8 +191,16 @@ def render() -> None:
         identity_label = team.identity.primary_identity if team.identity else "Balanced"
 
         # Derive strengths/weaknesses from avg_capabilities
-        strengths = [cap.replace('_', ' ').title() for cap, val in team.avg_capabilities.items() if val >= 80.0]
-        weaknesses = [cap.replace('_', ' ').title() for cap, val in team.avg_capabilities.items() if val <= 60.0]
+        strengths = [
+            cap.replace("_", " ").title()
+            for cap, val in team.avg_capabilities.items()
+            if val >= 80.0
+        ]
+        weaknesses = [
+            cap.replace("_", " ").title()
+            for cap, val in team.avg_capabilities.items()
+            if val <= 60.0
+        ]
 
         st.markdown(
             f"""<div class="card-container">
@@ -178,4 +222,5 @@ This team exhibits strong tendencies aligned with this tactical identity based o
 
     render_divider()
     from frontend.components.ask_athena import render_ask_athena_section
+
     render_ask_athena_section()

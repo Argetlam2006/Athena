@@ -31,6 +31,7 @@ PLAYER_INDEX_PATH = STORE_DIR / "player_index.parquet"
 _player_adapter = TypeAdapter(PlayerProfile)
 _collective_adapter = TypeAdapter(CollectiveProfile)
 
+
 class IntelligenceStore:
     def __init__(self):
         STORE_DIR.mkdir(parents=True, exist_ok=True)
@@ -50,25 +51,27 @@ class IntelligenceStore:
                     counts[t] = con.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]
                 except duckdb.CatalogException:
                     counts[t] = 0
-                    
-            from shared.constants import MODEL_VERSION, SCHEMA_VERSION, WEIGHTING_VERSION, ARCHETYPE_VERSION
-            
+
+            from shared.constants import (
+                ARCHETYPE_VERSION,
+                MODEL_VERSION,
+                SCHEMA_VERSION,
+                WEIGHTING_VERSION,
+            )
+
             return {
                 "row_counts": counts,
                 "model_version": MODEL_VERSION,
                 "schema_version": SCHEMA_VERSION,
                 "weighting_version": WEIGHTING_VERSION,
-                "archetype_version": ARCHETYPE_VERSION
+                "archetype_version": ARCHETYPE_VERSION,
             }
         finally:
             con.close()
 
     def is_valid(self) -> bool:
         """Check if the Intelligence Store is up-to-date with the warehouse."""
-        paths = [
-            PLAYER_PROFILES_PATH,
-            PLAYER_INDEX_PATH, FINGERPRINT_PATH
-        ]
+        paths = [PLAYER_PROFILES_PATH, PLAYER_INDEX_PATH, FINGERPRINT_PATH]
         if not all(p.exists() for p in paths):
             return False
 
@@ -80,14 +83,24 @@ class IntelligenceStore:
         except Exception:
             return False
 
-    def save(self, players: Sequence[PlayerProfile], collectives: Sequence[CollectiveProfile] = None) -> None:
+    def save(
+        self,
+        players: Sequence[PlayerProfile],
+        collectives: Sequence[CollectiveProfile] = None,
+    ) -> None:
         """Serialize profiles and generate lightweight discovery indexes."""
         logger.info("Building Intelligence Store...")
 
         # 1. Full Profiles (Parquet for players)
         if players:
             dicts = []
-            complex_keys = ["capability_profile", "feature_vector", "player_attributes", "rating_presentation", "archetype_profile"]
+            complex_keys = [
+                "capability_profile",
+                "feature_vector",
+                "player_attributes",
+                "rating_presentation",
+                "archetype_profile",
+            ]
             for p in players:
                 d = asdict(p)
                 for key in complex_keys:
@@ -98,24 +111,29 @@ class IntelligenceStore:
             df_players.to_parquet(PLAYER_PROFILES_PATH, engine="pyarrow", index=False)
 
             # Player Metadata Index
-            index_data = [{
-                "player_id": p.player_id,
-                "player_name": p.player_name,
-                "normalized_name": p.player_name.lower(),
-                "team_name": p.team_name,
-                "position": p.position_group,
-                "minutes_played": p.minutes_played,
-                "age": p.age_years,
-                "competition": p.competition,
-                "season": p.season,
-                "profile_type": p.profile_type
-            } for p in players]
-            pd.DataFrame(index_data).to_parquet(PLAYER_INDEX_PATH, engine="pyarrow", index=False)
+            index_data = [
+                {
+                    "player_id": p.player_id,
+                    "player_name": p.player_name,
+                    "normalized_name": p.player_name.lower(),
+                    "team_name": p.team_name,
+                    "position": p.position_group,
+                    "minutes_played": p.minutes_played,
+                    "age": p.age_years,
+                    "competition": p.competition,
+                    "season": p.season,
+                    "profile_type": p.profile_type,
+                }
+                for p in players
+            ]
+            pd.DataFrame(index_data).to_parquet(
+                PLAYER_INDEX_PATH, engine="pyarrow", index=False
+            )
         else:
-            pd.DataFrame().to_parquet(PLAYER_PROFILES_PATH, engine="pyarrow", index=False)
+            pd.DataFrame().to_parquet(
+                PLAYER_PROFILES_PATH, engine="pyarrow", index=False
+            )
             pd.DataFrame().to_parquet(PLAYER_INDEX_PATH, engine="pyarrow", index=False)
-
-
 
         if collectives:
             with open(COLLECTIVE_PROFILES_PATH, "w") as f:
@@ -136,8 +154,6 @@ class IntelligenceStore:
             return pd.DataFrame()
         return pd.read_parquet(PLAYER_INDEX_PATH)
 
-
-
     def get_player(self, player_id: int) -> PlayerProfile | None:
         """O(1) lazy loading via DuckDB predicate pushdown."""
         if not PLAYER_PROFILES_PATH.exists():
@@ -151,7 +167,13 @@ class IntelligenceStore:
                 return None
             dict_row = df.to_dict(orient="records")[0]
 
-            complex_keys = ["capability_profile", "feature_vector", "player_attributes", "rating_presentation", "archetype_profile"]
+            complex_keys = [
+                "capability_profile",
+                "feature_vector",
+                "player_attributes",
+                "rating_presentation",
+                "archetype_profile",
+            ]
             for key in complex_keys:
                 if dict_row.get(key) and isinstance(dict_row[key], str):
                     dict_row[key] = json.loads(dict_row[key])
@@ -175,7 +197,13 @@ class IntelligenceStore:
                 return []
 
             dicts = df.to_dict(orient="records")
-            complex_keys = ["capability_profile", "feature_vector", "player_attributes", "rating_presentation", "archetype_profile"]
+            complex_keys = [
+                "capability_profile",
+                "feature_vector",
+                "player_attributes",
+                "rating_presentation",
+                "archetype_profile",
+            ]
             for d in dicts:
                 for key in complex_keys:
                     if d.get(key) and isinstance(d[key], str):
@@ -187,9 +215,9 @@ class IntelligenceStore:
         finally:
             con.close()
 
-
-
-    def get_players_by_position(self, position: str, profile_type: ProfileType = ProfileType.CAREER) -> list[PlayerProfile]:
+    def get_players_by_position(
+        self, position: str, profile_type: ProfileType = ProfileType.CAREER
+    ) -> list[PlayerProfile]:
         """Load profiles dynamically based on position to avoid full memory loads."""
         if not PLAYER_PROFILES_PATH.exists():
             return []
@@ -201,7 +229,13 @@ class IntelligenceStore:
             if df.empty:
                 return []
             dicts = df.to_dict(orient="records")
-            complex_keys = ["capability_profile", "feature_vector", "player_attributes", "rating_presentation", "archetype_profile"]
+            complex_keys = [
+                "capability_profile",
+                "feature_vector",
+                "player_attributes",
+                "rating_presentation",
+                "archetype_profile",
+            ]
             for d in dicts:
                 for key in complex_keys:
                     if d.get(key) and isinstance(d[key], str):
@@ -213,7 +247,9 @@ class IntelligenceStore:
         finally:
             con.close()
 
-    def get_all_players(self, profile_type: ProfileType = ProfileType.CAREER) -> list[PlayerProfile]:
+    def get_all_players(
+        self, profile_type: ProfileType = ProfileType.CAREER
+    ) -> list[PlayerProfile]:
         """[DEVELOPER ONLY / DEBUGGING] Load all PlayerProfiles."""
         if not PLAYER_PROFILES_PATH.exists():
             return []
@@ -225,7 +261,13 @@ class IntelligenceStore:
             if df.empty:
                 return []
             dicts = df.to_dict(orient="records")
-            complex_keys = ["capability_profile", "feature_vector", "player_attributes", "rating_presentation", "archetype_profile"]
+            complex_keys = [
+                "capability_profile",
+                "feature_vector",
+                "player_attributes",
+                "rating_presentation",
+                "archetype_profile",
+            ]
             for d in dicts:
                 for key in complex_keys:
                     if d.get(key) and isinstance(d[key], str):
@@ -236,8 +278,6 @@ class IntelligenceStore:
             return []
         finally:
             con.close()
-
-
 
     def get_collective(self, team_id: int) -> CollectiveProfile | None:
         """Load Collective Profile from JSON store."""

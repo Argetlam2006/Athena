@@ -23,9 +23,6 @@ def calculate_confidence(
     return min(1.0, float(matches_played) / high_confidence_threshold)
 
 
-
-
-
 def standard_deviation(values: Sequence[float]) -> float:
     """Compute the population standard deviation of a sequence."""
     if not values:
@@ -39,6 +36,6 @@ def euclidean_distance(vector_a: Sequence[float], vector_b: Sequence[float]) -> 
     """Compute Euclidean distance between two vectors of equal length."""
     if len(vector_a) != len(vector_b):
         raise ValueError("Vectors must be of equal length")
-    return math.sqrt(sum((a - b) ** 2 for a, b in zip(vector_a, vector_b, strict=False)))
-
-
+    return math.sqrt(
+        sum((a - b) ** 2 for a, b in zip(vector_a, vector_b, strict=False))
+    )

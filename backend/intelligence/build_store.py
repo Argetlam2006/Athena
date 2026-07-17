@@ -15,6 +15,7 @@ from backend.warehouse.warehouse import Warehouse
 
 logger = get_logger(__name__)
 
+
 def main() -> int:
     try:
         logger.info("Starting Intelligence Store generation...")
@@ -25,7 +26,9 @@ def main() -> int:
 
         force = "--force" in sys.argv
         if not force and store.is_valid():
-            logger.info("Intelligence Store is already up to date with the warehouse. Skipping.")
+            logger.info(
+                "Intelligence Store is already up to date with the warehouse. Skipping."
+            )
             return 0
 
         # 2. Extract Vectors
@@ -33,33 +36,34 @@ def main() -> int:
         df = wh.query.get_player_summary()
         comp_vectors = map_player_summary_to_vectors(df)
 
-        from backend.intelligence.season import SeasonBuilder
-        from backend.intelligence.career import CareerBuilder
         from collections import defaultdict
+
+        from backend.intelligence.career import CareerBuilder
+        from backend.intelligence.season import SeasonBuilder
         from shared.schemas import ProfileType
 
         # ARCHITECTURAL INVARIANT: SINGLE SOURCE OF TRUTH PIPELINE
         # Competition Profiles -> SeasonBuilder -> Season Profiles -> CareerBuilder -> Career Profiles
         # This deterministic pipeline must never be bypassed.
-        
+
         # 2a. Aggregate Competition vectors into Season vectors
         season_groups = defaultdict(list)
         for v in comp_vectors:
             season_groups[(v.player_id, v.season)].append(v)
-            
+
         season_vectors = []
         for comps in season_groups.values():
             season_vectors.append(SeasonBuilder.build_season_vector(comps))
-            
+
         # 2b. Aggregate Season vectors into Career vectors
         career_groups = defaultdict(list)
         for v in season_vectors:
             career_groups[v.player_id].append(v)
-            
+
         career_vectors = []
         for seasons in career_groups.values():
             career_vectors.append(CareerBuilder.build_career_vector(seasons))
-            
+
         vectors = comp_vectors + season_vectors + career_vectors
 
         # 3. Process Intelligence
@@ -81,6 +85,7 @@ def main() -> int:
     except Exception as e:
         logger.error(f"Intelligence Store generation failed: {e}", exc_info=True)
         return 1
+
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -73,13 +73,19 @@ def rank_candidates(
         if criteria.tactical_style:
             tactical_fit = evaluate_tactical_fit(player, criteria.tactical_style)
             # Blend base score and tactical fit
-            fit_score = (base_score * 0.70) + (tactical_fit.overall_compatibility * 0.30)
+            fit_score = (base_score * 0.70) + (
+                tactical_fit.overall_compatibility * 0.30
+            )
         else:
             fit_score = base_score
 
         # 3. Generate Trade-offs and Context
         strengths, trade_offs, explanation_context = generate_tradeoffs(
-            player=player, criteria=criteria, tactical_fit_score=tactical_fit.overall_compatibility if tactical_fit else 0.0
+            player=player,
+            criteria=criteria,
+            tactical_fit_score=tactical_fit.overall_compatibility
+            if tactical_fit
+            else 0.0,
         )
 
         # Determine confidence
@@ -137,8 +143,12 @@ def recommend_replacement(
     ]
 
     cap_names = [
-        "Ball Progression", "Chance Creation", "Ball Security",
-        "Press Resistance", "Defensive Activity", "Attacking Threat"
+        "Ball Progression",
+        "Chance Creation",
+        "Ball Security",
+        "Press Resistance",
+        "Defensive Activity",
+        "Attacking Threat",
     ]
 
     for player in pool:
@@ -193,7 +203,7 @@ def recommend_replacement(
             overall_team_impact=f"Restores majority profile with {len(trade_offs_positive)} enhancements and {len(trade_offs_negative)} regressions.",
             confidence=confidence,
             explanation_context={},
-            system_compatibility=None, # Computed separately if needed
+            system_compatibility=None,  # Computed separately if needed
             player_attributes=player.player_attributes,
         )
         candidates.append(candidate)

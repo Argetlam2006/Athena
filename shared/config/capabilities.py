@@ -2,7 +2,6 @@
 shared/config/capabilities.py — Capability and metric definitions.
 """
 
-from typing import Any
 
 CORE_CAPABILITIES: list[str] = [
     "ball_progression",
@@ -118,7 +117,7 @@ CAPABILITY_METRIC_WEIGHTS: dict[str, dict[str, dict[str, float]] | dict[str, flo
             "aerials_won_p90": 0.30,
             "dribbled_past_p90": 0.15,
             "errors_leading_to_shot_p90": 0.15,
-        }
+        },
     },
     "attacking_threat": {
         "npxg_p90": 0.35,

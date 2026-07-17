@@ -5,8 +5,10 @@ Uses the LLM to deterministically extract structured constraints from natural la
 """
 
 import json
+
 from backend.explanation.prompt_builder import PromptPackage
 from backend.explanation.providers.openai_provider import OpenAIProvider
+
 
 def parse_natural_language_scouting(query: str) -> dict:
     """
@@ -20,7 +22,7 @@ def parse_natural_language_scouting(query: str) -> dict:
     }
     """
     provider = OpenAIProvider(model_name="meta/llama-3.1-8b-instruct", temperature=0.0)
-    
+
     system_prompt = """You are Athena, a deterministic football analytics engine.
 Your task is to extract structural scouting constraints from natural language queries.
 Do NOT hallucinate players or attempt to answer the query. Only parse the intent.
@@ -48,7 +50,7 @@ Make sure output is ONLY JSON.
         user_prompt=query,
         serialized_context="",
         prompt_version="v1",
-        metadata={}
+        metadata={},
     )
 
     try:
@@ -56,10 +58,12 @@ Make sure output is ONLY JSON.
         response_text = response.generated_text
         # Clean markdown code block if present
         if response_text.startswith("```json"):
-            response_text = response_text.replace("```json", "").replace("```", "").strip()
+            response_text = (
+                response_text.replace("```json", "").replace("```", "").strip()
+            )
         elif response_text.startswith("```"):
             response_text = response_text.replace("```", "").strip()
-            
+
         parsed = json.loads(response_text)
         return parsed
     except Exception as e:
@@ -68,5 +72,5 @@ Make sure output is ONLY JSON.
             "playing_style": None,
             "traits": [],
             "confidence": "Low",
-            "error": str(e)
+            "error": str(e),
         }

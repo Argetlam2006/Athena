@@ -2,7 +2,6 @@
 frontend/components/ask_athena.py — Ask Athena Contextual Drawer.
 """
 
-import time
 
 import streamlit as st
 
@@ -16,9 +15,8 @@ from frontend.session import get_state
 
 # Replaced by athena_service
 
-def render_hero_prompt() -> None:
-    provider = get_chat_provider()
 
+def render_hero_prompt() -> None:
     query = st.chat_input("What deserves my attention today?")
 
     if query:
@@ -28,7 +26,9 @@ def render_hero_prompt() -> None:
     if st.session_state.get("hero_query"):
         with st.spinner("Athena is thinking..."):
             if not st.session_state.get("hero_response"):
-                st.session_state.hero_response = generate_hero_response(st.session_state.hero_query)
+                st.session_state.hero_response = generate_hero_response(
+                    st.session_state.hero_query
+                )
 
         st.markdown(
             f"""
@@ -38,7 +38,8 @@ def render_hero_prompt() -> None:
                 </div>
                 <div style="color: #e5e7eb; line-height: 1.6;">{st.session_state.hero_response}</div>
             </div>
-            """, unsafe_allow_html=True
+            """,
+            unsafe_allow_html=True,
         )
 
 

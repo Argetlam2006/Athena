@@ -42,15 +42,15 @@ class DemoProvider(ExplanationProvider):
 
         return response
 
-    def stream(self, prompt: PromptPackage) -> Generator[GenerationResponse, None, None]:
+    def stream(
+        self, prompt: PromptPackage
+    ) -> Generator[GenerationResponse, None, None]:
         text = self._generate_demo_text(prompt)
         # Yield word by word to simulate streaming
         words = text.split(" ")
         for word in words:
             yield GenerationResponse(
-                generated_text=word + " ",
-                provider="demo",
-                model=self.model_name
+                generated_text=word + " ", provider="demo", model=self.model_name
             )
             time.sleep(0.05)  # Simulate network latency
 
@@ -59,5 +59,5 @@ class DemoProvider(ExplanationProvider):
             generated_text=self._generate_demo_text(prompt),
             provider="demo",
             model=self.model_name,
-            finish_reason="stop"
+            finish_reason="stop",
         )

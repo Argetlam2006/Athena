@@ -15,6 +15,7 @@ from shared.schemas import PlayerDecisionCard, PlayerProfile, ProfileType
 
 logger = logging.getLogger(__name__)
 
+
 @st.cache_data
 def get_player_index() -> pd.DataFrame:
     store = IntelligenceStore()
@@ -23,25 +24,34 @@ def get_player_index() -> pd.DataFrame:
         st.warning("Intelligence Store not found. Please run scripts/bootstrap.py.")
     return df
 
+
 @st.cache_data
 def get_player_profile(player_id: int) -> PlayerProfile | None:
     store = IntelligenceStore()
     return store.get_player(player_id)
+
 
 @st.cache_data
 def get_player_career(player_id: int) -> list[PlayerProfile]:
     store = IntelligenceStore()
     return store.get_player_career(player_id)
 
+
 @st.cache_data
-def get_players_by_position(position: str, profile_type: ProfileType = ProfileType.CAREER) -> list[PlayerProfile]:
+def get_players_by_position(
+    position: str, profile_type: ProfileType = ProfileType.CAREER
+) -> list[PlayerProfile]:
     store = IntelligenceStore()
     return store.get_players_by_position(position, profile_type)
 
+
 @st.cache_data
-def get_all_players(profile_type: ProfileType = ProfileType.CAREER) -> list[PlayerProfile]:
+def get_all_players(
+    profile_type: ProfileType = ProfileType.CAREER,
+) -> list[PlayerProfile]:
     store = IntelligenceStore()
     return store.get_all_players(profile_type)
+
 
 def get_player_decision_card(player: PlayerProfile) -> PlayerDecisionCard:
     """Coordinates DecisionEngine to build a player decision card."""

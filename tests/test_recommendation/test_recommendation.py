@@ -139,7 +139,10 @@ def test_recruitment_ranking(mock_profiles):
     assert candidates[1].rank == 2
 
     # Evidence must be present
-    assert any("Attacking Threat" in trade for trade in candidates[0].trade_offs_positive) or len(candidates[0].trade_offs_positive) >= 0
+    assert (
+        any("Attacking Threat" in trade for trade in candidates[0].trade_offs_positive)
+        or len(candidates[0].trade_offs_positive) >= 0
+    )
 
 
 def test_replacement_logic(mock_profiles):
@@ -181,19 +184,17 @@ def test_engine_facade(mock_profiles):
             "defensive_activity": 70.0,
             "attacking_threat": 85.0,
         },
-        identity=__import__("shared.schemas", fromlist=["CollectiveIdentity"]).CollectiveIdentity(
-            primary_identity="High Press",
-            secondary_identity=None,
-            emergent_traits=[]
-        )
+        identity=__import__(
+            "shared.schemas", fromlist=["CollectiveIdentity"]
+        ).CollectiveIdentity(
+            primary_identity="High Press", secondary_identity=None, emergent_traits=[]
+        ),
     )
     fit = engine.evaluate_team_fit(mock_profiles[2], team)
 
     assert fit["player_name"] == "Player C"
     assert fit["target_style"] == "High Press"
-    assert (
-        fit["fit_score"] > 60.0
-    )  # Defender has 95 defensive activity
+    assert fit["fit_score"] > 60.0  # Defender has 95 defensive activity
     assert "Solid fit" in fit["explanation"] or "Marginal fit" in fit["explanation"]
 
 

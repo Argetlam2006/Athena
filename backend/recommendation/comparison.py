@@ -30,7 +30,6 @@ def compare_players(players: list[PlayerProfile]) -> ComparisonResult:
 
     capabilities = CORE_CAPABILITIES
 
-
     cap_comparison: dict[str, dict[str, float]] = {}
 
     # 1. Build Capability Comparison Matrix

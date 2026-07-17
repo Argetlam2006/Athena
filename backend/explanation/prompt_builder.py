@@ -69,18 +69,23 @@ class ContextFormatter:
             ctx_dict = context
         elif hasattr(context, "__dataclass_fields__"):
             ctx_dict = asdict(context)
-        elif hasattr(context, "model_dump") and callable(getattr(context, "model_dump")):
+        elif hasattr(context, "model_dump") and callable(
+            context.model_dump
+        ):
             ctx_dict = context.model_dump()
         elif hasattr(context, "__dict__"):
             ctx_dict = vars(context)
         else:
-            raise TypeError(f"ContextFormatter cannot serialize object of type {type(context).__name__}")
+            raise TypeError(
+                f"ContextFormatter cannot serialize object of type {type(context).__name__}"
+            )
 
         # Handle potential non-serializable objects (like Enums) inside the dict
         # The easiest robust way in standard library is custom default encoder
         class ContextEncoder(json.JSONEncoder):
             def default(self, obj: Any) -> Any:
                 from enum import Enum
+
                 if isinstance(obj, Enum):
                     return obj.value
                 try:
@@ -96,11 +101,15 @@ class UserPromptBuilder:
 
     @staticmethod
     def build(user_query: str, serialized_context: str) -> str:
-        context_block = f"""<EXPLANATION_CONTEXT>
+        context_block = (
+            f"""<EXPLANATION_CONTEXT>
 {serialized_context}
 </EXPLANATION_CONTEXT>
 
-Based on the EXPLANATION CONTEXT provided above (if applicable) and your general football analytics knowledge, answer the following query:""" if serialized_context != "{}" else """Based on your general football analytics knowledge, answer the following query:"""
+Based on the EXPLANATION CONTEXT provided above (if applicable) and your general football analytics knowledge, answer the following query:"""
+            if serialized_context != "{}"
+            else """Based on your general football analytics knowledge, answer the following query:"""
+        )
 
         return f"""{context_block}
 
@@ -108,7 +117,6 @@ Based on the EXPLANATION CONTEXT provided above (if applicable) and your general
 {user_query}
 </USER_QUERY>
 """
-
 
 
 class PromptBuilder:

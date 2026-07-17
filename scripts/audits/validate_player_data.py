@@ -67,13 +67,18 @@ def trace_player(player_name: str):
 
     # Manual load to bypass lazy loading if needed, but get_player works
     from frontend.data.players import get_player_profile
+
     profile = get_player_profile(vector.player_id)
     if not profile:
         print("Profile not found in store.")
         return
 
-    print(f"Matches: {profile.feature_vector.matches_played if profile.feature_vector else 'N/A'}")
-    print(f"Minutes: {profile.feature_vector.minutes_played if profile.feature_vector else 'N/A'}")
+    print(
+        f"Matches: {profile.feature_vector.matches_played if profile.feature_vector else 'N/A'}"
+    )
+    print(
+        f"Minutes: {profile.feature_vector.minutes_played if profile.feature_vector else 'N/A'}"
+    )
     print(f"Birth Date: {profile.birth_date}")
     print(f"Age Years: {profile.age_years}")
 
@@ -84,6 +89,7 @@ def trace_player(player_name: str):
     print(f"Matches: {fv.get('matches_played')}")
     print(f"Minutes: {fv.get('minutes_played')}")
     print(f"Birth Date: {dump.get('birth_date')}")
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:

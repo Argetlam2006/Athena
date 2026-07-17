@@ -47,38 +47,51 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+
 @st.cache_resource
 def _print_startup_diagnostic():
-    from shared.config.settings import settings
-    from backend.explanation.providers.factory import get_provider
-    from backend.explanation.providers.base import GenerationResponse
     from backend.explanation.prompt_builder import PromptPackage
+    from backend.explanation.providers.base import GenerationResponse
+    from backend.explanation.providers.factory import get_provider
+    from shared.config.settings import settings
 
-    print("\n" + "="*50)
+    print("\n" + "=" * 50)
     print("ATHENA LLM PROVIDER STARTUP DIAGNOSTIC")
-    print("="*50)
-    
+    print("=" * 50)
+
     provider = get_provider(settings.ATHENA_PROVIDER)
-    
+
     provider_name = provider.__class__.__name__
     model_name = getattr(provider, "model_name", "Unknown")
-    
+
     base_url = "Default Provider Endpoint"
-    if provider_name == "OpenAIProvider" and hasattr(provider, "client") and provider.client:
+    if (
+        provider_name == "OpenAIProvider"
+        and hasattr(provider, "client")
+        and provider.client
+    ):
         base_url = str(provider.client.base_url)
-        
+
     def _is_valid_key(key):
         return bool(key) and "your_" not in key
-        
+
     print(f"Provider:        {provider_name}")
     print(f"Base URL:        {base_url}")
     print(f"Model:           {model_name}")
     print("")
-    print(f"NVIDIA_API_KEY detected:   {'Yes' if _is_valid_key(settings.NVIDIA_API_KEY) else 'No'}")
-    print(f"OPENAI_API_KEY detected:   {'Yes' if _is_valid_key(settings.OPENAI_API_KEY) else 'No'}")
-    print(f"GEMINI_API_KEY detected:   {'Yes' if _is_valid_key(settings.GEMINI_API_KEY) else 'No'}")
-    print(f"ANTHROPIC_API_KEY detected: {'Yes' if _is_valid_key(settings.ANTHROPIC_API_KEY) else 'No'}")
-    
+    print(
+        f"NVIDIA_API_KEY detected:   {'Yes' if _is_valid_key(settings.NVIDIA_API_KEY) else 'No'}"
+    )
+    print(
+        f"OPENAI_API_KEY detected:   {'Yes' if _is_valid_key(settings.OPENAI_API_KEY) else 'No'}"
+    )
+    print(
+        f"GEMINI_API_KEY detected:   {'Yes' if _is_valid_key(settings.GEMINI_API_KEY) else 'No'}"
+    )
+    print(
+        f"ANTHROPIC_API_KEY detected: {'Yes' if _is_valid_key(settings.ANTHROPIC_API_KEY) else 'No'}"
+    )
+
     print("\nValidating Provider Contract... ", end="")
     try:
         prompt = PromptPackage(
@@ -86,23 +99,30 @@ def _print_startup_diagnostic():
             user_prompt="Reply with the single word 'OK'.",
             serialized_context="",
             prompt_version="v1",
-            metadata={"context_type": "diagnostic"}
+            metadata={"context_type": "diagnostic"},
         )
         response = provider.generate(prompt)
-        
-        assert isinstance(response, GenerationResponse), f"Provider must return GenerationResponse, got {type(response)}"
-        assert isinstance(response.generated_text, str), "response.generated_text must be a string"
+
+        assert isinstance(response, GenerationResponse), (
+            f"Provider must return GenerationResponse, got {type(response)}"
+        )
+        assert isinstance(response.generated_text, str), (
+            "response.generated_text must be a string"
+        )
         assert hasattr(response, "provider"), "response must have 'provider' field"
         assert hasattr(response, "model"), "response must have 'model' field"
-        
+
         print("PASS ✓")
     except Exception as e:
         print("FAIL ✗")
-        print("\nFATAL ERROR: Provider validation failed. Does not meet Canonical Interface.")
+        print(
+            "\nFATAL ERROR: Provider validation failed. Does not meet Canonical Interface."
+        )
         print(f"Exception: {e}")
         raise RuntimeError(f"Provider validation failed: {e}") from e
-        
-    print("="*50 + "\n")
+
+    print("=" * 50 + "\n")
+
 
 # 1. Initialize State
 init_session()
@@ -139,6 +159,7 @@ elif state.active_workspace_id == "recruitment":
     recruitment_intelligence.render()
 elif state.active_workspace_id == "ask_athena":
     from frontend.components.ask_athena import render_ask_athena_section
+
     render_ask_athena_section()
 else:
     # Fallback for future workspaces

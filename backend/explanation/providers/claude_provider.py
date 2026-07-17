@@ -27,7 +27,9 @@ class ClaudeProvider(ExplanationProvider):
         key = os.getenv("ANTHROPIC_API_KEY", "")
         return HAS_ANTHROPIC and bool(key) and "your_" not in key
 
-    def stream(self, prompt: PromptPackage) -> Generator[GenerationResponse, None, None]:
+    def stream(
+        self, prompt: PromptPackage
+    ) -> Generator[GenerationResponse, None, None]:
         if not self.is_available() or not self.client:
             raise RuntimeError("Claude provider is not available.")
 
@@ -40,9 +42,7 @@ class ClaudeProvider(ExplanationProvider):
         ) as stream:
             for text_chunk in stream.text_stream:
                 yield GenerationResponse(
-                    generated_text=text_chunk,
-                    provider="claude",
-                    model=self.model_name
+                    generated_text=text_chunk, provider="claude", model=self.model_name
                 )
 
     def generate(self, prompt: PromptPackage) -> GenerationResponse:
@@ -56,13 +56,13 @@ class ClaudeProvider(ExplanationProvider):
             temperature=self.temperature,
             max_tokens=2048,
         )
-        
+
         usage = dict(response.usage) if response.usage else None
-        
+
         return GenerationResponse(
             generated_text=response.content[0].text,
             provider="claude",
             model=self.model_name,
             finish_reason=response.stop_reason,
-            usage=usage
+            usage=usage,
         )

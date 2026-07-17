@@ -8,6 +8,7 @@ from dataclasses import dataclass
 
 from backend.explanation.prompt_builder import PromptPackage
 
+
 @dataclass
 class GenerationResponse:
     generated_text: str
@@ -26,9 +27,10 @@ class ExplanationProvider(ABC):
         self.model_name = model_name
         self.temperature = temperature
 
-
     @abstractmethod
-    def stream(self, prompt: PromptPackage) -> Generator[GenerationResponse, None, None]:
+    def stream(
+        self, prompt: PromptPackage
+    ) -> Generator[GenerationResponse, None, None]:
         """
         Streams the explanation token by token.
         Yields GenerationResponse objects containing the chunk text in `generated_text`.

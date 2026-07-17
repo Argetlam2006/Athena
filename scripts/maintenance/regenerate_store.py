@@ -10,6 +10,7 @@ from backend.warehouse.connection import connect
 
 logging.basicConfig(level=logging.INFO)
 
+
 def main():
     with connect() as db_conn:
         df_players = db_conn.execute("SELECT * FROM vw_player_summary").fetchdf()
@@ -66,8 +67,11 @@ def main():
     store = IntelligenceStore()
     store.save(all_profiles, collective_profiles)
 
-    print(f"Intelligence Store regenerated successfully with {len(competition_profiles)} competition, {len(season_profiles)} and {len(career_profiles)} career profiles.")
+    print(
+        f"Intelligence Store regenerated successfully with {len(competition_profiles)} competition, {len(season_profiles)} and {len(career_profiles)} career profiles."
+    )
     print(f"Generated {len(collective_profiles)} collective intelligence profiles.")
+
 
 if __name__ == "__main__":
     main()

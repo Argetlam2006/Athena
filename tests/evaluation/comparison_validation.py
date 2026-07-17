@@ -17,8 +17,8 @@ def validate_comparison():
         print("Warning: Required players not found for comparison test.")
         return
 
-    messi = get_full_profile(int(messi_idx['player_id']))
-    henry = get_full_profile(int(henry_idx['player_id']))
+    messi = get_full_profile(int(messi_idx["player_id"]))
+    henry = get_full_profile(int(henry_idx["player_id"]))
 
     result = engine.compare_players([messi, henry])
 
@@ -35,6 +35,7 @@ def validate_comparison():
         print("[PASS] Deterministic insights generated for comparison.")
     else:
         print("[FAIL] Missing deterministic insights.")
+
 
 if __name__ == "__main__":
     validate_comparison()

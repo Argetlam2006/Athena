@@ -5,7 +5,14 @@ from backend.collective.structure import compute_capability_concentration
 from shared.schemas import CollectiveProfile, PlayerProfile
 
 
-def build_collective_profile(team_id: int, team_name: str, competition: str, season: str, players: list[PlayerProfile], global_pool: list[PlayerProfile]) -> CollectiveProfile:
+def build_collective_profile(
+    team_id: int,
+    team_name: str,
+    competition: str,
+    season: str,
+    players: list[PlayerProfile],
+    global_pool: list[PlayerProfile],
+) -> CollectiveProfile:
     """
     Orchestrates the Collective Intelligence Engine pipeline.
     Transforms standard team averages into a deterministic CollectiveSystem model.
@@ -62,8 +69,9 @@ def build_collective_profile(team_id: int, team_name: str, competition: str, sea
         concentration=concentration,
         fragility_map=fragility_map,
         bottlenecks=bottlenecks,
-        avg_capabilities=snake_caps
+        avg_capabilities=snake_caps,
     )
+
 
 def compute_team_grade(team_profile: CollectiveProfile) -> str:
     """
@@ -71,20 +79,29 @@ def compute_team_grade(team_profile: CollectiveProfile) -> str:
     """
     if not team_profile or not team_profile.avg_capabilities:
         return "N/A"
-        
+
     caps = [v for v in team_profile.avg_capabilities.values() if v > 0.0]
     if not caps:
         return "N/A"
-        
+
     avg = sum(caps) / len(caps)
-    
-    if avg >= 85: return "A+"
-    elif avg >= 80: return "A"
-    elif avg >= 75: return "A-"
-    elif avg >= 70: return "B+"
-    elif avg >= 65: return "B"
-    elif avg >= 60: return "B-"
-    elif avg >= 55: return "C+"
-    elif avg >= 50: return "C"
-    elif avg >= 45: return "C-"
+
+    if avg >= 85:
+        return "A+"
+    elif avg >= 80:
+        return "A"
+    elif avg >= 75:
+        return "A-"
+    elif avg >= 70:
+        return "B+"
+    elif avg >= 65:
+        return "B"
+    elif avg >= 60:
+        return "B-"
+    elif avg >= 55:
+        return "C+"
+    elif avg >= 50:
+        return "C"
+    elif avg >= 45:
+        return "C-"
     return "D"

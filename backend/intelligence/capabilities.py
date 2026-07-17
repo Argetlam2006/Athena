@@ -44,13 +44,15 @@ def _compute_defensive_activity(
         val = normalized_metrics.get(metric, 0.0)
         raw_val = getattr(raw_vector, metric, 0.0)
         active_score += val * weight
-        active_evidence.append(SupportingMetric(
-            metric_name=metric,
-            raw_value=raw_val,
-            percentile=val,
-            contribution_weight=weight,
-            explanation=f"Contributes {weight*100:.0f}% to Active Defensive Volume."
-        ))
+        active_evidence.append(
+            SupportingMetric(
+                metric_name=metric,
+                raw_value=raw_val,
+                percentile=val,
+                contribution_weight=weight,
+                explanation=f"Contributes {weight * 100:.0f}% to Active Defensive Volume.",
+            )
+        )
 
     controlling_score = 0.0
     controlling_evidence = []
@@ -63,37 +65,48 @@ def _compute_defensive_activity(
 
         raw_val = getattr(raw_vector, metric, 0.0)
         controlling_score += val * weight
-        controlling_evidence.append(SupportingMetric(
-            metric_name=metric,
-            raw_value=raw_val,
-            percentile=val,
-            contribution_weight=weight,
-            explanation=f"Contributes {weight*100:.0f}% to Controlling Defensive Quality."
-        ))
+        controlling_evidence.append(
+            SupportingMetric(
+                metric_name=metric,
+                raw_value=raw_val,
+                percentile=val,
+                contribution_weight=weight,
+                explanation=f"Contributes {weight * 100:.0f}% to Controlling Defensive Quality.",
+            )
+        )
 
     if active_score >= controlling_score:
-        active_evidence.append(SupportingMetric(
-            metric_name="defensive_philosophy",
-            raw_value=1.0,
-            percentile=100.0,
-            contribution_weight=0.0,
-            explanation="Defensive Activity evaluated using Active philosophy."
-        ))
+        active_evidence.append(
+            SupportingMetric(
+                metric_name="defensive_philosophy",
+                raw_value=1.0,
+                percentile=100.0,
+                contribution_weight=0.0,
+                explanation="Defensive Activity evaluated using Active philosophy.",
+            )
+        )
         return CapabilityScore(
-            capability="defensive_activity", score=active_score, confidence=confidence, evidence=active_evidence
+            capability="defensive_activity",
+            score=active_score,
+            confidence=confidence,
+            evidence=active_evidence,
         )
     else:
-        controlling_evidence.append(SupportingMetric(
-            metric_name="defensive_philosophy",
-            raw_value=0.0,
-            percentile=100.0,
-            contribution_weight=0.0,
-            explanation="Defensive Activity evaluated using Controlling philosophy."
-        ))
-        return CapabilityScore(
-            capability="defensive_activity", score=controlling_score, confidence=confidence, evidence=controlling_evidence
+        controlling_evidence.append(
+            SupportingMetric(
+                metric_name="defensive_philosophy",
+                raw_value=0.0,
+                percentile=100.0,
+                contribution_weight=0.0,
+                explanation="Defensive Activity evaluated using Controlling philosophy.",
+            )
         )
-
+        return CapabilityScore(
+            capability="defensive_activity",
+            score=controlling_score,
+            confidence=confidence,
+            evidence=controlling_evidence,
+        )
 
 
 def compute_weighted_capability(
@@ -129,13 +142,15 @@ def compute_weighted_capability(
         val = normalized_metrics.get(metric, 0.0)
         raw_val = getattr(raw_vector, metric, 0.0)
         score += val * weight
-        evidence.append(SupportingMetric(
-            metric_name=metric,
-            raw_value=raw_val,
-            percentile=val,
-            contribution_weight=weight,
-            explanation=f"Contributes {weight*100:.0f}% to {capability} based on positional requirements."
-        ))
+        evidence.append(
+            SupportingMetric(
+                metric_name=metric,
+                raw_value=raw_val,
+                percentile=val,
+                contribution_weight=weight,
+                explanation=f"Contributes {weight * 100:.0f}% to {capability} based on positional requirements.",
+            )
+        )
 
     return CapabilityScore(
         capability=capability, score=score, confidence=confidence, evidence=evidence
@@ -143,7 +158,10 @@ def compute_weighted_capability(
 
 
 def compute_physical_availability(
-    matches_played_percentile: float, matches_played_raw: int, coverage_rate: float, confidence: float
+    matches_played_percentile: float,
+    matches_played_raw: int,
+    coverage_rate: float,
+    confidence: float,
 ) -> CapabilityScore:
     """
     Compute Physical Availability.
@@ -157,15 +175,15 @@ def compute_physical_availability(
             raw_value=coverage_rate,
             percentile=coverage_rate * 100.0,
             contribution_weight=0.60,
-            explanation="Percentage of total competition minutes played."
+            explanation="Percentage of total competition minutes played.",
         ),
         SupportingMetric(
             metric_name="matches_played",
             raw_value=float(matches_played_raw),
             percentile=matches_played_percentile,
             contribution_weight=0.40,
-            explanation="Total appearances normalized against positional peers."
-        )
+            explanation="Total appearances normalized against positional peers.",
+        ),
     ]
 
     return CapabilityScore(
@@ -245,22 +263,22 @@ def compute_tactical_versatility(
             raw_value=float(positions_played_count),
             percentile=pos_score,
             contribution_weight=w_pos,
-            explanation=f"Positions played ({positions_played_count})."
+            explanation=f"Positions played ({positions_played_count}).",
         ),
         SupportingMetric(
             metric_name="capability_breadth",
             raw_value=cap_breadth,
             percentile=cap_breadth,
             contribution_weight=w_cap,
-            explanation="Inverse standard deviation of capability scores."
+            explanation="Inverse standard deviation of capability scores.",
         ),
         SupportingMetric(
             metric_name="phase_balance",
             raw_value=phase_balance,
             percentile=phase_balance,
             contribution_weight=w_pha,
-            explanation="Balance between attacking and defensive contributions."
-        )
+            explanation="Balance between attacking and defensive contributions.",
+        ),
     ]
 
     return CapabilityScore(

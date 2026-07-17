@@ -76,13 +76,14 @@ def generate_tradeoffs(
             trade_offs.append(warning_signals[sig])
 
     # Check physical availability explicitly if not required but low
-    avail_score = player.player_attributes.availability_rating if player.player_attributes and player.player_attributes.availability_rating is not None else 50.0
-    if (
-        avail_score < 50
-    ):
-        trade_offs.append(
-            f"Availability concerns (Score: {avail_score:.1f})"
-        )
+    avail_score = (
+        player.player_attributes.availability_rating
+        if player.player_attributes
+        and player.player_attributes.availability_rating is not None
+        else 50.0
+    )
+    if avail_score < 50:
+        trade_offs.append(f"Availability concerns (Score: {avail_score:.1f})")
 
     # Tactical fit
     if criteria.tactical_style:

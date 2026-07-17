@@ -27,9 +27,18 @@ def _build_capability_packet(
     cap_name: str, cap_obj: Any, signals: list[str]
 ) -> EvidencePacket:
     """Builds an EvidencePacket for a specific capability."""
-    metrics = [{"metric_name": "score", "raw_value": getattr(cap_obj, "score", 0.0), "percentile": getattr(cap_obj, "score", 0.0), "contribution_weight": 1.0, "explanation": "Overall Score"}]
+    metrics = [
+        {
+            "metric_name": "score",
+            "raw_value": getattr(cap_obj, "score", 0.0),
+            "percentile": getattr(cap_obj, "score", 0.0),
+            "contribution_weight": 1.0,
+            "explanation": "Overall Score",
+        }
+    ]
     if hasattr(cap_obj, "evidence") and isinstance(cap_obj.evidence, list):
         from dataclasses import asdict
+
         for metric in cap_obj.evidence:
             metrics.append(asdict(metric))
 
@@ -55,7 +64,6 @@ def build_player_context(profile: PlayerProfile) -> PlayerExplanationContext:
         from shared.config.capabilities import CORE_CAPABILITIES
 
         cap_names = CORE_CAPABILITIES
-
 
         for cap_name in cap_names:
             cap_obj = getattr(cap_prof, cap_name)
@@ -103,7 +111,6 @@ def build_team_context(profile: CollectiveProfile) -> TeamExplanationContext:
 
     cap_names = CORE_CAPABILITIES
 
-
     for cap_name in cap_names:
         score = profile.avg_capabilities.get(cap_name, None)
         if score is not None:
@@ -112,7 +119,15 @@ def build_team_context(profile: CollectiveProfile) -> TeamExplanationContext:
                     source=f"capability:{cap_name}",
                     title=f"{cap_name.replace('_', ' ').title()} Capability (Squad Avg)",
                     confidence=1.0,
-                    supporting_metrics=[{"metric_name": "score", "raw_value": score, "percentile": score, "contribution_weight": 1.0, "explanation": "Average squad capability"}],
+                    supporting_metrics=[
+                        {
+                            "metric_name": "score",
+                            "raw_value": score,
+                            "percentile": score,
+                            "contribution_weight": 1.0,
+                            "explanation": "Average squad capability",
+                        }
+                    ],
                     supporting_signals=[],
                 )
             )
@@ -120,23 +135,40 @@ def build_team_context(profile: CollectiveProfile) -> TeamExplanationContext:
     identity_dict = {
         "primary": profile.identity.primary_identity if profile.identity else "Unknown",
         "secondary": profile.identity.secondary_identity if profile.identity else None,
-        "emergent_traits": profile.identity.emergent_traits if profile.identity else []
+        "emergent_traits": profile.identity.emergent_traits if profile.identity else [],
     }
 
     concentration = [
-        {"capability": c.capability_name, "hhi": c.hhi_score, "is_over_centralized": c.is_over_centralized, "top_contributors": c.top_contributors}
-        for c in profile.concentration if c.is_over_centralized
+        {
+            "capability": c.capability_name,
+            "hhi": c.hhi_score,
+            "is_over_centralized": c.is_over_centralized,
+            "top_contributors": c.top_contributors,
+        }
+        for c in profile.concentration
+        if c.is_over_centralized
     ]
 
     bottlenecks = [
-        {"upstream": b.upstream_capability, "downstream": b.downstream_capability, "severity": b.severity, "diagnosis": b.diagnosis}
+        {
+            "upstream": b.upstream_capability,
+            "downstream": b.downstream_capability,
+            "severity": b.severity,
+            "diagnosis": b.diagnosis,
+        }
         for b in profile.bottlenecks
     ]
 
     # Top 3 fragilities
     fragilities = [
-        {"player_name": f.player_name, "replaceability_index": f.replaceability_index, "structural_deficit": f.structural_deficit}
-        for f in sorted(profile.fragility_map, key=lambda x: x.structural_deficit, reverse=True)[:3]
+        {
+            "player_name": f.player_name,
+            "replaceability_index": f.replaceability_index,
+            "structural_deficit": f.structural_deficit,
+        }
+        for f in sorted(
+            profile.fragility_map, key=lambda x: x.structural_deficit, reverse=True
+        )[:3]
     ]
 
     return TeamExplanationContext(
@@ -144,8 +176,8 @@ def build_team_context(profile: CollectiveProfile) -> TeamExplanationContext:
         team_name=profile.team_name,
         competition=profile.competition,
         season=profile.season,
-        squad_size=20, # Fixed for now or computed
-        average_age=25.0, # Fixed for now
+        squad_size=20,  # Fixed for now or computed
+        average_age=25.0,  # Fixed for now
         style_label=identity_dict["primary"],
         collective_identity=identity_dict,
         concentration_risks=concentration,

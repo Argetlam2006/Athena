@@ -14,19 +14,24 @@ ROLE_FAMILIES = {
             "ball_progression": 2.0,
             "ball_security": 1.0,
             "press_resistance": 1.0,
-            "defensive_activity": 0.5
-        }
+            "defensive_activity": 0.5,
+        },
     },
     "Goal Scorer": {
-        "archetypes": ["Elite Goal Scorer", "Target Man", "Complete Forward", "Direct Winger"],
+        "archetypes": [
+            "Elite Goal Scorer",
+            "Target Man",
+            "Complete Forward",
+            "Direct Winger",
+        ],
         "importance_vector": {
             "attacking_threat": 3.5,
             "chance_creation": 1.5,
             "ball_progression": 1.0,
             "ball_security": 1.0,
             "press_resistance": 1.5,
-            "defensive_activity": 0.5
-        }
+            "defensive_activity": 0.5,
+        },
     },
     "Midfield Controller": {
         "archetypes": ["Deep-Lying Playmaker", "Box-to-Box Engine"],
@@ -36,8 +41,8 @@ ROLE_FAMILIES = {
             "press_resistance": 2.5,
             "chance_creation": 1.5,
             "defensive_activity": 1.5,
-            "attacking_threat": 0.5
-        }
+            "attacking_threat": 0.5,
+        },
     },
     "Midfield Destroyer": {
         "archetypes": ["Press-Resistant Anchor", "Midfield Destroyer"],
@@ -47,8 +52,8 @@ ROLE_FAMILIES = {
             "press_resistance": 2.0,
             "ball_progression": 1.0,
             "chance_creation": 0.5,
-            "attacking_threat": 0.2
-        }
+            "attacking_threat": 0.2,
+        },
     },
     "Progressive Defender": {
         "archetypes": ["Ball-Playing Defender", "Progressive Fullback"],
@@ -58,8 +63,8 @@ ROLE_FAMILIES = {
             "ball_security": 2.0,
             "press_resistance": 1.5,
             "chance_creation": 1.0,
-            "attacking_threat": 0.5
-        }
+            "attacking_threat": 0.5,
+        },
     },
     "Traditional Defender": {
         "archetypes": ["Traditional Defender", "Defensive Fullback"],
@@ -69,8 +74,8 @@ ROLE_FAMILIES = {
             "press_resistance": 1.5,
             "ball_progression": 1.0,
             "chance_creation": 0.2,
-            "attacking_threat": 0.2
-        }
+            "attacking_threat": 0.2,
+        },
     },
     "Goalkeeper": {
         "archetypes": [],
@@ -80,8 +85,8 @@ ROLE_FAMILIES = {
             "ball_security": 1.0,
             "press_resistance": 1.0,
             "defensive_activity": 1.0,
-            "attacking_threat": 1.0
-        }
+            "attacking_threat": 1.0,
+        },
     },
     "Balanced": {
         "archetypes": ["Unknown", "General"],
@@ -91,10 +96,11 @@ ROLE_FAMILIES = {
             "ball_security": 1.0,
             "press_resistance": 1.0,
             "defensive_activity": 1.0,
-            "attacking_threat": 1.0
-        }
-    }
+            "attacking_threat": 1.0,
+        },
+    },
 }
+
 
 def get_role_family(archetype: str) -> str:
     """Returns the Role Family for a given archetype."""
@@ -104,6 +110,7 @@ def get_role_family(archetype: str) -> str:
         if archetype in data["archetypes"]:
             return role
     return "Balanced"
+
 
 def get_role_importance_vector(role_family: str) -> dict[str, float]:
     """Returns the unnormalized importance vector for a role family."""

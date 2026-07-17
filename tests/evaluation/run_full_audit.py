@@ -14,13 +14,17 @@ store = IntelligenceStore()
 all_players = store.get_all_players()
 all_teams = store.get_all_collectives()
 
+
 def find_player(name_substring, season=None):
-    matches = [p for p in all_players if name_substring.lower() in p.player_name.lower()]
+    matches = [
+        p for p in all_players if name_substring.lower() in p.player_name.lower()
+    ]
     if season:
         matches = [p for p in matches if p.season == season]
     if matches:
         return sorted(matches, key=lambda x: x.minutes_played or 0, reverse=True)[0]
     return None
+
 
 def find_team(name_substring):
     matches = [t for t in all_teams if name_substring.lower() in t.team_name.lower()]
@@ -28,19 +32,42 @@ def find_team(name_substring):
         return matches[0]
     return None
 
+
 results = {}
 
 # 1. World Class vs Average
 messi = find_player("Messi", "Career")
-average_winger = next((p for p in all_players if p.position_group == "Forward" and p.capability_profile and p.capability_profile.overall_rating and 60 < p.capability_profile.overall_rating < 70), None)
+average_winger = next(
+    (
+        p
+        for p in all_players
+        if p.position_group == "Forward"
+        and p.capability_profile
+        and p.capability_profile.overall_rating
+        and 60 < p.capability_profile.overall_rating < 70
+    ),
+    None,
+)
 rodri = find_player("Rodri", "Career")
-average_dm = next((p for p in all_players if p.position_group == "Midfielder" and p.capability_profile and p.capability_profile.overall_rating and 60 < p.capability_profile.overall_rating < 70), None)
+average_dm = next(
+    (
+        p
+        for p in all_players
+        if p.position_group == "Midfielder"
+        and p.capability_profile
+        and p.capability_profile.overall_rating
+        and 60 < p.capability_profile.overall_rating < 70
+    ),
+    None,
+)
+
 
 def get_card(player):
     if not player:
         return None
     cohort = [p for p in all_players if p.position_group == player.position_group]
     return DecisionEngine.build_player_decision_card(player, cohort).__dict__
+
 
 results["WorldClass_vs_Average"] = {
     "Messi": get_card(messi),
@@ -79,6 +106,7 @@ results["Closely_Matched"] = {
     "Suarez_2015": get_card(suarez_15),
 }
 
+
 # 3. Recruitment & Counterfactual Scenarios
 def run_recruitment(target, max_results=3):
     if not target:
@@ -91,9 +119,11 @@ def run_recruitment(target, max_results=3):
             "restoration": r.restoration,
             "positive_tradeoffs": r.trade_offs_positive,
             "negative_tradeoffs": r.trade_offs_negative,
-            "impact": r.overall_team_impact
-        } for r in replacements
+            "impact": r.overall_team_impact,
+        }
+        for r in replacements
     ]
+
 
 results["Recruitment"] = {
     "Replace_Rodri": run_recruitment(rodri),
@@ -109,17 +139,22 @@ for team, name in [(city, "City"), (arsenal, "Arsenal"), (liverpool, "Liverpool"
     if team:
         squad = [p for p in all_players if p.team_name == team.team_name]
         card = DecisionEngine.build_team_decision_card(team, squad, all_teams)
-        deps = {k: {"contributions": v.contributions, "key_players": v.key_players} for k, v in card.dependency_analysis.items()}
+        deps = {
+            k: {"contributions": v.contributions, "key_players": v.key_players}
+            for k, v in card.dependency_analysis.items()
+        }
         results[f"Team_{name}"] = {
             "identity": card.tactical_identity,
             "dependencies": deps,
-            "gaps": card.gap_analysis
+            "gaps": card.gap_analysis,
         }
 
+
 def safe_serialize(obj):
-    if hasattr(obj, '__dict__'):
+    if hasattr(obj, "__dict__"):
         return obj.__dict__
     return str(obj)
+
 
 with open("audit_results.json", "w") as f:
     json.dump(results, f, default=safe_serialize, indent=2)

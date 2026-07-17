@@ -5,16 +5,16 @@ Simulates team capability shifts by adding or removing players.
 The backbone of Recruitment, Squad Planning, and Dependency Analysis.
 """
 
-
 from backend.intelligence.team import aggregate_capabilities
 from shared.schemas import CollectiveProfile, CounterfactualResult, PlayerProfile
 
 
 class CounterfactualEngine:
-
     @staticmethod
     def simulate_removal(
-        team: CollectiveProfile, squad: list[PlayerProfile], player_to_remove: PlayerProfile
+        team: CollectiveProfile,
+        squad: list[PlayerProfile],
+        player_to_remove: PlayerProfile,
     ) -> list[CounterfactualResult]:
         """
         Simulate the impact of removing a player from the squad.
@@ -27,7 +27,7 @@ class CounterfactualEngine:
         new_squad = [p for p in squad if p.player_id != player_to_remove.player_id]
 
         if not new_squad:
-            return [] # Can't simulate an empty squad
+            return []  # Can't simulate an empty squad
 
         new_agg = aggregate_capabilities(new_squad)
 
@@ -39,15 +39,19 @@ class CounterfactualEngine:
                     CounterfactualResult(
                         capability_name=cap,
                         original_score=original_val,
-                        new_score=new_val
+                        new_score=new_val,
                     )
                 )
 
-        return sorted(results, key=lambda x: x.delta) # Most negative delta first (biggest loss)
+        return sorted(
+            results, key=lambda x: x.delta
+        )  # Most negative delta first (biggest loss)
 
     @staticmethod
     def simulate_addition(
-        team: CollectiveProfile, squad: list[PlayerProfile], player_to_add: PlayerProfile
+        team: CollectiveProfile,
+        squad: list[PlayerProfile],
+        player_to_add: PlayerProfile,
     ) -> list[CounterfactualResult]:
         """
         Simulate the impact of adding a player to the squad.
@@ -71,9 +75,10 @@ class CounterfactualEngine:
                     CounterfactualResult(
                         capability_name=cap,
                         original_score=original_val,
-                        new_score=new_val
+                        new_score=new_val,
                     )
                 )
 
-        return sorted(results, key=lambda x: x.delta, reverse=True) # Most positive delta first (biggest gain)
-
+        return sorted(
+            results, key=lambda x: x.delta, reverse=True
+        )  # Most positive delta first (biggest gain)

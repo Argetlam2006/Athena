@@ -15,14 +15,9 @@ def test_calculate_confidence():
     assert calculate_confidence(15, 10) == 1.0
 
 
-
-
-
 def test_standard_deviation():
     assert standard_deviation([2.0, 4.0, 4.0, 4.0, 5.0, 5.0, 7.0, 9.0]) == 2.0
 
 
 def test_euclidean_distance():
     assert euclidean_distance([0.0, 0.0], [3.0, 4.0]) == 5.0
-
-

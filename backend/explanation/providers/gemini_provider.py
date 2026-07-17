@@ -23,7 +23,11 @@ class GeminiProvider(ExplanationProvider):
         if self.is_available():
             genai.configure(api_key=settings.GEMINI_API_KEY)
 
-            supported_models = [m.name for m in genai.list_models() if "generateContent" in m.supported_generation_methods]
+            supported_models = [
+                m.name
+                for m in genai.list_models()
+                if "generateContent" in m.supported_generation_methods
+            ]
 
             selected_model = None
             # 1. Configured model
@@ -36,17 +40,44 @@ class GeminiProvider(ExplanationProvider):
 
             # 2. Prefer newest Flash model
             if not selected_model:
-                flash_models = [m for m in supported_models if "flash" in m.lower() and "lite" not in m.lower() and "preview" not in m.lower() and "image" not in m.lower() and "tts" not in m.lower() and "omni" not in m.lower()]
+                flash_models = [
+                    m
+                    for m in supported_models
+                    if "flash" in m.lower()
+                    and "lite" not in m.lower()
+                    and "preview" not in m.lower()
+                    and "image" not in m.lower()
+                    and "tts" not in m.lower()
+                    and "omni" not in m.lower()
+                ]
                 if flash_models:
                     versioned = [m for m in flash_models if "latest" not in m.lower()]
-                    selected_model = sorted(versioned, reverse=True)[0] if versioned else sorted(flash_models, reverse=True)[0]
+                    selected_model = (
+                        sorted(versioned, reverse=True)[0]
+                        if versioned
+                        else sorted(flash_models, reverse=True)[0]
+                    )
 
             # 3. Prefer newest Pro model
             if not selected_model:
-                pro_models = [m for m in supported_models if "pro" in m.lower() and "lite" not in m.lower() and "preview" not in m.lower() and "image" not in m.lower() and "tts" not in m.lower() and "banana" not in m.lower() and "deep-research" not in m.lower()]
+                pro_models = [
+                    m
+                    for m in supported_models
+                    if "pro" in m.lower()
+                    and "lite" not in m.lower()
+                    and "preview" not in m.lower()
+                    and "image" not in m.lower()
+                    and "tts" not in m.lower()
+                    and "banana" not in m.lower()
+                    and "deep-research" not in m.lower()
+                ]
                 if pro_models:
                     versioned = [m for m in pro_models if "latest" not in m.lower()]
-                    selected_model = sorted(versioned, reverse=True)[0] if versioned else sorted(pro_models, reverse=True)[0]
+                    selected_model = (
+                        sorted(versioned, reverse=True)[0]
+                        if versioned
+                        else sorted(pro_models, reverse=True)[0]
+                    )
 
             # 4. Fallback to any flash or pro
             if not selected_model:
@@ -59,7 +90,9 @@ class GeminiProvider(ExplanationProvider):
                     selected_model = sorted(any_pro, reverse=True)[0]
 
             if not selected_model:
-                raise RuntimeError("No compatible Gemini models supporting generateContent were found in the current Google Generative AI SDK.")
+                raise RuntimeError(
+                    "No compatible Gemini models supporting generateContent were found in the current Google Generative AI SDK."
+                )
 
             self.model_name = selected_model.replace("models/", "")
             self.model = genai.GenerativeModel(self.model_name)
@@ -69,11 +102,13 @@ class GeminiProvider(ExplanationProvider):
 
     def is_available(self) -> bool:
         from shared.config.settings import settings
+
         key = settings.GEMINI_API_KEY
         return HAS_GEMINI and bool(key) and "your_" not in key
 
-
-    def stream(self, prompt: PromptPackage) -> Generator[GenerationResponse, None, None]:
+    def stream(
+        self, prompt: PromptPackage
+    ) -> Generator[GenerationResponse, None, None]:
         if not self.is_available() or not self.model:
             raise RuntimeError("Gemini provider is not available.")
 
@@ -90,9 +125,7 @@ class GeminiProvider(ExplanationProvider):
         for chunk in response:
             if chunk.text:
                 yield GenerationResponse(
-                    generated_text=chunk.text,
-                    provider="gemini",
-                    model=self.model_name
+                    generated_text=chunk.text, provider="gemini", model=self.model_name
                 )
 
     def generate(self, prompt: PromptPackage) -> GenerationResponse:
@@ -108,10 +141,10 @@ class GeminiProvider(ExplanationProvider):
             ),
             stream=False,
         )
-        
+
         return GenerationResponse(
             generated_text=response.text,
             provider="gemini",
             model=self.model_name,
-            finish_reason="stop" # Google SDK doesn't easily expose this on the response object text property without diving into parts
+            finish_reason="stop",  # Google SDK doesn't easily expose this on the response object text property without diving into parts
         )

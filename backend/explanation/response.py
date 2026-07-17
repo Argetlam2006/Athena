@@ -22,4 +22,6 @@ class ExplanationResponse:
 
     confidence: str  # e.g., "high", "medium", "low"
     citations: list[str] = field(default_factory=list)
-    timestamp: str = field(default_factory=lambda: datetime.now(UTC).isoformat().replace("+00:00", "Z"))
+    timestamp: str = field(
+        default_factory=lambda: datetime.now(UTC).isoformat().replace("+00:00", "Z")
+    )

@@ -25,10 +25,12 @@ from typing import Any
 # Layer 0: Core Enums
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 class ProfileType(str, Enum):
     COMPETITION = "competition"
     SEASON = "season"
     CAREER = "career"
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Layer 1–2: Raw and Statistical Data
@@ -110,6 +112,7 @@ class PlayerFeatureVector:
             return None
         try:
             from datetime import datetime
+
             bd = datetime.strptime(str(self.birth_date).split(" ")[0], "%Y-%m-%d")
             today = datetime.now()
             return round((today - bd).days / 365.25, 1)
@@ -216,11 +219,13 @@ class PlayerFeatureVector:
 # Layer 2.5: Player Attributes
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 @dataclass
 class PlayerAttributes:
     """
     Contextual properties that describe a player without inflating their football ability rating.
     """
+
     tactical_versatility: float | None = None
     minutes_reliability: str | None = None
     availability_rating: float | None = None
@@ -228,31 +233,37 @@ class PlayerAttributes:
     seasons_indexed: int = 1
     competitions_indexed: int = 1
 
+
 @dataclass
 class RatingPresentation:
     """
     Display-friendly representation of the player's overall rating.
     """
+
     raw_rating: float
     display_rating: float
     rating_percentile: float
     z_score: float
+
 
 @dataclass
 class ArchetypeProfile:
     """
     Result of deterministic style matching.
     """
+
     primary_archetype: str
     confidence: float
     alternatives: list[tuple[str, float]] = field(default_factory=list)
     contributing_capabilities: list[str] = field(default_factory=list)
+
 
 @dataclass
 class SystemCompatibilityContext:
     """
     Decomposed deterministic reasoning for tactical fit.
     """
+
     capability_alignment: float
     tactical_identity_preservation: float
     dependency_relief: float
@@ -265,16 +276,19 @@ class SystemCompatibilityContext:
 # Layer 3: Capability Scores
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 @dataclass
 class SupportingMetric:
     """
     Structured evidence proving exactly how a capability score was derived.
     """
+
     metric_name: str
     raw_value: float
     percentile: float
     contribution_weight: float
     explanation: str
+
 
 @dataclass
 class CapabilityScore:
@@ -332,17 +346,28 @@ class CapabilityProfile:
         Returns a canonical dictionary of capabilities formatted for visualization.
         """
         return {
-            "Ball Progression": self.ball_progression.score if self.ball_progression else 0.0,
-            "Chance Creation": self.chance_creation.score if self.chance_creation else 0.0,
+            "Ball Progression": self.ball_progression.score
+            if self.ball_progression
+            else 0.0,
+            "Chance Creation": self.chance_creation.score
+            if self.chance_creation
+            else 0.0,
             "Ball Security": self.ball_security.score if self.ball_security else 0.0,
-            "Press Resistance": self.press_resistance.score if self.press_resistance else 0.0,
-            "Defensive Activity": self.defensive_activity.score if self.defensive_activity else 0.0,
-            "Attacking Threat": self.attacking_threat.score if self.attacking_threat else 0.0,
+            "Press Resistance": self.press_resistance.score
+            if self.press_resistance
+            else 0.0,
+            "Defensive Activity": self.defensive_activity.score
+            if self.defensive_activity
+            else 0.0,
+            "Attacking Threat": self.attacking_threat.score
+            if self.attacking_threat
+            else 0.0,
         }
 
     def overall_confidence(self) -> float:
         """Returns the minimum confidence across all instantiated capabilities."""
         from shared.config.capabilities import CORE_CAPABILITIES
+
         confs = [
             getattr(self, cap).confidence
             for cap in CORE_CAPABILITIES
@@ -392,6 +417,7 @@ class PlayerProfile:
             return None
         try:
             from datetime import datetime
+
             # StatsBomb dates are usually YYYY-MM-DD
             bd = datetime.strptime(str(self.birth_date).split(" ")[0], "%Y-%m-%d")
             today = datetime.now()
@@ -414,7 +440,10 @@ class PlayerProfile:
         """Canonical accessor for UI to get archetype description."""
         # Optional: retrieve from a config/mapping if we have one.
         # For now, it returns a placeholder or empty string.
-        if self.archetype_profile and self.archetype_profile.primary_archetype != "Unknown":
+        if (
+            self.archetype_profile
+            and self.archetype_profile.primary_archetype != "Unknown"
+        ):
             return f"Specialist acting as a {self.archetype_profile.primary_archetype}."
         return "Not enough data to categorize playing style."
 
@@ -448,45 +477,56 @@ class PlayerProfile:
 # Layer 5.5: Collective Intelligence (Phase 15)
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 @dataclass
 class CollectiveIdentity:
     """
     Deterministically derived tactical identity of a team.
     """
+
     primary_identity: str
     secondary_identity: str | None = None
     emergent_traits: list[str] = field(default_factory=list)
+
 
 @dataclass
 class CapabilityConcentration:
     """
     Measures the distribution (or over-centralization) of a capability across a squad using HHI.
     """
+
     capability_name: str
     hhi_score: float
     is_over_centralized: bool
-    top_contributors: list[tuple[str, float]] = field(default_factory=list)  # (player_name, percentage)
+    top_contributors: list[tuple[str, float]] = field(
+        default_factory=list
+    )  # (player_name, percentage)
+
 
 @dataclass
 class SystemFragility:
     """
     Deterministic measurement of capability collapse when a player is removed.
     """
+
     player_name: str
     player_id: int
     replaceability_index: float
     structural_deficit: float
     capability_loss: dict[str, float] = field(default_factory=dict)
 
+
 @dataclass
 class CapabilityBottleneck:
     """
     Identifies where upstream capabilities fail to convert into downstream value.
     """
+
     upstream_capability: str
     downstream_capability: str
     severity: float
     diagnosis: str
+
 
 @dataclass
 class CollectiveProfile:
@@ -494,6 +534,7 @@ class CollectiveProfile:
     The output of the Collective Intelligence Engine.
     Explains the structural realities, fragilities, and identity of a team.
     """
+
     team_id: int
     team_name: str
     competition: str
@@ -511,6 +552,7 @@ class CollectiveProfile:
     def as_radar_dict(self) -> dict[str, float]:
         """Returns the canonical visualization radar dictionary for the team."""
         from shared.config.capabilities import CORE_CAPABILITIES
+
         result = {}
         for cap in CORE_CAPABILITIES:
             name = cap.replace("_", " ").title()
@@ -544,9 +586,12 @@ class CapabilityExplanation:
     Explains a capability using layered contributing factors.
     e.g. Ball Progression -> Progressive Passing (98th percentile), etc.
     """
+
     capability_name: str
     score: float
-    drivers: dict[str, str] = field(default_factory=dict) # e.g. {"Progressive Passes": "98th percentile"}
+    drivers: dict[str, str] = field(
+        default_factory=dict
+    )  # e.g. {"Progressive Passes": "98th percentile"}
 
 
 @dataclass
@@ -554,6 +599,7 @@ class PlayerDecisionCard:
     """
     Deterministic football reasoning for a player.
     """
+
     player: PlayerProfile
     primary_role: str
     elite_traits: list[CapabilityExplanation] = field(default_factory=list)
@@ -567,8 +613,11 @@ class DependencyAnalysis:
     """
     Exact percentage contribution per player for a capability.
     """
+
     capability_name: str
-    contributions: dict[str, float] = field(default_factory=dict) # e.g., {"Rodri": 32.5}
+    contributions: dict[str, float] = field(
+        default_factory=dict
+    )  # e.g., {"Rodri": 32.5}
     key_players: list[str] = field(default_factory=list)
 
 
@@ -577,6 +626,7 @@ class CounterfactualResult:
     """
     Measures capability delta when removing/adding a player.
     """
+
     capability_name: str
     original_score: float
     new_score: float
@@ -597,12 +647,15 @@ class TeamDecisionCard:
     """
     Deterministic football reasoning for a team.
     """
+
     team: CollectiveProfile
     tactical_identity: str
     biggest_strengths: list[CapabilityExplanation] = field(default_factory=list)
     biggest_weaknesses: list[CapabilityExplanation] = field(default_factory=list)
     dependency_analysis: dict[str, DependencyAnalysis] = field(default_factory=dict)
-    gap_analysis: dict[str, float] = field(default_factory=dict) # Capability vs Elite Benchmark gap
+    gap_analysis: dict[str, float] = field(
+        default_factory=dict
+    )  # Capability vs Elite Benchmark gap
 
 
 @dataclass
@@ -618,7 +671,9 @@ class RecruitmentCandidate:
     player_attributes: PlayerAttributes | None = None
 
     # Capability Restoration (Counterfactual impact)
-    restoration: dict[str, str] = field(default_factory=dict) # e.g. {"Ball Progression": "83%"}
+    restoration: dict[str, str] = field(
+        default_factory=dict
+    )  # e.g. {"Ball Progression": "83%"}
     trade_offs_positive: list[str] = field(default_factory=list)
     trade_offs_negative: list[str] = field(default_factory=list)
 

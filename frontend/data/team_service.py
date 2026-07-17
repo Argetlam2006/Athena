@@ -16,6 +16,7 @@ from shared.schemas import CollectiveProfile, TeamDecisionCard
 
 logger = logging.getLogger(__name__)
 
+
 @st.cache_data
 def get_collective_index() -> pd.DataFrame:
     store = IntelligenceStore()
@@ -36,25 +37,34 @@ def get_collective_index() -> pd.DataFrame:
         )
     return pd.DataFrame(data)
 
+
 @st.cache_data
 def get_collective_profile(team_id: int) -> CollectiveProfile | None:
     store = IntelligenceStore()
     return store.get_collective(team_id)
+
 
 @st.cache_data
 def get_all_collectives() -> list[CollectiveProfile]:
     store = IntelligenceStore()
     return store.get_all_collectives()
 
+
 def get_team_decision_card(team: CollectiveProfile) -> TeamDecisionCard:
     """Coordinates DecisionEngine to build a team decision card."""
     from shared.schemas import ProfileType
+
     all_players = get_all_players(ProfileType.COMPETITION)
     squad = [
-        p for p in all_players 
-        if p.team_name == team.team_name 
-        and p.competition == team.competition 
+        p
+        for p in all_players
+        if p.team_name == team.team_name
+        and p.competition == team.competition
         and p.season == team.season
     ]
-    cohort_teams = [t for t in get_all_collectives() if t.competition == team.competition and t.season == team.season]
+    cohort_teams = [
+        t
+        for t in get_all_collectives()
+        if t.competition == team.competition and t.season == team.season
+    ]
     return DecisionEngine.build_team_decision_card(team, squad, cohort_teams)

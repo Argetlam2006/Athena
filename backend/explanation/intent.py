@@ -18,11 +18,13 @@ class ConversationIntent(str, Enum):
     GENERAL = "general"
     UNKNOWN = "unknown"
 
+
 @dataclass
 class IntentClassification:
     intent: ConversationIntent
     required_entities: list[str]
     required_context: str | None
+
 
 class IntentClassifier:
     """
@@ -30,34 +32,58 @@ class IntentClassifier:
     """
 
     @staticmethod
-    def classify(query: str, active_workspace: str, selected_ids: list[int] = None) -> IntentClassification:
+    def classify(
+        query: str, active_workspace: str, selected_ids: list[int] = None
+    ) -> IntentClassification:
         q_lower = query.lower()
 
         # Explicit Keyword Overrides (Strongest Signal)
         if "compare" in q_lower or "vs" in q_lower:
-            return IntentClassification(ConversationIntent.COMPARE_PLAYERS, [], "Comparison")
+            return IntentClassification(
+                ConversationIntent.COMPARE_PLAYERS, [], "Comparison"
+            )
 
-        if "recruit" in q_lower or "find similar" in q_lower or "sign" in q_lower or "scout" in q_lower:
-            return IntentClassification(ConversationIntent.RECRUITMENT, [], "Recruitment")
+        if (
+            "recruit" in q_lower
+            or "find similar" in q_lower
+            or "sign" in q_lower
+            or "scout" in q_lower
+        ):
+            return IntentClassification(
+                ConversationIntent.RECRUITMENT, [], "Recruitment"
+            )
 
-        if "what if" in q_lower or "remove" in q_lower or "add" in q_lower or "without" in q_lower:
-            return IntentClassification(ConversationIntent.COUNTERFACTUAL, [], "Counterfactual")
+        if (
+            "what if" in q_lower
+            or "remove" in q_lower
+            or "add" in q_lower
+            or "without" in q_lower
+        ):
+            return IntentClassification(
+                ConversationIntent.COUNTERFACTUAL, [], "Counterfactual"
+            )
 
         # UI State Driven
         if active_workspace == "player_intelligence":
-            return IntentClassification(ConversationIntent.PLAYER_ANALYSIS, [], "Player")
+            return IntentClassification(
+                ConversationIntent.PLAYER_ANALYSIS, [], "Player"
+            )
 
         if active_workspace == "team_intelligence":
             return IntentClassification(ConversationIntent.TEAM_ANALYSIS, [], "Team")
 
         if active_workspace == "recruitment":
-            return IntentClassification(ConversationIntent.RECRUITMENT, [], "Recruitment")
+            return IntentClassification(
+                ConversationIntent.RECRUITMENT, [], "Recruitment"
+            )
 
         # Fallback keyword checks
         if "team" in q_lower or "squad" in q_lower or "tactic" in q_lower:
             return IntentClassification(ConversationIntent.TEAM_ANALYSIS, [], "Team")
 
         if "player" in q_lower or "profile" in q_lower:
-            return IntentClassification(ConversationIntent.PLAYER_ANALYSIS, [], "Player")
+            return IntentClassification(
+                ConversationIntent.PLAYER_ANALYSIS, [], "Player"
+            )
 
         return IntentClassification(ConversationIntent.GENERAL, [], "General")

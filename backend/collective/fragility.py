@@ -4,15 +4,28 @@ from shared.schemas import PlayerProfile, SystemFragility
 
 
 def get_base_averages(players: list[PlayerProfile]) -> dict[str, float]:
-    caps = ["ball_progression", "chance_creation", "ball_security",
-            "press_resistance", "defensive_activity", "attacking_threat"]
+    caps = [
+        "ball_progression",
+        "chance_creation",
+        "ball_security",
+        "press_resistance",
+        "defensive_activity",
+        "attacking_threat",
+    ]
     res = {}
     for c in caps:
-        vals = [getattr(p.capability_profile, c).score for p in players if p.capability_profile and getattr(p.capability_profile, c)]
+        vals = [
+            getattr(p.capability_profile, c).score
+            for p in players
+            if p.capability_profile and getattr(p.capability_profile, c)
+        ]
         res[c] = float(np.mean(vals)) if vals else 0.0
     return res
 
-def analyze_system_fragility(players: list[PlayerProfile], global_pool: list[PlayerProfile]) -> list[SystemFragility]:
+
+def analyze_system_fragility(
+    players: list[PlayerProfile], global_pool: list[PlayerProfile]
+) -> list[SystemFragility]:
     """
     Deterministically remove every player individually to measure capability collapse.
     Calculates a Replaceability Index by finding the best available replacement
@@ -78,17 +91,19 @@ def analyze_system_fragility(players: list[PlayerProfile], global_pool: list[Pla
 
         structural_deficit = total_loss - best_restored_total
         if structural_deficit <= 0:
-            structural_deficit = 0.1 # Floor to avoid div by zero
+            structural_deficit = 0.1  # Floor to avoid div by zero
 
         replaceability_index = 100.0 / structural_deficit
 
-        fragility_map.append(SystemFragility(
-            player_name=player.player_name,
-            player_id=player.player_id,
-            capability_loss=loss,
-            replaceability_index=round(replaceability_index, 2),
-            structural_deficit=round(structural_deficit, 1)
-        ))
+        fragility_map.append(
+            SystemFragility(
+                player_name=player.player_name,
+                player_id=player.player_id,
+                capability_loss=loss,
+                replaceability_index=round(replaceability_index, 2),
+                structural_deficit=round(structural_deficit, 1),
+            )
+        )
 
     # Sort by structural deficit descending (most irreplaceable first)
     fragility_map.sort(key=lambda x: x.structural_deficit, reverse=True)

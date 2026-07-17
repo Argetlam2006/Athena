@@ -2,16 +2,18 @@
 scripts/generate_validation_snapshot.py
 
 Generates a permanent benchmark snapshot of the intelligence model.
-Includes: top players per capability, archetype distribution, unknown %, 
+Includes: top players per capability, archetype distribution, unknown %,
 and capability percentiles for regression tracking.
 """
 
 import json
 from pathlib import Path
+
 from backend.intelligence.store import IntelligenceStore
 from shared.schemas import ProfileType
 
 SNAPSHOT_PATH = Path("data/warehouse/benchmark_snapshot.json")
+
 
 def main():
     store = IntelligenceStore()
@@ -39,24 +41,34 @@ def main():
 
     snapshot["archetype_distribution"] = arch_counts
     if "Unknown" in arch_counts:
-        snapshot["unknown_percentage"] = round(arch_counts["Unknown"] / len(players) * 100.0, 2)
+        snapshot["unknown_percentage"] = round(
+            arch_counts["Unknown"] / len(players) * 100.0, 2
+        )
 
     # Top Players per Capability
     caps = [
-        "ball_progression", "chance_creation", "ball_security",
-        "press_resistance", "defensive_activity", "attacking_threat"
+        "ball_progression",
+        "chance_creation",
+        "ball_security",
+        "press_resistance",
+        "defensive_activity",
+        "attacking_threat",
     ]
-    
+
     for cap in caps:
         # Sort players by capability score descending
         sorted_players = sorted(
             [p for p in players if getattr(p.capability_profile, cap)],
             key=lambda p: getattr(p.capability_profile, cap).score,
-            reverse=True
+            reverse=True,
         )
-        
+
         snapshot["top_players"][cap] = [
-            {"player_name": p.player_name, "position": p.position_group, "score": getattr(p.capability_profile, cap).score}
+            {
+                "player_name": p.player_name,
+                "position": p.position_group,
+                "score": getattr(p.capability_profile, cap).score,
+            }
             for p in sorted_players[:5]
         ]
 
@@ -66,6 +78,7 @@ def main():
 
     print(f"Snapshot written to {SNAPSHOT_PATH}")
     print(f"Unknown %: {snapshot['unknown_percentage']}%")
+
 
 if __name__ == "__main__":
     main()

@@ -54,23 +54,23 @@ Athena grounds all intelligence entirely in a deterministic dataset.
 </p>
 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 1rem; margin-top: 1.5rem; text-align: center;">
 <div>
-<div style="color: #6366f1; font-size: 1.5rem; font-weight: 700;">{summary['unique_players']:,}</div>
+<div style="color: #6366f1; font-size: 1.5rem; font-weight: 700;">{summary["unique_players"]:,}</div>
 <div style="color: #9ca3af; font-size: 0.85rem; text-transform: uppercase;">Players Indexed</div>
 </div>
 <div>
-<div style="color: #6366f1; font-size: 1.5rem; font-weight: 700;">{summary['career_profiles']:,}</div>
+<div style="color: #6366f1; font-size: 1.5rem; font-weight: 700;">{summary["career_profiles"]:,}</div>
 <div style="color: #9ca3af; font-size: 0.85rem; text-transform: uppercase;">Career Analyses</div>
 </div>
 <div>
-<div style="color: #6366f1; font-size: 1.5rem; font-weight: 700;">{summary['season_profiles']:,}</div>
+<div style="color: #6366f1; font-size: 1.5rem; font-weight: 700;">{summary["season_profiles"]:,}</div>
 <div style="color: #9ca3af; font-size: 0.85rem; text-transform: uppercase;">Season Analyses</div>
 </div>
 <div>
-<div style="color: #6366f1; font-size: 1.5rem; font-weight: 700;">{summary['competition_profiles']:,}</div>
+<div style="color: #6366f1; font-size: 1.5rem; font-weight: 700;">{summary["competition_profiles"]:,}</div>
 <div style="color: #9ca3af; font-size: 0.85rem; text-transform: uppercase;">Competition Analyses</div>
 </div>
 <div>
-<div style="color: #6366f1; font-size: 1.5rem; font-weight: 700;">{summary['total_teams']:,}</div>
+<div style="color: #6366f1; font-size: 1.5rem; font-weight: 700;">{summary["total_teams"]:,}</div>
 <div style="color: #9ca3af; font-size: 0.85rem; text-transform: uppercase;">Indexed Teams</div>
 </div>
 </div>
@@ -78,7 +78,7 @@ Athena grounds all intelligence entirely in a deterministic dataset.
 <em>Note: Player intelligence is strictly limited to the seasons and competitions available in the loaded warehouse.</em>
 </p>
 </div>""",
-        unsafe_allow_html=True
+        unsafe_allow_html=True,
     )
 
     render_divider()
@@ -108,7 +108,7 @@ Athena grounds all intelligence entirely in a deterministic dataset.
                 f"""<div class="card-container">
 <h3 style="margin-top: 0; margin-bottom: 0.25rem; color: #f9fafb;">{t.team_name}</h3>
 <p style="color: #9ca3af; font-size: 0.9rem;">{t.competition}</p>
-<div style="margin-top: 1rem; color: #818cf8; font-size: 0.85rem; font-weight: 600;">{t.identity.primary_identity if t.identity else 'Balanced'}</div>
+<div style="margin-top: 1rem; color: #818cf8; font-size: 0.85rem; font-weight: 600;">{t.identity.primary_identity if t.identity else "Balanced"}</div>
 </div>""",
                 unsafe_allow_html=True,
             )

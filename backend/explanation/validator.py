@@ -42,9 +42,15 @@ def validate_evidence_packet(packet: EvidencePacket) -> None:
         if isinstance(packet.supporting_metrics, dict):
             has_score = "score" in packet.supporting_metrics
         elif isinstance(packet.supporting_metrics, list):
-            has_score = any(isinstance(m, dict) and m.get("metric_name") == "score" for m in packet.supporting_metrics)
+            has_score = any(
+                isinstance(m, dict) and m.get("metric_name") == "score"
+                for m in packet.supporting_metrics
+            )
             if not has_score:
-                has_score = any(isinstance(m, dict) and "score" in m for m in packet.supporting_metrics)
+                has_score = any(
+                    isinstance(m, dict) and "score" in m
+                    for m in packet.supporting_metrics
+                )
 
         if not has_score:
             raise ContextValidationError(

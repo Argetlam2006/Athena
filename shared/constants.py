@@ -51,7 +51,11 @@ POSITION_GROUP_DISPLAY: dict[str, str] = {
 BROAD_POSITION_MAP: dict[str, list[str]] = {
     "Goalkeeper": ["Goalkeeper"],
     "Defender": ["Center Back", "Fullback"],
-    "Midfielder": ["Defensive Midfielder", "Central Midfielder", "Attacking Midfielder"],
+    "Midfielder": [
+        "Defensive Midfielder",
+        "Central Midfielder",
+        "Attacking Midfielder",
+    ],
     "Forward": ["Winger", "Center Forward"],
 }
 

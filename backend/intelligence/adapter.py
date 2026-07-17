@@ -49,7 +49,11 @@ def map_player_summary_to_vectors(df: pd.DataFrame) -> list[PlayerFeatureVector]
     vectors = []
 
     # Fill NA with 0.0 for all metrics except the contextual ones which can be legitimately missing
-    cols_to_fill = [c for c in df.columns if c not in ('minutes_played', 'matches_played', 'birth_date')]
+    cols_to_fill = [
+        c
+        for c in df.columns
+        if c not in ("minutes_played", "matches_played", "birth_date")
+    ]
     df[cols_to_fill] = df[cols_to_fill].fillna(0.0)
 
     for _, row in df.iterrows():

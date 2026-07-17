@@ -144,12 +144,12 @@ ARCHETYPE_TEMPLATES: dict[str, dict[str, dict[str, float]]] = {
             "attacking_threat": 10.0,
         },
     },
-    "Goalkeeper": {}
+    "Goalkeeper": {},
 }
 
 
 def _cosine_similarity(v1: list[float], v2: list[float]) -> float:
-    dot_product = sum(a * b for a, b in zip(v1, v2))
+    dot_product = sum(a * b for a, b in zip(v1, v2, strict=False))
     mag1 = math.sqrt(sum(a * a for a in v1))
     mag2 = math.sqrt(sum(b * b for b in v2))
     if mag1 == 0 or mag2 == 0:
@@ -158,7 +158,7 @@ def _cosine_similarity(v1: list[float], v2: list[float]) -> float:
 
 
 def _euclidean_similarity(v1: list[float], v2: list[float], max_dist: float) -> float:
-    dist = math.sqrt(sum((a - b) ** 2 for a, b in zip(v1, v2)))
+    dist = math.sqrt(sum((a - b) ** 2 for a, b in zip(v1, v2, strict=False)))
     return max(0.0, 1.0 - (dist / max_dist))
 
 
@@ -190,20 +190,28 @@ def assign_archetypes(profiles: Sequence[PlayerProfile]) -> None:
     df = pd.DataFrame(data)
 
     # 2. Compute percentiles relative to positional peers
-    pct_df = df.groupby('position_group')[CORE_CAPABILITIES].transform(
-        lambda x: ((x.rank(method='average') - 0.5) / len(x) * 100.0).clip(0.0, 100.0)
-    ).fillna(0.0)
+    pct_df = (
+        df.groupby("position_group")[CORE_CAPABILITIES]
+        .transform(
+            lambda x: ((x.rank(method="average") - 0.5) / len(x) * 100.0).clip(
+                0.0, 100.0
+            )
+        )
+        .fillna(0.0)
+    )
 
-    max_euclidean_dist = math.sqrt(len(CORE_CAPABILITIES) * (100.0 ** 2))
+    max_euclidean_dist = math.sqrt(len(CORE_CAPABILITIES) * (100.0**2))
 
     # 3. Match against Archetype Templates
     for i, p in enumerate(profiles):
         pos_group = p.position_group
         templates = ARCHETYPE_TEMPLATES.get(pos_group)
         if pos_group == "Goalkeeper":
-            p.archetype_profile = ArchetypeProfile(primary_archetype="Goalkeeper", confidence=1.0)
+            p.archetype_profile = ArchetypeProfile(
+                primary_archetype="Goalkeeper", confidence=1.0
+            )
             continue
-            
+
         if not templates:
             # Flatten all templates for cross-position matching if position is Unknown
             templates = {}
@@ -218,7 +226,7 @@ def assign_archetypes(profiles: Sequence[PlayerProfile]) -> None:
                 primary_archetype="Unknown",
                 confidence=0.0,
                 alternatives=[],
-                contributing_capabilities=[]
+                contributing_capabilities=[],
             )
             continue
 
@@ -227,7 +235,9 @@ def assign_archetypes(profiles: Sequence[PlayerProfile]) -> None:
             arch_vector = [arch_dict[cap] for cap in CORE_CAPABILITIES]
 
             cos_sim = _cosine_similarity(player_vector, arch_vector)
-            euc_sim = _euclidean_similarity(player_vector, arch_vector, max_euclidean_dist)
+            euc_sim = _euclidean_similarity(
+                player_vector, arch_vector, max_euclidean_dist
+            )
 
             # Blend: 75% Cosine (Style), 25% Euclidean (Magnitude)
             final_sim = (cos_sim * 0.75) + (euc_sim * 0.25)
@@ -237,21 +247,23 @@ def assign_archetypes(profiles: Sequence[PlayerProfile]) -> None:
         similarities.sort(key=lambda x: x[1], reverse=True)
 
         primary_name, primary_sim = similarities[0]
-        
+
         # If the highest similarity is extremely low (< 0.3), fallback to Unknown
         if primary_sim < 0.3:
             p.archetype_profile = ArchetypeProfile(
                 primary_archetype="Unknown",
                 confidence=0.0,
                 alternatives=[],
-                contributing_capabilities=[]
+                contributing_capabilities=[],
             )
             continue
 
         # Confidence is derived directly from the similarity score to make it continuous
         primary_conf = round(primary_sim * 100.0, 1)
 
-        alternatives = [(name, round(score * 100.0, 1)) for name, score in similarities[1:3]]
+        alternatives = [
+            (name, round(score * 100.0, 1)) for name, score in similarities[1:3]
+        ]
 
         # Calculate top contributing capabilities for the primary match
         # (Where the player's percentile is highest AND the archetype demands it)
@@ -270,5 +282,5 @@ def assign_archetypes(profiles: Sequence[PlayerProfile]) -> None:
             primary_archetype=primary_name,
             confidence=primary_conf,
             alternatives=alternatives,
-            contributing_capabilities=top_caps
+            contributing_capabilities=top_caps,
         )

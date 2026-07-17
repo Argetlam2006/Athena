@@ -100,7 +100,6 @@ def build_capability_profile(
     # Standard capabilities
     standard_caps = CORE_CAPABILITIES[:6]
 
-
     cap_scores: dict[str, CapabilityScore] = {}
     for cap in standard_caps:
         cap_scores[cap] = compute_weighted_capability(
@@ -137,12 +136,13 @@ def build_capability_profile(
         press_resistance=cap_scores["press_resistance"],
         defensive_activity=cap_scores["defensive_activity"],
         attacking_threat=cap_scores["attacking_threat"],
-        overall_rating=0.0 # Will be computed in engine after archetype assignment
+        overall_rating=0.0,  # Will be computed in engine after archetype assignment
     )
+
 
 def compute_overall_rating(scores: dict, role_family: str) -> float:
     from backend.intelligence.roles import get_role_importance_vector
-    
+
     pos_weights = get_role_importance_vector(role_family)
 
     total_score = 0.0
@@ -211,9 +211,13 @@ def build_player_profile(
 
     attributes = PlayerAttributes(
         tactical_versatility=versatility_score,
-        minutes_reliability="High" if vector.matches_played >= 25 else "Medium" if vector.matches_played >= 15 else "Low",
+        minutes_reliability="High"
+        if vector.matches_played >= 25
+        else "Medium"
+        if vector.matches_played >= 15
+        else "Low",
         availability_rating=availability,
-        positional_history=[vector.position_group], # Simplified for now
+        positional_history=[vector.position_group],  # Simplified for now
         seasons_indexed=1,
         competitions_indexed=1,
     )

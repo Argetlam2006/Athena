@@ -11,13 +11,17 @@ class SeasonBuilder:
     """Builds Season Feature Vectors from Competition Feature Vectors."""
 
     @staticmethod
-    def build_season_vector(competitions: list[PlayerFeatureVector]) -> PlayerFeatureVector:
+    def build_season_vector(
+        competitions: list[PlayerFeatureVector],
+    ) -> PlayerFeatureVector:
         if not competitions:
             raise ValueError("Cannot build season from empty competitions list.")
 
         # Ensure we are aggregating Competition Profiles (ProfileType.COMPETITION)
         if any(c.profile_type != ProfileType.COMPETITION for c in competitions):
-            raise ValueError("SeasonBuilder must aggregate ProfileType.COMPETITION profiles only.")
+            raise ValueError(
+                "SeasonBuilder must aggregate ProfileType.COMPETITION profiles only."
+            )
 
         # Determine core identity
         player_id = competitions[0].player_id
@@ -25,7 +29,9 @@ class SeasonBuilder:
         season = competitions[0].season
 
         # Most frequent position
-        positions = [c.position_group for c in competitions if c.position_group != "Unknown"]
+        positions = [
+            c.position_group for c in competitions if c.position_group != "Unknown"
+        ]
         if positions:
             position_group = max(set(positions), key=positions.count)
         else:
@@ -63,11 +69,11 @@ class SeasonBuilder:
         total_accurate_passes = 0.0
         total_dribbles = 0.0
         total_successful_dribbles = 0.0
-        total_pass_length = 0.0 # weighted by total passes
+        total_pass_length = 0.0  # weighted by total passes
 
         # Press Resistance
         total_events_under_pressure = 0.0
-        total_events = 0.0 # for pressure_pct
+        total_events = 0.0  # for pressure_pct
 
         # Defensive Activity
         total_pressures = 0.0
@@ -91,8 +97,10 @@ class SeasonBuilder:
         for c in competitions:
             mins = c.minutes_played or 0.0
             total_minutes += mins
-            total_matches += (c.matches_played or 0)
-            total_positions_played = max(total_positions_played, c.positions_played_count)
+            total_matches += c.matches_played or 0
+            total_positions_played = max(
+                total_positions_played, c.positions_played_count
+            )
 
             rm = c.raw_metrics or {}
 
@@ -101,8 +109,12 @@ class SeasonBuilder:
                 return rm.get(raw_key, (val / 90.0) * mins)
 
             # Ball Progression
-            total_progressive_passes += unp90(c.progressive_passes_p90, "progressive_passes")
-            total_progressive_carries += unp90(c.progressive_carries_p90, "progressive_carries")
+            total_progressive_passes += unp90(
+                c.progressive_passes_p90, "progressive_passes"
+            )
+            total_progressive_carries += unp90(
+                c.progressive_carries_p90, "progressive_carries"
+            )
             total_carry_distance += unp90(c.carry_distance_p90, "carry_distance_m")
             total_switches += unp90(c.switches_p90, "switches")
 
@@ -116,16 +128,22 @@ class SeasonBuilder:
             season_passes = unp90(c.passes_p90, "total_passes")
             total_passes += season_passes
 
-            acc_passes = rm.get("accurate_passes", (c.pass_accuracy_pct / 100.0) * season_passes)
+            acc_passes = rm.get(
+                "accurate_passes", (c.pass_accuracy_pct / 100.0) * season_passes
+            )
             total_accurate_passes += acc_passes
             total_pass_length += c.avg_pass_length_m * season_passes
 
-            season_dribbles = rm.get("total_dribbles", 0) # Fallback if p90 missing
+            season_dribbles = rm.get("total_dribbles", 0)  # Fallback if p90 missing
             total_dribbles += season_dribbles
-            total_successful_dribbles += rm.get("successful_dribbles", (c.dribble_success_pct / 100.0) * season_dribbles)
+            total_successful_dribbles += rm.get(
+                "successful_dribbles", (c.dribble_success_pct / 100.0) * season_dribbles
+            )
 
             # Press Resistance
-            season_events_under_pressure = unp90(c.events_under_pressure_p90, "events_under_pressure")
+            season_events_under_pressure = unp90(
+                c.events_under_pressure_p90, "events_under_pressure"
+            )
             total_events_under_pressure += season_events_under_pressure
             if "total_events" in rm:
                 total_events += rm["total_events"]
@@ -136,25 +154,42 @@ class SeasonBuilder:
             total_pressures += unp90(c.pressures_p90, "pressures")
             total_recoveries += unp90(c.recoveries_p90, "recoveries")
             total_clearances += unp90(c.clearances_p90, "clearances")
-            total_tackles += unp90(getattr(c, 'tackles_p90', 0.0), "padj_tackles")
-            total_interceptions += unp90(getattr(c, 'interceptions_p90', 0.0), "padj_interceptions")
-            total_tackles_won += unp90(getattr(c, 'tackles_won_p90', 0.0), "tackles_won")
-            total_dribbled_past += unp90(getattr(c, 'dribbled_past_p90', 0.0), "dribbled_past")
-            total_errors_leading_to_shot += unp90(getattr(c, 'errors_leading_to_shot_p90', 0.0), "errors_leading_to_shot")
-            total_aerials_won += unp90(getattr(c, 'aerials_won_p90', 0.0), "aerials_won")
-            total_aerials_total += unp90(getattr(c, 'aerials_total_p90', 0.0), "aerials_total")
+            total_tackles += unp90(getattr(c, "tackles_p90", 0.0), "padj_tackles")
+            total_interceptions += unp90(
+                getattr(c, "interceptions_p90", 0.0), "padj_interceptions"
+            )
+            total_tackles_won += unp90(
+                getattr(c, "tackles_won_p90", 0.0), "tackles_won"
+            )
+            total_dribbled_past += unp90(
+                getattr(c, "dribbled_past_p90", 0.0), "dribbled_past"
+            )
+            total_errors_leading_to_shot += unp90(
+                getattr(c, "errors_leading_to_shot_p90", 0.0), "errors_leading_to_shot"
+            )
+            total_aerials_won += unp90(
+                getattr(c, "aerials_won_p90", 0.0), "aerials_won"
+            )
+            total_aerials_total += unp90(
+                getattr(c, "aerials_total_p90", 0.0), "aerials_total"
+            )
 
             # Attacking Threat
             total_npxg += unp90(c.npxg_p90, "npxg")
             total_goals += unp90(c.goals_p90, "goals")
 
-            xg_total_season = rm.get("xg", unp90(c.goals_p90, "goals") - c.goals_minus_xg)
+            xg_total_season = rm.get(
+                "xg", unp90(c.goals_p90, "goals") - c.goals_minus_xg
+            )
             total_xg += xg_total_season
 
-            season_shots = rm.get("shots", xg_total_season / c.xg_per_shot if c.xg_per_shot > 0 else 0.0)
+            season_shots = rm.get(
+                "shots", xg_total_season / c.xg_per_shot if c.xg_per_shot > 0 else 0.0
+            )
             total_shots += season_shots
-            total_shots_on_target += rm.get("shots_on_target", (c.shot_accuracy_pct / 100.0) * season_shots)
-
+            total_shots_on_target += rm.get(
+                "shots_on_target", (c.shot_accuracy_pct / 100.0) * season_shots
+            )
 
         # Re-normalize for Season
         def p90(val: float) -> float:
@@ -174,29 +209,26 @@ class SeasonBuilder:
             birth_date=competitions[0].birth_date,
             matches_played=total_matches,
             minutes_played=total_minutes,
-
             # Ball Progression
             progressive_passes_p90=p90(total_progressive_passes),
             progressive_carries_p90=p90(total_progressive_carries),
             carry_distance_p90=p90(total_carry_distance),
             switches_p90=p90(total_switches),
-
             # Chance Creation
             shot_assists_p90=p90(total_shot_assists),
             goal_assists_p90=p90(total_goal_assists),
             through_balls_p90=p90(total_through_balls),
             crosses_p90=p90(total_crosses),
-
             # Ball Security
             pass_accuracy_pct=pct(total_accurate_passes, total_passes),
             dribble_success_pct=pct(total_successful_dribbles, total_dribbles),
             passes_p90=p90(total_passes),
-            avg_pass_length_m=round(total_pass_length / total_passes, 1) if total_passes > 0 else 0.0,
-
+            avg_pass_length_m=round(total_pass_length / total_passes, 1)
+            if total_passes > 0
+            else 0.0,
             # Press Resistance
             pressure_pct=pct(total_events_under_pressure, total_events),
             events_under_pressure_p90=p90(total_events_under_pressure),
-
             # Defensive Activity
             pressures_p90=p90(total_pressures),
             recoveries_p90=p90(total_recoveries),
@@ -208,7 +240,6 @@ class SeasonBuilder:
             errors_leading_to_shot_p90=p90(total_errors_leading_to_shot),
             aerials_won_p90=p90(total_aerials_won),
             aerials_total_p90=p90(total_aerials_total),
-
             # Attacking Threat
             npxg_p90=p90(total_npxg),
             goals_p90=p90(total_goals),
@@ -237,5 +268,5 @@ class SeasonBuilder:
                 "aerials_total": int(round(total_aerials_total)),
                 "xg_total": round(total_xg, 3),
                 "npxg_total": round(total_npxg, 3),
-            }
+            },
         )
