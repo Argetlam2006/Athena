@@ -10,9 +10,8 @@ Output files:
     data/processed/events.parquet        - all events (wide format)
     data/processed/lineups.parquet       - all player appearances
 
-The pipeline is driven by data/raw/manifest.json, which records exactly
-what was downloaded in Sprint 1.1. Only files recorded in the manifest
-are processed, making the ETL deterministic and repeatable.
+The pipeline scans data/raw/events/ to determine which matches to process.
+Only existing matches are processed, making the ETL deterministic and repeatable.
 
 Usage:
     python -m backend.etl.pipeline
@@ -34,7 +33,6 @@ from backend.etl.normalize import (
     normalize_lineups,
     normalize_matches,
 )
-from backend.ingestion.manifest import ManifestManager
 from backend.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -286,33 +284,23 @@ def run_etl(
     print("    Athena ETL Pipeline - Phase 2.1")
     print("  ======================================================")
 
-    # Determine which match IDs to process from manifest
-    manager = ManifestManager(raw_dir)
-    manifest = manager.load()
-    match_ids = manifest.all_match_ids()
-
-    if not match_ids:
-        # Fall back to scanning the events directory if manifest is empty
-        events_dir = raw_dir / "events"
-        if events_dir.exists():
-            match_ids = [
-                int(p.stem) for p in events_dir.glob("*.json") if p.stem.isdigit()
-            ]
-            logger.info("etl.match_ids.from_scan", count=len(match_ids))
-        else:
-            logger.warning(
-                "etl.no_data",
-                message="No data found. Run `make data` before `make etl`.",
-            )
-            print()
-            print("  ⚠ No data found in data/raw/. Run `make data` first.")
-            print()
-            return summary
+    events_dir = raw_dir / "events"
+    if events_dir.exists():
+        match_ids = [int(p.stem) for p in events_dir.glob("*.json") if p.stem.isdigit()]
+        logger.info("etl.match_ids.from_scan", count=len(match_ids))
+    else:
+        logger.warning(
+            "etl.no_data",
+            message="No data found. Run `make data` before `make etl`.",
+        )
+        print()
+        print("  ⚠ No data found in data/raw/. Run `make data` first.")
+        print()
+        return summary
 
     logger.info(
         "etl.scope",
         match_count=len(match_ids),
-        competition_count=len(manifest.competitions),
     )
 
     # Step 1 - Competitions

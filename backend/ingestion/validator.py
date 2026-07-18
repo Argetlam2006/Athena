@@ -384,81 +384,6 @@ def validate_lineups_file(path: Path, match_id: int) -> ValidationResult:
 
 
 # -----------------------------------------------------------------------------
-# Layer A - Cross-reference and manifest checks
-# -----------------------------------------------------------------------------
-
-
-def validate_manifest_consistency(raw_dir: Path = RAW_DIR) -> ValidationResult:
-    """
-    Check that the manifest is consistent with actual files on disk.
-
-    For every match_id recorded in the manifest:
-      - events/{match_id}.json must exist
-      - lineups/{match_id}.json must exist
-
-    For every competition in the manifest:
-      - matches/{comp_id}/{season_id}.json must exist
-    """
-    from backend.ingestion.manifest import ManifestManager
-
-    result = ValidationResult(
-        dataset="manifest.json",
-        total_rows=0,
-        valid_rows=0,
-        invalid_rows=0,
-    )
-
-    manager = ManifestManager(raw_dir)
-    if not manager.exists():
-        result.warnings.append(
-            "manifest.json not found - download hasn't run yet or was not recorded"
-        )
-        return result
-
-    manifest = manager.load()
-
-    # Check competitions - match files
-    for comp in manifest.competitions:
-        match_path = (
-            raw_dir / "matches" / str(comp.competition_id) / f"{comp.season_id}.json"
-        )
-        if not match_path.exists():
-            result.errors.append(
-                f"Manifest records matches/{comp.competition_id}/{comp.season_id}.json "
-                f"but file is missing"
-            )
-            result.invalid_rows += 1
-        else:
-            result.valid_rows += 1
-
-    # Check events and lineups
-    for match_id in manifest.events_downloaded:
-        result.total_rows += 1
-        events_path = raw_dir / "events" / f"{match_id}.json"
-        if not events_path.exists():
-            result.errors.append(
-                f"Manifest records events/{match_id}.json but file is missing"
-            )
-            result.invalid_rows += 1
-        else:
-            result.valid_rows += 1
-
-    for match_id in manifest.lineups_downloaded:
-        result.total_rows += 1
-        lineups_path = raw_dir / "lineups" / f"{match_id}.json"
-        if not lineups_path.exists():
-            result.errors.append(
-                f"Manifest records lineups/{match_id}.json but file is missing"
-            )
-            result.invalid_rows += 1
-        else:
-            result.valid_rows += 1
-
-    result.total_rows += len(manifest.competitions)
-    return result
-
-
-# -----------------------------------------------------------------------------
 # Layer A - Full directory validation
 # -----------------------------------------------------------------------------
 
@@ -590,9 +515,7 @@ def validate_raw_directory(raw_dir: Path = RAW_DIR) -> list[ValidationResult]:
             )
         )
 
-    # 5 - manifest cross-check
-    manifest_result = validate_manifest_consistency(raw_dir)
-    results.append(manifest_result)
+
 
     return results
 
