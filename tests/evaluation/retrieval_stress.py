@@ -15,21 +15,23 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 logging.basicConfig(stream=os.devnull, level=logging.ERROR)
 
-from backend.retrieval.bridge import (
-    RetrievalPromptBridge,
+from backend.knowledge.builder import GraphBuilder  # noqa: E402
+from backend.knowledge.query import GraphQuery  # noqa: E402
+from backend.retrieval.bridge import (  # noqa: E402
     CoverageValidationError,
+    RetrievalPromptBridge,
 )
-from backend.retrieval.execution import RetrievalExecutor
-from backend.retrieval.strategies import dispatch_strategy
-from backend.knowledge.query import GraphQuery
-from backend.knowledge.builder import GraphBuilder
-from shared.schemas.retrieval import (
+from backend.retrieval.coverage import CoverageValidator  # noqa: E402
+from backend.retrieval.strategies import (  # noqa: E402
+    dispatch_strategy,
+    list_strategies,
+)
+from shared.schemas.retrieval import (  # noqa: E402
     Coverage,
     EdgeType,
     EntityRef,
     EvidenceBundle,
     IntentType,
-    NodeType,
     StructuredIntent,
 )
 
@@ -112,7 +114,7 @@ check("build_prompt_or_none returns None on coverage failure", result is None)
 print()
 print("[Scenario] Validator rejects missing required claims")
 
-from backend.retrieval.coverage import CoverageValidator, CoverageValidationError
+
 
 validator = CoverageValidator()
 bundle_bad = EvidenceBundle(
@@ -153,8 +155,6 @@ check("Empty graph edges are typed list", isinstance(edges, list))
 # ─── 7. Strategy registry consistency ────────────────────────────────────────
 print()
 print("[Scenario] Strategy registry consistency")
-
-from backend.retrieval.strategies import list_strategies
 
 names = list_strategies()
 check(f"Strategies registered: {names}", len(names) >= 3)

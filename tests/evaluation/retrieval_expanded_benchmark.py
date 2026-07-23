@@ -18,21 +18,19 @@ import logging
 import os
 import sys
 import time
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
 
 logging.basicConfig(stream=os.devnull, level=logging.ERROR)
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from backend.explanation.engine import ExplanationContextEngine
-from backend.explanation.prompt_builder import PromptBuilder
-from backend.explanation.intent import IntentClassifier
-from backend.intelligence.store import IntelligenceStore
-from backend.retrieval.bridge import RetrievalPromptBridge
-from backend.retrieval.coverage import CoverageValidationError
-from backend.retrieval.strategies import list_strategies
-from shared.schemas.retrieval import IntentType, StructuredIntent
+from backend.explanation.engine import ExplanationContextEngine  # noqa: E402
+from backend.explanation.prompt_builder import PromptBuilder  # noqa: E402
+from backend.intelligence.store import IntelligenceStore  # noqa: E402
+from backend.retrieval.bridge import RetrievalPromptBridge  # noqa: E402
+from backend.retrieval.coverage import CoverageValidationError  # noqa: E402
+from backend.retrieval.strategies import list_strategies  # noqa: E402
+from shared.schemas.retrieval import IntentType, StructuredIntent  # noqa: E402
 
 # --- Constants ----------------------------------------------------------------
 
@@ -208,11 +206,6 @@ def run_baseline(q: BenchmarkQuestion) -> PerfResult:
     builder = PromptBuilder()
     store = IntelligenceStore()
 
-    classification = IntentClassifier.classify(
-        q.question, "player_intelligence",
-        q.player_ids,
-    )
-
     context = None
     context_type = "general"
     if q.player_ids and len(q.player_ids) == 1:
@@ -309,7 +302,6 @@ def print_report(results: list[QuestionResult]) -> None:
     n = len(results)
     base_sizes = [r.baseline.prompt_size_bytes for r in results]
     ret_sizes = [r.retrieval.prompt_size_bytes for r in results if r.retrieval.error is None]
-    ret_claims = [r.retrieval.claim_count for r in results]
     ret_times = [r.retrieval.retrieval_time_ms for r in results]
     base_errors = sum(1 for r in results if r.baseline.error)
     ret_errors = sum(1 for r in results if r.retrieval.error)
@@ -408,7 +400,7 @@ def print_report(results: list[QuestionResult]) -> None:
 
     print()
     print("=" * 72)
-    print(f"  RETRIEVAL READINESS")
+    print("  RETRIEVAL READINESS")
     print("=" * 72)
     ready = ret_errors == 0 and ret_coverage_ok > 0
     if ready:
@@ -417,9 +409,9 @@ def print_report(results: list[QuestionResult]) -> None:
         print(f"  ! {ret_errors} errors, {ret_coverage_gaps} coverage gaps")
     growth_warning = avg_ret > avg_base * 2 if paired else False
     if growth_warning:
-        print(f"  ! Prompt sizes have grown significantly -- consider claim pruning")
+        print("  ! Prompt sizes have grown significantly -- consider claim pruning")
     else:
-        print(f"  v Prompt sizes within acceptable range")
+        print("  v Prompt sizes within acceptable range")
     print()
 
 

@@ -18,32 +18,24 @@ from __future__ import annotations
 import json
 import logging
 import os
-import time
-from dataclasses import dataclass, field, asdict
+import sys
+from dataclasses import asdict, dataclass, field
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-logging.basicConfig(stream=os.devnull, level=logging.ERROR)
-
-import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from backend.explanation.engine import ExplanationContextEngine
-from backend.explanation.prompt_builder import PromptBuilder
-from backend.explanation.intent import ConversationIntent, IntentClassifier
-from backend.intelligence.store import IntelligenceStore
-from backend.retrieval.bridge import RetrievalPromptBridge
-from shared.schemas.retrieval import IntentType, StructuredIntent
+from backend.explanation.engine import ExplanationContextEngine  # noqa: E402
+from backend.explanation.intent import IntentClassifier  # noqa: E402
+from backend.explanation.prompt_builder import PromptBuilder  # noqa: E402
+from backend.intelligence.store import IntelligenceStore  # noqa: E402
+from backend.retrieval.bridge import RetrievalPromptBridge  # noqa: E402
+from shared.schemas.retrieval import IntentType, StructuredIntent  # noqa: E402
+
+logging.basicConfig(stream=os.devnull, level=logging.ERROR)
 
 # ─── Benchmark question definitions ───────────────────────────────────────────
-
-INTENT_TO_CONTEXT_TYPE: dict[str, str] = {
-    "compare_players": "Comparison",
-    "recruitment": "Recruitment",
-    "player_analysis": "Player",
-    "team_analysis": "Team",
-    "general": "General",
-}
 
 
 @dataclass
@@ -60,7 +52,6 @@ class BenchmarkQuestion:
 
 
 BENCHMARK_QUESTIONS: list[BenchmarkQuestion] = [
-    # ── Comparison ──
     BenchmarkQuestion(
         id="comp_01", category="comparison",
         question="Compare Lionel Messi and Cristiano Ronaldo. What are their relative strengths and weaknesses?",
@@ -73,7 +64,6 @@ BENCHMARK_QUESTIONS: list[BenchmarkQuestion] = [
         player_ids=[5246, 5497],
         expected_intent="compare_players",
     ),
-    # ── Player Analysis ──
     BenchmarkQuestion(
         id="player_01", category="analysis",
         question="What are Lionel Messi's key strengths and what archetype does he fit?",
@@ -86,7 +76,6 @@ BENCHMARK_QUESTIONS: list[BenchmarkQuestion] = [
         player_ids=[5207],
         expected_intent="player_analysis",
     ),
-    # ── Edge Cases ──
     BenchmarkQuestion(
         id="edge_01", category="edge",
         question="Compare a player that does not exist in the database with someone.",
@@ -113,11 +102,7 @@ BENCHMARK_QUESTIONS: list[BenchmarkQuestion] = [
 
 
 def run_baseline(question: BenchmarkQuestion) -> dict[str, Any]:
-    """Simulate existing Ask Athena pipeline without retrieval.
-
-    Uses the same intent classification and prompt builder as the
-    existing athena_service.process_athena_turn.
-    """
+    """Simulate existing Ask Athena pipeline without retrieval."""
     ctx_engine = ExplanationContextEngine()
     builder = PromptBuilder()
     store = IntelligenceStore()
@@ -126,6 +111,7 @@ def run_baseline(question: BenchmarkQuestion) -> dict[str, Any]:
         question.question, "player_intelligence",
         question.player_ids,
     )
+    _ = classification  # used by existing pipeline for context routing
 
     context = None
     context_type = "general"
@@ -136,11 +122,9 @@ def run_baseline(question: BenchmarkQuestion) -> dict[str, Any]:
             context = ctx_engine.get_player_context(profile)
             context_type = "player"
     elif question.player_ids and len(question.player_ids) >= 2:
-        # Build comparison context from player profiles
         profiles = [store.get_player(pid) for pid in question.player_ids[:2]]
         profiles = [p for p in profiles if p is not None]
         if len(profiles) >= 2:
-            from backend.recommendation.engine import DecisionIntelligenceEngine
             from backend.recommendation.comparison import compare_players
             result = compare_players(profiles)
             context = ctx_engine.get_comparison_context(result)
@@ -193,10 +177,8 @@ def run_retrieval(question: BenchmarkQuestion) -> dict[str, Any]:
         raw_text=question.question,
     )
 
-    start = time.perf_counter()
     try:
         prompt_pkg = bridge.build_prompt(question.question, intent)
-        elapsed = (time.perf_counter() - start) * 1000
     except Exception as e:
         return {
             "question_id": question.id,
@@ -252,15 +234,11 @@ class BenchmarkReport:
 
 def run_benchmark() -> BenchmarkReport:
     """Run full benchmark across all questions."""
-    from datetime import datetime
-
     report = BenchmarkReport(
         timestamp=datetime.now().isoformat(),
         total_questions=len(BENCHMARK_QUESTIONS),
     )
 
-    results_baseline = []
-    results_retrieval = []
     comparisons = []
 
     total_prompt_baseline = 0
@@ -272,16 +250,12 @@ def run_benchmark() -> BenchmarkReport:
     errors_retrieval = 0
 
     for q in BENCHMARK_QUESTIONS:
-        # Baseline
         b = run_baseline(q)
-        results_baseline.append(b)
         total_prompt_baseline += b["prompt_size_bytes"]
         if b["error"]:
             errors_baseline += 1
 
-        # Retrieval
         r = run_retrieval(q)
-        results_retrieval.append(r)
         total_prompt_retrieval += r["prompt_size_bytes"]
         total_claims_retrieval += r["claims"]
         total_time_retrieval += r.get("execution_time_ms", 0.0)
@@ -300,8 +274,8 @@ def run_benchmark() -> BenchmarkReport:
             "retrieval_time_ms": r.get("execution_time_ms", 0.0),
             "retrieval_strategy": r.get("strategy", ""),
             "retrieval_coverage": (
-                f"{r.get('coverage_satisfied', [])}"
-                f" / missing: {r.get('coverage_missing', [])}"
+                f"{r.get('coverage_satisfied', [])} / "
+                f"missing: {r.get('coverage_missing', [])}"
             ),
             "baseline_error": b.get("error"),
             "retrieval_error": r.get("error"),
@@ -324,7 +298,6 @@ def run_benchmark() -> BenchmarkReport:
         "errors": errors_retrieval,
     }
     report.comparisons = comparisons
-
     return report
 
 
@@ -334,17 +307,18 @@ def run_benchmark() -> BenchmarkReport:
 def print_report(report: BenchmarkReport) -> None:
     """Print a formatted benchmark report."""
     print("=" * 72)
-    print(f"  RETRIEVAL ARCHITECTURE BENCHMARK REPORT")
+    print("  RETRIEVAL ARCHITECTURE BENCHMARK REPORT")
     print(f"  {report.timestamp}")
     print(f"  Questions: {report.total_questions}")
     print("=" * 72)
-
     print()
+
+    b = report.baseline
+    r = report.retrieval
+
     print("  Aggregate")
     print(f"    {'Metric':<35} {'Baseline':>15} {'Retrieval':>15}")
     print(f"    {'-'*35} {'-'*15} {'-'*15}")
-    b = report.baseline
-    r = report.retrieval
     print(f"    {'Average prompt size (bytes)':<35} {b['avg_prompt_bytes']:>15.0f} {r['avg_prompt_bytes']:>15.0f}")
     print(f"    {'Total prompt size (bytes)':<35} {b['total_prompt_bytes']:>15,d} {r['total_prompt_bytes']:>15,d}")
     print(f"    {'Errors':<35} {b['errors']:>15} {r['errors']:>15}")
@@ -352,19 +326,21 @@ def print_report(report: BenchmarkReport) -> None:
     print(f"    {'Average retrieval time (ms)':<35} {'N/A':>15} {r['avg_time_ms']:>15.1f}")
     print(f"    {'Coverage gaps':<35} {'N/A':>15} {r['coverage_gaps']:>15}")
     print(f"    {'Total retrieval time (ms)':<35} {'N/A':>15} {r['total_time_ms']:>15.1f}")
-
     print()
+
     print("  Per-Question")
     for c in report.comparisons:
         delta = c["retrieval_prompt_bytes"] - c["baseline_prompt_bytes"]
         sign = "+" if delta > 0 else ""
-        print(f"    [{c['question_id']}] {c['category']:12s} | "
-              f"base={c['baseline_prompt_bytes']:>6}B "
-              f"ret={c['retrieval_prompt_bytes']:>6}B "
-              f"({sign}{delta:>+5}B) "
-              f"claims={c['retrieval_claims']:>2} "
-              f"time={c['retrieval_time_ms']:>6.1f}ms "
-              f"strat={c['retrieval_strategy']:>12s}")
+        print(
+            f"    [{c['question_id']}] {c['category']:12s} | "
+            f"base={c['baseline_prompt_bytes']:>6}B "
+            f"ret={c['retrieval_prompt_bytes']:>6}B "
+            f"({sign}{abs(delta):>5}B) "
+            f"claims={c['retrieval_claims']:>2} "
+            f"time={c['retrieval_time_ms']:>6.1f}ms "
+            f"strat={c['retrieval_strategy']:>12s}"
+        )
         if c["baseline_error"]:
             print(f"           BASELINE ERROR: {c['baseline_error']}")
         if c["retrieval_error"]:
@@ -384,7 +360,6 @@ def print_report(report: BenchmarkReport) -> None:
 if __name__ == "__main__":
     report = run_benchmark()
 
-    # Ensure output directory exists
     out_dir = Path("data/evaluation")
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / "benchmark_results.json"
