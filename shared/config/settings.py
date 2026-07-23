@@ -29,6 +29,9 @@ class Settings:
     # Logging
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
 
+    # Feature flags
+    ATHENA_USE_RETRIEVAL: bool = os.getenv("ATHENA_USE_RETRIEVAL", "false").lower() in ("true", "1", "yes")
+
     @property
     def is_production(self) -> bool:
         return self.ATHENA_ENV.lower() == "production"

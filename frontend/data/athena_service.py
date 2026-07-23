@@ -94,6 +94,16 @@ def process_athena_turn(
         selected_player_id, selected_team_id, active_workspace_id
     )
 
+    # Shadow: run retrieval in background (never affects response path)
+    try:
+        from backend.retrieval.shadow import run_shadow
+        run_shadow(
+            query, active_workspace_id,
+            selected_player_id, selected_team_id,
+        )
+    except Exception:
+        pass
+
     # Build prompt and execute
     builder = PromptBuilder()
     context_obj, prompt_type = build_context_for_prompt(

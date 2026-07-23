@@ -13,6 +13,7 @@ class ConversationMessage:
     role: str  # "user" or "assistant"
     content: str
     context_type: str | None = None
+    metadata: dict | None = None  # retrieval trace for Evidence Inspector
 
 
 @dataclass

@@ -42,6 +42,11 @@ data/warehouse/
 # Parquet
 *.parquet
 
+# Generated data (retrieval artifacts)
+data/knowledge/
+data/evaluation/
+data/shadow/
+
 # ──────────────────────────────────────────────
 # Streamlit
 # ──────────────────────────────────────────────
