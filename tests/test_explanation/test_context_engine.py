@@ -135,6 +135,8 @@ def test_team_context_serialization():
         team_name="Test Team",
         competition="Ligue 1",
         season="2023",
+        squad_size=25,
+        avg_age=26.5,
         identity=CollectiveIdentity(primary_identity="Direct"),
         avg_capabilities={"ball_progression": 80.0},
     )

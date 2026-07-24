@@ -26,6 +26,7 @@ OPTIONAL_CLAIM_TYPES: frozenset[str] = frozenset({
     ClaimType.ROLE_FIT.value,
     ClaimType.SHARED_STRENGTH.value,
     ClaimType.KEY_DIFFERENCE.value,
+    ClaimType.TEAM_BOTTLENECK.value,
 })
 
 

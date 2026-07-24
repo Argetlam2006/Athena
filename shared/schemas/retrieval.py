@@ -185,6 +185,8 @@ class ClaimType(str, Enum):
     TEAM_CAPABILITY = "team_capability"
     TEAM_FRAGILITY = "team_fragility"
     TEAM_BOTTLENECK = "team_bottleneck"
+    TEAM_CONCENTRATION = "team_concentration"
+    TEAM_IDENTITY = "team_identity"
 
 
 class QualifierKind(str, Enum):

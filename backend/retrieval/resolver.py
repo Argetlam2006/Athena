@@ -27,7 +27,13 @@ import pandas as pd
 # ─── Query normalisation — runs BEFORE intent classification ──────────────────
 
 QUERY_NORMALIZATIONS: list[tuple[re.Pattern, str]] = [
+    # Possessive normalization — runs before entity resolution
+    (re.compile(r"'s\b"), ""),
+    (re.compile(r"s'\b"), "s"),
+    # Ampersand normalization
+    (re.compile(r"\s*&\s*"), " and "),
     # Position abbreviations
+    (re.compile(r"\bDM\b", re.IGNORECASE), "defensive midfielder"),
     (re.compile(r"\bDM\b", re.IGNORECASE), "defensive midfielder"),
     (re.compile(r"\bNo\.?\s*6\b", re.IGNORECASE), "defensive midfielder"),
     (re.compile(r"\bNo\.?\s*8\b", re.IGNORECASE), "box-to-box midfielder"),
@@ -143,18 +149,24 @@ TEAM_ALIASES: dict[str, str] = {
     "tottenham": "Tottenham Hotspur",
     "spurs": "Tottenham Hotspur",
     "tot": "Tottenham Hotspur",
+    "tottenham hotspur": "Tottenham Hotspur",
     "newcastle": "Newcastle United",
     "nufc": "Newcastle United",
+    "newcastle united": "Newcastle United",
     "everton": "Everton",
     "efc": "Everton",
     "aston villa": "Aston Villa",
     "avfc": "Aston Villa",
     "west ham": "West Ham United",
     "whu": "West Ham United",
+    "west ham united": "West Ham United",
     "leicester": "Leicester City",
     "lcfc": "Leicester City",
+    "leicester city": "Leicester City",
     "brighton": "Brighton & Hove Albion",
     "bhafc": "Brighton & Hove Albion",
+    "brighton and hove albion": "Brighton & Hove Albion",
+    "brighton hove albion": "Brighton & Hove Albion",
     "wolves": "Wolverhampton Wanderers",
     "wwfc": "Wolverhampton Wanderers",
     "barca": "Barcelona",
@@ -165,13 +177,19 @@ TEAM_ALIASES: dict[str, str] = {
     "rmcf": "Real Madrid",
     "atletico": "Atlético Madrid",
     "atleti": "Atlético Madrid",
+    "atletico madrid": "Atlético Madrid",
+    "atlético madrid": "Atlético Madrid",
     "bayern": "Bayern Munich",
     "fc bayern": "Bayern Munich",
     "bayern munich": "Bayern Munich",
+    "fc bayern munich": "Bayern Munich",
     "bvb": "Borussia Dortmund",
     "dortmund": "Borussia Dortmund",
+    "borussia dortmund": "Borussia Dortmund",
     "psg": "Paris Saint-Germain",
     "paris": "Paris Saint-Germain",
+    "paris saint germain": "Paris Saint-Germain",
+    "paris saint-germain": "Paris Saint-Germain",
     "juventus": "Juventus",
     "juve": "Juventus",
     "inter": "Inter Milan",
@@ -326,7 +344,20 @@ class EntityIndex:
             canon_norm = _normalize(canonical)
             if canon_norm in self._teams:
                 return self._teams[canon_norm]
-            return None
+            # Fallback: construct a synthetic entry when the graph is not yet
+            # loaded.  The entity_id follows the graph builder's convention
+            # (lowercased name without diacritics) so edge queries will
+            # resolve correctly once the graph exists.
+            return {
+                "entity_id": canonical.lower().replace(" ", "_")
+                    .replace("&", "and")
+                    .replace("é", "e").replace("ö", "o").replace("ü", "u")
+                    .replace("ñ", "n").replace("ó", "o").replace("í", "i")
+                    .replace("á", "a").replace("à", "a").replace("è", "e"),
+                "name": canonical,
+                "norm": canon_norm,
+                "type": "team",
+            }
 
         # 2. Exact normalized name match
         if norm in self._teams:
@@ -399,6 +430,20 @@ class EntityIndex:
         self._ensure_loaded()
         ambiguities: list[dict[str, Any]] = []
         seen_tokens: set[str] = set()
+        full_norm = _normalize(query)
+
+        # Phase 1: full-entity detection.  If the query contains a complete
+        # entity name as a substring, that entity is not ambiguous regardless
+        # of what individual tokens match.  This prevents "Brighton & Hove
+        # Albion" from entering ambiguity via a partial "Albion" token while
+        # the full name is clearly present in the query.
+        full_entity_norms: set[str] = set()
+        for norm in self._teams:
+            if norm in full_norm:
+                full_entity_norms.add(norm)
+        for norm in self._players:
+            if norm in full_norm:
+                full_entity_norms.add(norm)
 
         for token in self._tokenize_query(query):
             norm = _normalize(token)
@@ -418,6 +463,15 @@ class EntityIndex:
                     self._token_match(norm, self._teams), "entity_id"
                 )
             )
+
+            # Remove candidates already covered by a full-entity name match.
+            # The full name was present in the query — individual tokens of
+            # that name should not trigger ambiguity.
+            candidates = [
+                c for c in candidates
+                if c.get("norm") not in full_entity_norms
+            ]
+
             if len(candidates) > 1:
                 ambiguities.append(
                     {
@@ -478,7 +532,10 @@ class EntityIndex:
             "man city",
             "borussia dortmund", "bayer leverkusen", "west ham", "aston villa",
             "tottenham hotspur", "newcastle united", "leicester city",
-            "brighton hove", "inter milan", "ac milan",
+            "brighton and hove albion", "brighton hove albion", "brighton hove",
+            "inter milan", "ac milan",
+            "paris saint germain", "paris saint-germain",
+            "atletico madrid", "atlético madrid",
         ]
         found: list[str] = []
         remaining = q_lower

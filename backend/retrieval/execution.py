@@ -60,6 +60,21 @@ def _project_team_fragility(proj: ClaimProjector, ref: EntityRef, pid: int) -> l
     return proj.team_fragility_claims(ref)
 
 
+def _project_team_identity(proj: ClaimProjector, ref: EntityRef, pid: int) -> list[Claim]:
+    """Project team identity claims."""
+    return proj.team_identity_claims(ref)
+
+
+def _project_team_bottleneck(proj: ClaimProjector, ref: EntityRef, pid: int) -> list[Claim]:
+    """Project team bottleneck claims."""
+    return proj.team_bottleneck_claims(ref)
+
+
+def _project_team_concentration(proj: ClaimProjector, ref: EntityRef, pid: int) -> list[Claim]:
+    """Project team concentration claims."""
+    return proj.team_concentration_claims(ref)
+
+
 # ─── Claim type dispatch registry ─────────────────────────────────────────────
 #
 # This is the single branching point for claim type dispatch.
@@ -76,6 +91,9 @@ CLAIM_DISPATCH: dict[ClaimType, ProjectorFn] = {
     ClaimType.ROLE_FIT: _project_role_fit,
     ClaimType.TEAM_CAPABILITY: _project_team_capability,
     ClaimType.TEAM_FRAGILITY: _project_team_fragility,
+    ClaimType.TEAM_IDENTITY: _project_team_identity,
+    ClaimType.TEAM_BOTTLENECK: _project_team_bottleneck,
+    ClaimType.TEAM_CONCENTRATION: _project_team_concentration,
 }
 
 

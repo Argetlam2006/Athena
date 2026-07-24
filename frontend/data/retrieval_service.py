@@ -13,6 +13,7 @@ remains untouched as the baseline.
 from __future__ import annotations
 
 import logging
+import re
 import time
 
 from backend.explanation.conversation import ConversationManager
@@ -43,6 +44,44 @@ _INTENT_MAP: dict[ConversationIntent, IntentType] = {
     ConversationIntent.GENERAL: IntentType.GENERAL,
     ConversationIntent.UNKNOWN: IntentType.GENERAL,
 }
+
+# ─── Subjective question detection ─────────────────────────────────────
+
+_SUBJECTIVE_PATTERNS: list[re.Pattern] = [
+    re.compile(r"\bgreatest\b.*\b(?:footballer|player|ever|of all time)\b", re.IGNORECASE),
+    re.compile(r"\bgoat\b", re.IGNORECASE),
+    re.compile(r"\bbest\b.*\b(?:footballer|player|ever|of all time)\b", re.IGNORECASE),
+    re.compile(r"\bgreatest\b.*\b(?:team|manager|coach|club)\b", re.IGNORECASE),
+]
+
+_SUBJECTIVE_RESPONSE: str = (
+    "That's a great football debate — but it's a subjective opinion question, "
+    "not one Athena can answer with deterministic evidence.\n\n"
+    "Athena specializes in **evidence-based football analysis** using the indexed "
+    "StatsBomb dataset. I can analyse specific players, teams, tactics, and "
+    "recruitment questions with grounded, traceable reasoning drawn from actual "
+    "match data.\n\n"
+    "For subjective questions like “who is the greatest”, different people "
+    "have different criteria — longevity, peak performance, trophies, influence, "
+    "era dominance — and there is no single evidence-backed answer.\n\n"
+    "**What I can help with instead:**\n"
+    "- Analyse a specific player or team\n"
+    "- Compare two players’ capability profiles\n"
+    "- Evaluate tactical strengths and weaknesses\n"
+    "- Recommend recruitment targets based on squad needs\n"
+    "- Explain tactical identity and playing style\n\n"
+    "Try asking about a player or team you’re interested in!"
+)
+
+
+def _is_subjective_query(query: str) -> bool:
+    """Detect subjective football opinion questions that fall outside
+    Athena's deterministic evidence scope."""
+    for pattern in _SUBJECTIVE_PATTERNS:
+        if pattern.search(query):
+            return True
+    return False
+
 
 # ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -163,9 +202,33 @@ def _adapt_intent(
     if primary_type == IntentType.COMPARE_PLAYERS and len(players) >= 2:
         entities["focus_player"] = str(players[0]["id"])
         entities["compare_player"] = str(players[1]["id"])
-    elif primary_type in (IntentType.PLAYER_ANALYSIS, IntentType.RECRUITMENT,
-                          IntentType.COUNTERFACTUAL) and players:
+    elif primary_type == IntentType.COMPARE_PLAYERS and len(players) < 2 and len(teams) >= 2:
+        # Team comparison: the classifier saw a "compare" keyword, but text
+        # resolution found two teams, not two players.  Route as team analysis
+        # using the first team; team_compare is stored for context.
+        entities["team"] = teams[0]["entity_id"]
+        entities["team_compare"] = teams[1]["entity_id"]
+        primary_type = IntentType.TEAM_ANALYSIS
+    elif primary_type in (IntentType.PLAYER_ANALYSIS, IntentType.COUNTERFACTUAL) and players:
         entities["focus_player"] = str(players[0]["id"])
+        # Scenario query with both player and team resolved (e.g.
+        # "How would Manchester City adapt without Rodri?").  Route
+        # as team analysis so fragility claims show the player's
+        # structural importance.  The player is stored as a context
+        # hint so the LLM can reference them.
+        if primary_type == IntentType.COUNTERFACTUAL and teams:
+            entities["team"] = teams[0]["entity_id"]
+            primary_type = IntentType.TEAM_ANALYSIS
+    elif primary_type == IntentType.RECRUITMENT:
+        if players:
+            entities["focus_player"] = str(players[0]["id"])
+        elif teams:
+            # Team recruitment: user wants to strengthen a squad, not replace
+            # a specific player.  Route as team analysis so the LLM receives
+            # capability, fragility, and bottleneck evidence for grounded
+            # recommendations.
+            entities["team"] = teams[0]["entity_id"]
+            primary_type = IntentType.TEAM_ANALYSIS
     elif primary_type in (IntentType.TEAM_ANALYSIS, IntentType.SQUAD_DIAGNOSIS) and teams:
         entities["team"] = teams[0]["entity_id"]
 
@@ -183,6 +246,17 @@ def _adapt_intent(
             entities["focus_player"] = str(selected_player_id)
         if selected_team_id is not None:
             entities["team"] = str(selected_team_id)
+
+    # Upgrade primary_type when the classifier returned GENERAL but entity
+    # resolution found a team or player from free-text.  This ensures the
+    # correct strategy (TeamAnalysisStrategy, PlayerAnalysisStrategy) is
+    # dispatched rather than falling through to GeneralStrategy which
+    # produces an empty plan.
+    if primary_type == IntentType.GENERAL:
+        if "team" in entities:
+            primary_type = IntentType.TEAM_ANALYSIS
+        elif "focus_player" in entities:
+            primary_type = IntentType.PLAYER_ANALYSIS
 
     intent = StructuredIntent(
         primary_type=primary_type,
@@ -220,6 +294,15 @@ class RetrievalAthenaService:
         )
 
         self.manager.add_user_message(query)
+
+        # Handle subjective opinion questions before any retrieval logic
+        if _is_subjective_query(query):
+            trace.success = True
+            trace.outcome = "subjective"
+            trace.execution_time_ms = (time.perf_counter() - start_time) * 1000
+            record_trace(trace)
+            self.manager.add_assistant_message(_SUBJECTIVE_RESPONSE)
+            return _SUBJECTIVE_RESPONSE
 
         normalized_query = normalize_query(query)
         context = get_context()

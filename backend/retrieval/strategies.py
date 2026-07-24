@@ -191,8 +191,10 @@ class PlayerAnalysisStrategy(RetrievalStrategy):
 class TeamAnalysisStrategy(RetrievalStrategy):
     """Strategy for team-level intelligence analysis.
 
-    Produces team capability claims (6, one per capability) and team
-    fragility claims (top 5 most irreplaceable players) for a team.
+    Produces team capability claims (6), team fragility claims (top 5),
+    team identity claim (1), team bottleneck claims, and team
+    concentration claims (6, one per capability) — giving the LLM
+    structured evidence for tactical reasoning.
     """
 
     @property
@@ -207,36 +209,53 @@ class TeamAnalysisStrategy(RetrievalStrategy):
             return 0.4
         return 0.0
 
+    def _build_team_steps(self, team_eid: str) -> list[RetrievalStep]:
+        """Build the standard sequence of steps for a single team."""
+        ref = EntityRef(node_type=NodeType.TEAM, entity_id=team_eid)
+        return [
+            RetrievalStep(step_type=RetrievalStepType.GET_ENTITY, entity_ref=ref),
+            RetrievalStep(step_type=RetrievalStepType.TRAVERSE_EDGES,
+                          entity_ref=ref, edge_type=EdgeType.HAS_SQUAD_CAPABILITY),
+            RetrievalStep(step_type=RetrievalStepType.PROJECT_CLAIMS,
+                          entity_ref=ref,
+                          claim_types=[
+                              ClaimType.TEAM_CAPABILITY.value,
+                              ClaimType.TEAM_FRAGILITY.value,
+                              ClaimType.TEAM_IDENTITY.value,
+                              ClaimType.TEAM_BOTTLENECK.value,
+                              ClaimType.TEAM_CONCENTRATION.value,
+                          ]),
+        ]
+
     def plan(self, intent: StructuredIntent) -> RetrievalPlan:
         team_eid = intent.entities.get("team")
-        if not team_eid:
-            entity_count = 0
-            team_ref = None
-        else:
-            entity_count = 1
-            team_ref = EntityRef(node_type=NodeType.TEAM, entity_id=team_eid)
+        compare_eid = intent.entities.get("team_compare")
 
+        entity_count = 0
         steps: list[RetrievalStep] = []
-        if team_ref:
-            steps = [
-                RetrievalStep(step_type=RetrievalStepType.GET_ENTITY, entity_ref=team_ref),
-                RetrievalStep(step_type=RetrievalStepType.TRAVERSE_EDGES,
-                              entity_ref=team_ref, edge_type=EdgeType.HAS_SQUAD_CAPABILITY),
-                RetrievalStep(step_type=RetrievalStepType.PROJECT_CLAIMS,
-                              entity_ref=team_ref,
-                              claim_types=[ClaimType.TEAM_CAPABILITY.value,
-                                           ClaimType.TEAM_FRAGILITY.value]),
-            ]
+
+        if team_eid:
+            entity_count += 1
+            steps.extend(self._build_team_steps(team_eid))
+        if compare_eid:
+            entity_count += 1
+            steps.extend(self._build_team_steps(compare_eid))
 
         return RetrievalPlan(
             plan_id=self._make_plan_id(intent),
             strategy_name=self.name,
             intent=intent,
             steps=steps,
-            expected_claim_types=[ClaimType.TEAM_CAPABILITY.value, ClaimType.TEAM_FRAGILITY.value],
+            expected_claim_types=[
+                ClaimType.TEAM_CAPABILITY.value,
+                ClaimType.TEAM_FRAGILITY.value,
+                ClaimType.TEAM_IDENTITY.value,
+                ClaimType.TEAM_BOTTLENECK.value,
+                ClaimType.TEAM_CONCENTRATION.value,
+            ],
             store_fingerprint=intent.filters.get("store_fingerprint", ""),
             entity_count=entity_count,
-            traversal_count=1 if team_ref else 0,
+            traversal_count=sum(1 for s in steps if s.step_type == RetrievalStepType.TRAVERSE_EDGES),
         )
 
 

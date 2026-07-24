@@ -176,8 +176,8 @@ def build_team_context(profile: CollectiveProfile) -> TeamExplanationContext:
         team_name=profile.team_name,
         competition=profile.competition,
         season=profile.season,
-        squad_size=20,  # Fixed for now or computed
-        average_age=25.0,  # Fixed for now
+        squad_size=profile.squad_size,
+        average_age=profile.avg_age or 0.0,
         style_label=identity_dict["primary"],
         collective_identity=identity_dict,
         concentration_risks=concentration,

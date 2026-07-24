@@ -158,6 +158,10 @@ def recommend_replacement(
             continue
         if not player.capability_profile:
             continue
+        # Never recommend current squad members unless the user explicitly
+        # asks for internal replacements (by excluding the team_name check).
+        if target.team_name and player.team_name == target.team_name:
+            continue
 
         player_vector = [
             _get_capability_score(player, "ball_progression"),
