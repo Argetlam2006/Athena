@@ -37,9 +37,9 @@ class ConversationManager:
             ConversationMessage(role="user", content=content, context_type=context_type)
         )
 
-    def add_assistant_message(self, content: str) -> None:
+    def add_assistant_message(self, content: str, metadata: dict | None = None) -> None:
         self.state.messages.append(
-            ConversationMessage(role="assistant", content=content)
+            ConversationMessage(role="assistant", content=content, metadata=metadata)
         )
 
     def detect_and_handle_context_change(

@@ -153,6 +153,10 @@ def render_ask_athena_section() -> None:
                         render_evidence_inspector,
                     )
                     render_evidence_inspector(msg.metadata)
+                    debug_report = msg.metadata.get("debug_report")
+                    if debug_report:
+                        with st.expander("Developer Diagnostics", expanded=False):
+                            st.code(debug_report, language="text")
 
     # ── Input and generation ──
     user_query = st.chat_input(f"Ask {mode_badge}...")
